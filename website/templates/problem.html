@@ -1,7 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}Problem {{problem_id}}{% endblock %}
+{% block title %}Problem {{problem.id}}{% endblock %}
 
 {% block content %}
-<h1>Problem {{problem_id}}</h1>
+<h1>Problem {{problem.id}}: {{problem.title}}</h1>
+<p>{{problem.description}}</p>
+<div class="mb-3">
+    <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}">
+        <textarea
+            class="form-control"
+            name="user_code"
+            placeholder="Paste code here..."
+            rows="10"
+            style="height:100%;"
+        ></textarea>
+        <br />
+        <button type="submit" class="btn btn-primary mb3">Submit</button>
+    </form>
+</div>
 {% endblock %}
