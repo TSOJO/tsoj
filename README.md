@@ -33,12 +33,13 @@ wsgi.py
 ## Todo
 
  - [ ] Work out connection to backend
-	 - [ ] Hardcode `Problem 1` so can test
+	 - [x] Hardcode `Problem 1` so can test
+ - [ ] Ask JER what dashboard should look like
  - [ ] Build database for users and problems
  - [ ] Add more pages to website
 	 - [ ] Home
 	 - [ ] Problem listing
 	 - [ ] Homework(?)
 	 - [ ] Profile(?)
-	 - [ ] Student management for teachers
+	 - [ ] Dashboard for teachers
 
