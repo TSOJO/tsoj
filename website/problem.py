@@ -21,6 +21,6 @@ def problem(id):
 def problem_submit():
     #TODO: make sandbox run asynchronously.
     user_code = request.form['user_code']
-    sandbox = IsolateSandbox()
+    sandbox = IsolateSandbox(0)
     sandbox.run_code(user_code)
     return "OK"
