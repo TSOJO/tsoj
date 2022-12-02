@@ -29,3 +29,16 @@ This is strictly provisional and will be changed in the future.
 	problem.py  # blueprint for problem
 config.py
 wsgi.py
+```
+## Todo
+
+ - [ ] Work out connection to backend
+	 - [ ] Hardcode `Problem 1` so can test
+ - [ ] Build database for users and problems
+ - [ ] Add more pages to website
+	 - [ ] Home
+	 - [ ] Problem listing
+	 - [ ] Homework(?)
+	 - [ ] Profile(?)
+	 - [ ] Student management for teachers
+
