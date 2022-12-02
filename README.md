@@ -13,6 +13,10 @@ Add `SECRET_KEY` to the environment by creating a file called `.env` in the root
 
 Start the server by running the `wsgi.py` file.
 
+## Typings
+
+(In visual studio code): Press F1, select `Python: Select Linter`, select `mypy`
+
 ## Project structure
 This is strictly provisional and will be changed in the future.
 ```
