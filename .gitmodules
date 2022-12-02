@@ -1,0 +1,3 @@
+[submodule "isolate_wrapper"]
+	path = isolate_wrapper
+	url = https://github.com/TSOJO/isolate-wrapper
