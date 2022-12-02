@@ -20,7 +20,7 @@ def problem(id: int) -> str:
 # Code submission.
 @problem_bp.route('/submit', methods=['POST'])
 def problem_submit() -> str:
-    #TODO: make sandbox run asynchronously.
+    # TODO: Make sandbox run asynchronously.
     user_code = request.form['user_code']
     sandbox = IsolateSandbox(0)
     sandbox.run_code(user_code)
