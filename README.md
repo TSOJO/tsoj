@@ -43,3 +43,6 @@ wsgi.py
 	 - [ ] Profile(?)
 	 - [ ] Dashboard for teachers
 
+## Updating submodules
+Run `git submodule update --init --force --remote`.
+
