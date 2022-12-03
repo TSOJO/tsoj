@@ -42,7 +42,7 @@ def problem_submit() -> str:
     
     user_code = request.form['user_code']
     sandbox = IsolateSandbox()
-    overall_verdict, verdicts = sandbox.run_code(user_code, testcases, restrictions)
-    print(overall_verdict, verdicts)
-    return f'{overall_verdict} {verdicts}'
+    final_verdict, verdicts = sandbox.run_code(user_code, testcases, restrictions)
+    print(final_verdict, verdicts)
+    return f'{final_verdict} {verdicts}'
     
