@@ -25,15 +25,16 @@ def problem_submit() -> str:
     testcases = [
         {
             'id': 1,
-            'input': '2\n9',
+            'input': '2\n9\n',
             'answer': '11',
         },
         {
             'id': 2,
-            'input': '10\n20',
+            'input': '10\n20\n',
             'answer': '30',
         }
     ]
+    restrictions = {'time_limit': 1, 'memory_limit': 1024*64}
     
     restrictions = {
         'time_limit': 1,
@@ -42,5 +43,7 @@ def problem_submit() -> str:
     
     user_code = request.form['user_code']
     sandbox = IsolateSandbox()
+    overall_verdict, verdicts = sandbox.run_code(user_code, testcases, restrictions)
+    print(overall_verdict, verdicts)
+    return f'{overall_verdict} {verdicts}'
     
-    return sandbox.run_code(user_code, testcases, restrictions)
