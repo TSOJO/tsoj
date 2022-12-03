@@ -130,3 +130,6 @@ dmypy.json
 
 # VSC
 .vscode/
+
+# metadata paths
+metadata_paths/*
