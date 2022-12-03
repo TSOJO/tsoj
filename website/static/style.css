@@ -4,3 +4,7 @@
     height: 300px;
     width: 50%;
 }
+
+td, th {
+    vertical-align: middle;
+}

@@ -18,8 +18,8 @@ def problem(id: int) -> str:
     return render_template('problem.html', problem=problem_info)
 
 # Code submission.
-@problem_bp.route('/results', methods=['GET', 'POST'])
-def problem_submit() -> str:
+@problem_bp.route('/submission', methods=['GET', 'POST'])
+def problem_submission() -> str:
     # TODO: Make sandbox run asynchronously.
     
     # Note this is hardcoded for development.
@@ -42,10 +42,18 @@ def problem_submit() -> str:
         'memory_limit': 1024*64,
     }
     
+    problem_info = {
+        'id': 1,
+        'title': 'Sum',
+        'description': 'Given two numbers, print their sum.',
+    }
+    
     user_code = request.form['user_code']
     problem_id = request.form['problem_id']
     sandbox = IsolateSandbox()
     final_verdict, results = sandbox.run_code(user_code, testcases, restrictions)
     print(final_verdict, results)
-    return f'{problem_id}:  {final_verdict} {results}'
-    
+    return render_template('submission.html',
+                           problem=problem_info,
+                           final_verdict=final_verdict,
+                           results=results)
