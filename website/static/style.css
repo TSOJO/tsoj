@@ -1,0 +1,6 @@
+#editor {
+    box-sizing: border-box;
+    border: 1px solid rgb(170, 170, 170);
+    height: 300px;
+    width: 50%;
+}

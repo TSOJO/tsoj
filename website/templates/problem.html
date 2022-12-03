@@ -7,15 +7,10 @@
 <p>{{problem.description}}</p>
 <div class="mb-3" id="content">
     <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}" id="codeForm">
-        <textarea
-            class="form-control"
-            name="user_code"
-            placeholder="Paste code here..."
-            rows="10"
-            style="height:100%;"
-        ></textarea>
+        <textarea name="user_code"></textarea>
+        <div id="editor"></div>
         <br />
-        <button type="submit" class="btn btn-primary mb3" id="submitButton" onclick="running();">
+        <button type="submit" class="btn btn-primary mb3" id="submitButton">
             Submit
         </button>
     </form>
