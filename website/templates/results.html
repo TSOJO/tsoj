@@ -27,7 +27,8 @@
         <tr>
             <th scope="col">Test ID</th>
             <th scope="col">Verdict</th>
-            <th scope="col">Exec. Time</th>
+            <th scope="col">Exec. time</th>
+            <th scope="col">Memory used</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +53,7 @@
                 </button>
                 {% endif %}</td>
             <td>{{result.time}}s</td>
+            <td>{{result.mem}}KB</td>
         </tr>
         {% endfor %}
     </tbody>
