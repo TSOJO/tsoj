@@ -1,4 +1,3 @@
-from typing import TypedDict
 from flask import Blueprint, render_template, request
 from isolate_wrapper import IsolateSandbox
 problem_bp = Blueprint('problem_bp', __name__)
