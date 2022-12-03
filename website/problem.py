@@ -18,10 +18,11 @@ def problem(id: int) -> str:
     return render_template('problem.html', problem=problem_info)
 
 # Code submission.
-@problem_bp.route('/submission', methods=['GET', 'POST'])
-def problem_submission() -> str:
-    # TODO: Make sandbox run asynchronously.
-    
+@problem_bp.route('/results', methods=['GET', 'POST'])
+def problem_results() -> str:
+    # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
+    # /results is only temporarily used for development purposes. 
+
     # Note this is hardcoded for development.
     # Probably get this from `problem_id` in production.
     testcases = [
@@ -53,7 +54,7 @@ def problem_submission() -> str:
     sandbox = IsolateSandbox()
     final_verdict, results = sandbox.run_code(user_code, testcases, restrictions)
     print(final_verdict, results)
-    return render_template('submission.html',
+    return render_template('results.html',
                            problem=problem_info,
                            final_verdict=final_verdict,
                            results=results)
