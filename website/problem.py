@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from isolate_wrapper import IsolateSandbox
+
 problem_bp = Blueprint('problem_bp', __name__)
 
 # Load problem main screen.
@@ -17,11 +18,12 @@ def problem(id: int) -> str:
     return render_template('problem.html', problem=problem_info)
 
 # Code submission.
-@problem_bp.route('/submit', methods=['POST'])
+@problem_bp.route('/results', methods=['GET', 'POST'])
 def problem_submit() -> str:
     # TODO: Make sandbox run asynchronously.
     
     # Note this is hardcoded for development.
+    # Probably get this from `problem_id` in production.
     testcases = [
         {
             'id': 1,
@@ -41,8 +43,9 @@ def problem_submit() -> str:
     }
     
     user_code = request.form['user_code']
+    problem_id = request.form['problem_id']
     sandbox = IsolateSandbox()
     final_verdict, results = sandbox.run_code(user_code, testcases, restrictions)
     print(final_verdict, results)
-    return f'{final_verdict} {results}'
+    return f'{problem_id}:  {final_verdict} {results}'
     
