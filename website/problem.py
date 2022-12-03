@@ -34,11 +34,10 @@ def problem_submit() -> str:
             'answer': '30',
         }
     ]
-    restrictions = {'time_limit': 1, 'memory_limit': 1024*64}
     
     restrictions = {
         'time_limit': 1,
-        'memory_limit': 1024,
+        'memory_limit': 1024*64,
     }
     
     user_code = request.form['user_code']
