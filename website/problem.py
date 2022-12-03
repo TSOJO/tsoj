@@ -25,12 +25,12 @@ def problem_submit() -> str:
     testcases = [
         {
             'id': 1,
-            'input': '2\n9',
+            'input': '2\n9\n',
             'answer': '11',
         },
         {
             'id': 2,
-            'input': '10\n20',
+            'input': '10\n20\n',
             'answer': '30',
         }
     ]
