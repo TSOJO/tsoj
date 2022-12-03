@@ -35,7 +35,12 @@ def problem_submit() -> str:
         }
     ]
     
+    restrictions = {
+        'time_limit': 1,
+        'memory_limit': 1024,
+    }
+    
     user_code = request.form['user_code']
     sandbox = IsolateSandbox()
     
-    return sandbox.run_code(user_code, testcases)
+    return sandbox.run_code(user_code, testcases, restrictions)
