@@ -36,6 +36,6 @@ def problem_submit() -> str:
     ]
     
     user_code = request.form['user_code']
-    sandbox = IsolateSandbox(0)
+    sandbox = IsolateSandbox()
     
     return sandbox.run_code(user_code, testcases)
