@@ -132,4 +132,4 @@ dmypy.json
 .vscode/
 
 # metadata paths
-metadata_paths/*
+metadata/*
