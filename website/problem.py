@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from isolate_wrapper import IsolateSandbox
+from ..isolate_wrapper import IsolateSandbox
 problem_bp = Blueprint('problem_bp', __name__)
 
 # Load problem main screen.
