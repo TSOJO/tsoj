@@ -5,8 +5,8 @@
 {% block content %}
 <h1>Problem {{problem.id}}: {{problem.title}}</h1>
 <p>{{problem.description}}</p>
-<div class="mb-3">
-    <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}">
+<div class="mb-3" id="content">
+    <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}" id="codeForm">
         <textarea
             class="form-control"
             name="user_code"
@@ -15,7 +15,9 @@
             style="height:100%;"
         ></textarea>
         <br />
-        <button type="submit" class="btn btn-primary mb3">Submit</button>
+        <button type="submit" class="btn btn-primary mb3" id="submitButton" onclick="running();">
+            Submit
+        </button>
     </form>
 </div>
 {% endblock %}
