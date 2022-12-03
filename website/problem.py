@@ -20,7 +20,22 @@ def problem(id: int) -> str:
 @problem_bp.route('/submit', methods=['POST'])
 def problem_submit() -> str:
     # TODO: Make sandbox run asynchronously.
+    
+    # Note this is hardcoded for development.
+    testcases = [
+        {
+            'id': 1,
+            'input': '2\n9',
+            'answer': '11',
+        },
+        {
+            'id': 2,
+            'input': '10\n20',
+            'answer': '30',
+        }
+    ]
+    
     user_code = request.form['user_code']
     sandbox = IsolateSandbox(0)
-    sandbox.run_code(user_code)
-    return "OK"
+    
+    return sandbox.run_code(user_code, testcases)
