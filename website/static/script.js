@@ -6,7 +6,6 @@ window.onpageshow = function(event) {
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/python");
     editor.session.setUseWrapMode(true);
-    document.getElementById('editor').style.fontSize='20px';
     let textarea = $('textarea[name="user_code"]').hide();
 
     // Reset submit button. Is there a better way to do this?
@@ -14,7 +13,7 @@ window.onpageshow = function(event) {
     $('#submitButton').html('Submit');
 
     $('#submitButton').click(function() {
-        textarea.val(editor.getSession().getValue());
+        textarea.val(editor.getValue());
         // Disable submit button.
         $(this).prop('disabled', true);
         // Replace text with a spinner.

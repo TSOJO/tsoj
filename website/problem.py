@@ -21,7 +21,7 @@ def problem(id: int) -> str:
 @problem_bp.route('/results', methods=['GET', 'POST'])
 def problem_results() -> str:
     # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
-    # /results is only temporarily used for development purposes. 
+    # /results with POST is only temporarily used for development purposes. 
 
     # Note this is hardcoded for development.
     # Probably get this from `problem_id` in production.
