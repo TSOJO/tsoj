@@ -1,5 +1,6 @@
 
 
+
 # TSOJ
 
 Tonbridge School Online Judge
@@ -26,6 +27,11 @@ Add `DB_URI` to environment by adding the following to a `.env` file:
 `DB_URI  =  'mysql://<user>:<password>@localhost/tsoj'`.
 
 Run `sudo python3 wsgi.py`. A table `problem` should be created in the database `tsoj`.
+
+Note to self:
+
+ - Start/stop server: `sudo /etc/init.d/mysql start`
+ - Login to monitor: `sudo mysql -u <username> -p`
 
 ## Typings
 
