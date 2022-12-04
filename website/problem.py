@@ -1,21 +1,15 @@
 from flask import Blueprint, render_template, request
 from isolate_wrapper import IsolateSandbox
+from . import db
+from .models import Problem
 
 problem_bp = Blueprint('problem_bp', __name__)
 
 # Load problem main screen.
-@problem_bp.route('/<int:id>')
-def problem(id: int) -> str:
-    
-    # This is hardcoded for development purposes.
-    # `problem` in production will be an object from the problem database.
-    # No type is defined here as the type will be inferred from the database model we create later.
-    problem_info = {
-        'id': 1,
-        'title': 'Sum',
-        'description': 'Given two numbers, print their sum.',
-    }
-    return render_template('problem.html', problem=problem_info)
+@problem_bp.route('/<id>')
+def problem(id: str) -> str:
+    problem_obj = db.get_or_404(Problem, id)
+    return render_template('problem.html', problem=problem_obj)
 
 # Code submission.
 @problem_bp.route('/results', methods=['GET', 'POST'])
