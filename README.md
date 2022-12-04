@@ -1,4 +1,5 @@
 
+
 # TSOJ
 
 Tonbridge School Online Judge
@@ -12,6 +13,19 @@ Add `SECRET_KEY` to the environment by creating a file called `.env` in the root
   Run `pip install -r requirements.txt`.
 
 Start the server by running the `wsgi.py` file.
+
+## MySQL server
+
+[Install](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-database#install-mysql) MySQL server in Linux (WSL).
+
+If there's an error when running `sudo mysql_secure_installation` see https://stackoverflow.com/a/72115499/6085039.
+
+Create `tsoj` database by running `CREATE DATABASE tsoj;`.
+
+Add `DB_URI` to environment by adding the following to a `.env` file:
+`DB_URI  =  'mysql://<user>:<password>@localhost/tsoj'`.
+
+Run `sudo python3 wsgi.py`. A table `problem` should be created in the database `tsoj`.
 
 ## Typings
 
