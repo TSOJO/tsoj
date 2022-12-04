@@ -9,3 +9,7 @@
 td, th {
     vertical-align: middle;
 }
+
+.verdict-svg {
+    margin-right: 3px;
+}
