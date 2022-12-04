@@ -11,6 +11,7 @@ def init_app() -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_pyfile('../config.py')
     
+    # Initialise database.
     db.init_app(app)
     create_tables(app)
     
@@ -23,6 +24,8 @@ def init_app() -> Flask:
     return app
 
 def create_tables(app):
+    # Import models.
     from .models import Problem
     with app.app_context():
+        # Create tables if they do not exist already.
         db.create_all()

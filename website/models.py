@@ -1,6 +1,10 @@
 from . import db
+import sqlalchemy as sa
 
 class Problem(db.Model):
-    id = db.Column(db.String(10), primary_key=True)
-    title = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.String(5000), nullable=False)
+    id = sa.Column(sa.String(10), primary_key=True)
+    title = sa.Column(sa.String(50), nullable=False)
+    description = sa.Column(sa.String(5000), nullable=False)
+    
+    def __repr__(self):
+        return f'<Problem {self.id}>'
