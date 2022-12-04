@@ -10,6 +10,6 @@ td, th {
     vertical-align: middle;
 }
 
-.verdict-svg {
+.verdict-svg, .code-submit {
     margin-right: 5px;
 }
