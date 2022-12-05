@@ -8,12 +8,15 @@ problem_bp = Blueprint('problem_bp', __name__)
 # Load problem main screen.
 @problem_bp.route('/<id>')
 def problem(id: str) -> str:
+    from flask import current_app as app
+    print(app.name)
     problem_obj = db.get_or_404(Problem, id)
     return render_template('problem.html', problem=problem_obj)
 
 # Code submission.
 @problem_bp.route('/results', methods=['GET', 'POST'])
 def problem_results() -> str:
+    # TODO: Remove hardcoded problem id.
     # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
     # ? Maybe should look like:
     # ? Submit code --(POST)--> /submit (judge + add to DB) --(redirect with submission ID)--> /submission/<id>
