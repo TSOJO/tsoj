@@ -3,6 +3,9 @@
 {% block title %}Assignment {{assignment.id}}{% endblock %}
 
 {% block content %}
+<div class="mb-3">
+    <h1>Assignment {{assignment.id}}</h1>
+</div>
 {% for problem in assignment.problems %}
     <div class="card mb-3">
         <div class="card-body">
