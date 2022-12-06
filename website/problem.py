@@ -13,11 +13,12 @@ def problem(id: str) -> str:
         'title': 'Sum',
         'description': 'Given two numbers, print their sum.',
     }
-    return render_template('problem.html', problem=problem_info)
+    assignment_id = request.args.get('assignment_id')
+    return render_template('problem.html', problem=problem_info, assignment_id=assignment_id)
 
 # Code submission.
-@problem_bp.route('/results', methods=['GET', 'POST'])
-def problem_results() -> str:
+@problem_bp.route('/submit', methods=['GET', 'POST'])
+def problem_submit() -> str:
     # TODO: Remove hardcoded problem id.
     # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
     # ? Maybe should look like:

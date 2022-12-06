@@ -5,15 +5,19 @@
 {% block content %}
 <h1>Problem {{problem.id}}: {{problem.title}}</h1>
 <p>{{problem.description}}</p>
-<div class="mb-3" id="content">
-    <form method="POST" action="{{ url_for('problem_bp.problem_results') }}" id="codeForm">
+<div class="mb-3">
+    <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}" id="codeForm">
         <input type="hidden" name="problem_id" value="{{problem.id}}" />
-        <textarea name="user_code"></textarea>
-        <div id="editor"></div>
-        <br />
-        <button type="submit" class="btn btn-primary mb3" id="submitButton">
-            Submit
-        </button>
+        <div class="mb-3">
+            <textarea name="user_code"></textarea>
+            <div id="editor"></div>
+        </div>
+        <div class="mb-3">
+            {% if assignment_id %}
+            This will submit as part of assignment {{assignment_id}}.
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary mb3" id="submitButton"></button>
     </form>
 </div>
 {% endblock %}
