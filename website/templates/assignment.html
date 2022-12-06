@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Assignment {{assignment.id}}{% endblock %}
+
+{% block content %}
+{% for problem in assignment.problems %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{problem.id}}: {{problem.title}}</h5>
+            <p class="card-text">{{problem.description|truncate}}</p>
+            <a href="{{ url_for('problem_bp.problem', id=problem.id, assignment_id=assignment.id) }}" class="btn btn-primary">View</a>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}

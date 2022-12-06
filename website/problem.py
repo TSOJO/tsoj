@@ -13,7 +13,8 @@ def problem(id: str) -> str:
         'title': 'Sum',
         'description': 'Given two numbers, print their sum.',
     }
-    return render_template('problem.html', problem=problem_info)
+    assignment_id = request.args.get('assignment_id')
+    return render_template('problem.html', problem=problem_info, assignment_id=assignment_id)
 
 # Code submission.
 @problem_bp.route('/results', methods=['GET', 'POST'])
