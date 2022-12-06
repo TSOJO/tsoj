@@ -1,17 +1,19 @@
 from flask import Blueprint, render_template, request
 from isolate_wrapper import IsolateSandbox
-from . import db
-from .models import Problem
+from isolate_wrapper.testcase import Testcase
 
 problem_bp = Blueprint('problem_bp', __name__)
 
 # Load problem main screen.
 @problem_bp.route('/<id>')
 def problem(id: str) -> str:
-    from flask import current_app as app
-    print(app.name)
-    problem_obj = db.get_or_404(Problem, id)
-    return render_template('problem.html', problem=problem_obj)
+    # Hardcoded for now.
+    problem_info = {
+        'id': 'A1',
+        'title': 'Sum',
+        'description': 'Given two numbers, print their sum.',
+    }
+    return render_template('problem.html', problem=problem_info)
 
 # Code submission.
 @problem_bp.route('/results', methods=['GET', 'POST'])
@@ -24,16 +26,8 @@ def problem_results() -> str:
     # Note this is hardcoded for development.
     # Probably get this from `problem_id` in production.
     testcases = [
-        {
-            'id': 1,
-            'input': '2\n9\n',
-            'answer': '11',
-        },
-        {
-            'id': 2,
-            'input': '10\n20\n',
-            'answer': '30',
-        }
+        Testcase('2\n9\n', '11\n'),
+        Testcase('10\n20\n', '30\n'),
     ]
     
     restrictions = {
@@ -51,7 +45,6 @@ def problem_results() -> str:
     problem_id = request.form['problem_id']
     sandbox = IsolateSandbox()
     final_verdict, results = sandbox.run_code(user_code, testcases, restrictions)
-    print(final_verdict, results)
     return render_template('results.html',
                            problem=problem_info,
                            final_verdict=final_verdict,
