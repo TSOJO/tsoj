@@ -70,3 +70,6 @@ wsgi.py
 ## Updating submodules
 Run `git submodule update --init --force --remote`.
 
+## Activate venv in WSL
+Run `source venv/bin/activate`.
+
