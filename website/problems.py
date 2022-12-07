@@ -3,7 +3,9 @@ from flask import render_template, Blueprint
 # from .models import Problem
 
 # Blueprint Configuration
-problems_bp = Blueprint('home_bp', __name__)
+problems_bp = Blueprint('problems_bp', __name__,
+                        template_folder='templates',
+                        static_folder='static')
 
 @problems_bp.route('/')
 def problems():

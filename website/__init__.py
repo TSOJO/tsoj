@@ -20,9 +20,9 @@ def init_app() -> Flask:
     from .admin.routes import admin_bp
     
     # Register blueprints.
-    app.register_blueprint(problem_bp, url_prefix='/problem/')
-    app.register_blueprint(problems_bp, url_prefix='/problems/')
-    app.register_blueprint(admin_bp, url_prefix='/admin/')
+    app.register_blueprint(problem_bp, url_prefix='/problem')
+    app.register_blueprint(problems_bp, url_prefix='/problems')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
     
     # Register error handler.
     from .errors import page_not_found
