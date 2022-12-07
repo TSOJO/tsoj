@@ -13,6 +13,5 @@ protobuf==3.20.2
 python-dotenv==0.21.0
 SQLAlchemy==1.4.44
 tomli==2.0.1
-typing==3.7.4.3
 typing_extensions==4.4.0
 Werkzeug==2.2.2
