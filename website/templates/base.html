@@ -10,7 +10,7 @@
             integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
             crossorigin="anonymous"
         />
-        <link href="../static/style.css" rel="stylesheet">
+        <link href="{{url_for('.static', filename='style.css')}}" rel="stylesheet">
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -54,7 +54,7 @@
         ></script>
         <script
             type="text/javascript"
-            src="{{url_for('static', filename='script.js')}}"
+            src="{{url_for('.static', filename='script.js')}}"
         ></script>
 
     </body>

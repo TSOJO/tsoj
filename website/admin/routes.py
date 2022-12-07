@@ -1,8 +1,10 @@
 from flask import render_template, Blueprint, request
-from . import db
-from .models import Problem
+# from . import db
+# from .models import Problem
 
-admin_bp = Blueprint('admin_bp', __name__)
+admin_bp = Blueprint('admin_bp', __name__,
+                     template_folder='templates',
+                     static_folder='static')
 
 @admin_bp.route('/')
 def admin():

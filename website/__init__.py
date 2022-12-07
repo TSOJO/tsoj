@@ -15,9 +15,9 @@ def init_app() -> Flask:
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
     # ! Moving this up results in circular imports.
-    from .problem import problem_bp
-    from .problems import problems_bp
-    from .admin import admin_bp
+    from .problem.routes import problem_bp
+    from .problems import problems_bp  # ! needs changing at some point
+    from .admin.routes import admin_bp
     
     # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem/')

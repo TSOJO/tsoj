@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, request
 from isolate_wrapper import IsolateSandbox
 from isolate_wrapper.testcase import Testcase
 
-problem_bp = Blueprint('problem_bp', __name__)
+problem_bp = Blueprint('problem_bp', __name__,
+                       template_folder='templates',
+                       static_folder='static')
 
 # Load problem main screen.
 @problem_bp.route('/<id>')

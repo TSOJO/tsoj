@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template
 
-assignment_bp = Blueprint('assignment_bp', __name__)
+assignment_bp = Blueprint('assignment_bp', __name__,
+                          template_folder='templates',
+                          static_folder='static')
 
 @assignment_bp.route('/<int:id>')
 def assignment(id: int):

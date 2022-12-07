@@ -1,0 +1,15 @@
+#editor {
+    box-sizing: border-box;
+    border: 1px solid rgb(170, 170, 170);
+    height: 300px;
+    width: 50%;
+    font-size: 20px;
+}
+
+td, th {
+    vertical-align: middle;
+}
+
+.verdict-svg, .code-submit {
+    margin-right: 5px;
+}
