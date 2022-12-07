@@ -17,10 +17,12 @@ def init_app() -> Flask:
     # ! Moving this up results in circular imports.
     from .problem import problem_bp
     from .problems import problems_bp
-    from .assignment import assignment_bp
+    from .admin import admin_bp
+    
+    # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem/')
     app.register_blueprint(problems_bp, url_prefix='/problems/')
-    app.register_blueprint(assignment_bp, url_prefix='/assignment/')
+    app.register_blueprint(admin_bp, url_prefix='/admin/')
     
     # Register error handler.
     from .errors import page_not_found
