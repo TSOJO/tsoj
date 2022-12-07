@@ -7,3 +7,5 @@ load_dotenv(path.join(base_dir, '.env'))
 SECRET_KEY = environ.get('SECRET_KEY')
 TESTING = True
 DEBUG = True
+
+MONGO_URI = environ.get('MONGO_URI')

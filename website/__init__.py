@@ -1,15 +1,17 @@
 from os import environ
 from flask import Flask
-import pymongo
+from flask_pymongo import PyMongo
 
-client = pymongo.MongoClient(environ.get('MONGO_CONNECTION_URI'))
-db = client.tsoj  # Any operations you do with `db` will create database `tsoj` if not already created.
+mongo = PyMongo()
 
 def init_app() -> Flask:
     # Initial config.
     app: Flask = Flask(__name__)
     app.config.from_pyfile('../config.py')
-
+    
+    # Initialise mongo.
+    mongo.init_app(app)
+        
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
     # ! Moving this up results in circular imports.
