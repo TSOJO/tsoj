@@ -1,9 +1,5 @@
 from os import environ
 from flask import Flask
-from mongokit import Connection
-
-# Connect to MongoDB.
-db = Connection(host=environ.get('MONGO_CONNECTION_ID'))
 
 def init_app() -> Flask:
     # Initial config.
