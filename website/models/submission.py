@@ -26,13 +26,13 @@ class Submission:
 
   """Methods"""
   
-  def getUser(self) -> User:
+  def get_user(self) -> User:
     return User.find_one({'username': self.user})
 
-  def getProblem(self):
+  def get_problem(self):
     return Problem.find_one({'id': self.problem})
 
-  def getAssignment(self):
+  def get_assignment(self):
     return Assignment.find_one({'id': self.assignment})
 
   """Database Wrapper Methods"""

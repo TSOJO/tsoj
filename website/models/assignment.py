@@ -1,5 +1,4 @@
 from __future__ import annotations
-from datetime import datetime
 from typing import List
 
 from problem import Problem
@@ -20,7 +19,7 @@ class Assignment:
     self.problems = problems
     pass
 
-  def getProblems(self):
+  def get_problems(self):
     return [Problem.find_one({'id': p}) for p in self.problems]
 
   """Database Wrapper Methods"""
