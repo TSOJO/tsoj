@@ -1,12 +1,11 @@
 from __future__ import annotations
 from typing import List
 from ..db import db
+from dataclasses import dataclass
 
-class Testcase:
-	input: str
-	# A function that takes in the output and returns a boolean value.
-	accepted_outputs: List[str]
+from isolate_wrapper import Testcase
 
+@dataclass
 class Problem:
 
 	"""Properties"""
@@ -16,7 +15,7 @@ class Problem:
 	time_limit: int
 	memory_limit: int
 	# A dict with the key being the language, and the value being the list of test cases for that language
-	test_cases: List[Testcase]
+	testcases: List[Testcase]
 
 	"""Database Wrapper Methods"""
 
