@@ -1,6 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
-from typing import List
+from typing import List, Optional, cast
 
 from ..db import db
 from .user import User
@@ -12,7 +12,7 @@ class Submission:
 
 	"""Properties"""
 
-	id: int
+	submission_id: int
 	user: str
 	final_verdict: Verdict
 	results: List[Result]
@@ -23,32 +23,35 @@ class Submission:
 	"""Methods"""
 
 	def __init__(self, 
-		user: str, 
+		username: str, 
 		final_verdict: Verdict, 
 		results: List[Result], 
-		problem: str, 
-		assignment: int, 
+		problem_id: str, 
+		assignment_id: int, 
 		submission_time = datetime.now()):
-		self.user = user
+		# TODO Auto increment submission id
+		self.submission_id = 1
+		self.username = username
 		self.final_verdict = final_verdict
 		self.results = results
-		self.problem = problem
-		self.assignment = assignment
+		self.problem_id = problem_id
+		self.assignment_id = assignment_id
 		self.submission_time = submission_time
   
-	def get_user(self) -> User:
-		return User.find_one({'username': self.user})
+	async def fetch_user(self) -> User:
+		return User.find_one({'username': self.username})
 
-	def get_problem(self):
-		return Problem.find_one({'id': self.problem})
+	async def fetch_problem(self) -> Problem:
+		return cast(Problem, await Problem.find_one({'id': self.problem_id}))
 
-	def get_assignment(self):
-		return Assignment.find_one({'id': self.assignment})
+	async def fetch_assignment(self) -> Optional[Assignment]:
+		if self.assignment_id == None: return None
+		return Assignment.find_one({'id': self.assignment_id})
 
 	"""Database Wrapper Methods"""
 
-	@staticmethod
-	def find_one(filter) -> Submission | None:
+	@classmethod
+	def find_one(cls, filter) -> Submission | None:
     	# TODO
 		query = db.submissions.find_one(filter=filter)
 		print(query)
@@ -58,7 +61,7 @@ class Submission:
 		# TODO
 		return self
 
-	# @staticmethod
+	# @classmethod
 	# def register() -> None:
 	# 	if not 'submissions' in db.list_collection_names():
 	# 		db.create_collection('submissions')
