@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
-from isolate_wrapper import IsolateSandbox
-from isolate_wrapper.testcase import Testcase
+from isolate_wrapper import IsolateSandbox, Testcase
 
 problem_bp = Blueprint('problem_bp', __name__,
                        template_folder='templates',
