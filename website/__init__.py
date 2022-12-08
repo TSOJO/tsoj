@@ -7,7 +7,7 @@ def init_app() -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_pyfile('../config.py')
     
-    from .models.exports import Assignment, User, Problem, Submission
+    from .models import Assignment, User, Problem, Submission
     with app.app_context():
         User.register()
         Problem.register()
