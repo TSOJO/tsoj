@@ -7,12 +7,12 @@ def init_app() -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_pyfile('../config.py')
     
-    # from .models.exports import Assignment, User, Problem, Submission
-    # with app.app_context():
-    #     User.register()
-    #     Problem.register()
-    #     Submission.register()
-    #     Assignment.register()
+    from .models.exports import Assignment, User, Problem, Submission
+    with app.app_context():
+        User.register()
+        Problem.register()
+        Submission.register()
+        Assignment.register()
         
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.

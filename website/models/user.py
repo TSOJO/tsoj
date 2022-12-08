@@ -6,7 +6,7 @@ from ..db import db
 from . import submission
 
 class User:
-  """Properties"""
+	"""Properties"""
 
 	_email: str
 	@property
@@ -34,7 +34,7 @@ class User:
 	def add_submission(self, newSubmission: submission.Submissions, save = True):
 		self._submissions.append(newSubmission.id)
 		if save:
-		self.save()
+			self.save()
 
 	"""Database Wrapper Methods"""
 
