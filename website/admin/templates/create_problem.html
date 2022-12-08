@@ -11,7 +11,7 @@
     </div>
     <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" class="form-control" name="title" placeholder="Enter title">
+        <input type="text" class="form-control" name="name" placeholder="Enter name">
     </div>
     <div class="form-group">
         <label for="description">Description</label>
@@ -31,13 +31,29 @@
         </div>
         <div class="form-group">
             <label for="testcases">Input</label>
-            <textarea class="form-control testcase-input" name="input" rows="3"></textarea>
+            <textarea class="form-control testcase-input" rows="3"></textarea>
         </div>
         <div class="form-group">
             <label for="testcases">Answer</label>
-            <textarea class="form-control testcase-answer" name="answer" rows="3"></textarea>
+            <textarea class="form-control testcase-answer"rows="3"></textarea>
         </div>
     </div>
     <div id="testcase-container" style="overflow-y:auto; max-height:400px;"></div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
+        <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate Answer</label>
+    </div>
+    <div class="mb-3" id="editor-group" style="display:none">
+        <textarea name="generator-code" hidden></textarea>
+        <div id="editor"></div>
+    </div>
+    <div class="form-group">
+        <label for="time-limit">Time Limit <small>in seconds, recommended: 1-10</small></label>
+        <input type="text" class="form-control" name="time-limit" value="1.0">
+    </div>
+    <div class="form-group">
+        <label for="memory-limit">Memory Limit <small>in MB, recommended: 64-512</small></label>
+        <input type="text" class="form-control" name="memory-limit" value="128">
+    </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 {% endblock %}
