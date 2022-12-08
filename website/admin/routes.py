@@ -1,6 +1,4 @@
 from flask import render_template, Blueprint, request
-# from . import db
-# from .models import Problem
 
 admin_bp = Blueprint('admin_bp', __name__,
                      template_folder='templates',
@@ -13,7 +11,7 @@ def admin():
 @admin_bp.route('/create_problem', methods=['GET', 'POST'])
 def create_problem():
     if request.method == 'POST':
-        print(request.form['input[]'])
+        print(request.form)
         # problem_info = {
         #     'id': request.form['id'],
         #     'title': request.form['title'],
@@ -27,4 +25,5 @@ def create_problem():
 
 @admin_bp.route('/create_prep')
 def create_prep():
+    raise NotImplementedError()
     return render_template('create_prep.html')

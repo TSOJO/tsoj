@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List
-from .. import mongo
+from ..db import db
 
 class Testcase:
   input: str
@@ -31,6 +31,6 @@ class Problem:
 
   @staticmethod
   def register() -> None:
-    mongo.prod.create_collection('problems')
+    db.create_collection('problems')
 
   

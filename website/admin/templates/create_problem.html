@@ -17,23 +17,25 @@
         <label for="description">Description</label>
         <textarea class="form-control" name="description" rows="3"></textarea>
     </div>
-    <!-- button for adding test cases -->
-    <button class="btn btn-primary">Add testcases</button>
-    <div class="form-group">
-        <label for="testcases">Input</label>
-        <textarea class="form-control" name="input" rows="3"></textarea>
+    <button type="button" class="btn btn-primary" onclick="add_field()">Add testcases</button>
+    <!-- dummy testcase -->
+    <div id="testcase-div" style="display: none">
+        <div class="container">
+            <div class="row">
+                <h5 class="col-sm-11">Testcase 1</h5>
+                <!-- <h5 class="col-sm-1">Testcase 1</h5> -->
+                <button type="button" class="btn" onclick="remove_field(this)" class="col-sm-1">Remove</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="testcases">Input</label>
+            <textarea class="form-control" name="input" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="testcases">Answer</label>
+            <textarea class="form-control" name="answer" rows="3"></textarea>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="testcases">Answer</label>
-        <textarea class="form-control" name="output" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-        <label for="testcases">Input</label>
-        <textarea class="form-control" name="input" rows="3"></textarea>
-    </div>
-    <div class="form-group">
-        <label for="testcases">Answer</label>
-        <textarea class="form-control" name="output" rows="3"></textarea>
-    </div>
+    <div id="testcase-container" style="overflow-y:auto; max-height:400px;"></div>
     <button type="submit" class="btn btn-primary">Submit</button>
 {% endblock %}

@@ -1,8 +1,10 @@
 from __future__ import annotations
 from typing import List
+from flask_pymongo import PyMongo
+from flask import current_app
 
-from problem import Problem
-from .. import mongo
+from .problem import Problem
+from ..db import db
 
 class Assignment:
 
@@ -35,4 +37,4 @@ class Assignment:
 
   @staticmethod
   def register() -> None:  
-    mongo.prod.create_collection('assignments')
+    db.create_collection('assignments')

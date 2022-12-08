@@ -1,10 +1,11 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import List
-from .. import mongo
-from user import User
-from problem import Problem
-from assignment import Assignment
+
+from ..db import db
+from . import user
+from .problem import Problem
+from .assignment import Assignment
 from isolate_wrapper import Verdict
 
 class Result:
@@ -26,8 +27,8 @@ class Submission:
 
   """Methods"""
   
-  def get_user(self) -> User:
-    return User.find_one({'username': self.user})
+  def get_user(self) -> user.User:
+    return user.User.find_one({'username': self.user})
 
   def get_problem(self):
     return Problem.find_one({'id': self.problem})
@@ -48,5 +49,5 @@ class Submission:
 
   @staticmethod
   def register() -> None:
-    mongo.prod.create_collection('submissions')
+    db.create_collection('submissions')
 

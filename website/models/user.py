@@ -1,8 +1,9 @@
 from __future__ import annotations
 from re import match
 from typing import List
-from .. import mongo
-from submission import Submission
+
+from ..db import db
+from . import submission
 
 class User:
   """Properties"""
@@ -21,8 +22,8 @@ class User:
 
   _submissions: List[str]
   @property
-  def submissions(self) -> List[Submission]:
-    return [Submission.find_one({'id': s}) for s in self._submissions]
+  def submissions(self) -> List[submission.Submissions]:
+    return [submission.Submissions.find_one({'id': s}) for s in self._submissions]
 
   """Methods"""
 
@@ -30,7 +31,7 @@ class User:
     self.email = email
     self.username = username
 
-  def add_submission(self, newSubmission: Submission, save = True):
+  def add_submission(self, newSubmission: submission.Submissions, save = True):
     self._submissions.append(newSubmission.id)
     if save:
       self.save()
@@ -48,5 +49,5 @@ class User:
 
   @staticmethod
   def register() -> None:
-    mongo.prod.create_collection('users')
+    db.create_collection('users')
 
