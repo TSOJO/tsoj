@@ -29,7 +29,8 @@ class Problem:
 		# TODO
 		return self
 
-	@staticmethod
-	def register() -> None:
-		if not 'problems' in db.list_collection_names():
-			db.create_collection('problems')
+	# @staticmethod
+	# def register() -> None:
+	# 	if not 'problems' in db.list_collection_names():
+	# 		db.create_collection('problems')
+ 

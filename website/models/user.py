@@ -47,7 +47,7 @@ class User:
 		# TODO
 		return self
 
-	@staticmethod
-	def register() -> None:
-		if not 'users' in db.list_collection_names():
-			db.create_collection('users')
+	# @staticmethod
+	# def register() -> None:
+	# 	if not 'users' in db.list_collection_names():
+	# 		db.create_collection('users')

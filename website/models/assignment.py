@@ -36,7 +36,7 @@ class Assignment:
 		# TODO
 		return self
 
-	@staticmethod
-	def register() -> None:
-		if not 'assignments' in db.list_collection_names():
-			db.create_collection('assignments')
+	# @staticmethod
+	# def register() -> None:
+	# 	if not 'assignments' in db.list_collection_names():
+	# 		db.create_collection('assignments')

@@ -58,7 +58,7 @@ class Submission:
 		# TODO
 		return self
 
-	@staticmethod
-	def register() -> None:
-		if not 'submissions' in db.list_collection_names():
-			db.create_collection('submissions')
+	# @staticmethod
+	# def register() -> None:
+	# 	if not 'submissions' in db.list_collection_names():
+	# 		db.create_collection('submissions')

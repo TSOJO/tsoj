@@ -7,12 +7,12 @@ def init_app() -> Flask:
     app: Flask = Flask(__name__)
     app.config.from_pyfile('../config.py')
     
-    from .models import Assignment, User, Problem, Submission
-    with app.app_context():
-        User.register()
-        Problem.register()
-        Submission.register()
-        Assignment.register()
+    # from .models import Assignment, User, Problem, Submission
+    # with app.app_context():
+    #     User.register()
+    #     Problem.register()
+    #     Submission.register()
+    #     Assignment.register()
         
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
@@ -32,9 +32,9 @@ def init_app() -> Flask:
     from .errors import page_not_found
     app.register_error_handler(404, page_not_found)
 
-    with app.app_context():
-        Assignment.find_one({
-            'id': 69
-        })
+    # with app.app_context():
+    #     Assignment.find_one({
+    #         'id': 69
+    #     })
 
     return app
