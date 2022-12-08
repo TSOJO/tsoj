@@ -30,4 +30,9 @@ def init_app() -> Flask:
     from .errors import page_not_found
     app.register_error_handler(404, page_not_found)
 
+    with app.app_context():
+        Assignment.find_one({
+            'id': 69
+        })
+
     return app

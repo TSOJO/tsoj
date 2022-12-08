@@ -31,6 +31,7 @@ class Problem:
 
   @staticmethod
   def register() -> None:
-    db.create_collection('problems')
+    if not 'problems' in db.list_collection_names():
+      db.create_collection('problems')
 
   

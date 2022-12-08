@@ -1,4 +1,5 @@
 from __future__ import annotations
+import sys
 from typing import List
 from flask_pymongo import PyMongo
 from flask import current_app
@@ -27,14 +28,15 @@ class Assignment:
   """Database Wrapper Methods"""
 
   @staticmethod
-  def find_one(*args) -> Assignment:
-    # TODO
-    pass
+  def find_one(filter: object) -> Assignment | None:
+    print(db.assignments.find_one(), file=sys.stdout)
+    return None
 
   def save(self) -> Assignment:
     # TODO
     return self
 
   @staticmethod
-  def register() -> None:  
-    db.create_collection('assignments')
+  def register() -> None:
+    if not 'assignments' in db.list_collection_names():
+      db.create_collection('assignments')

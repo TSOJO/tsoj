@@ -3,7 +3,7 @@ from re import match
 from typing import List
 
 from ..db import db
-from . import submission
+from . import submission as submissionFile
 
 class User:
   """Properties"""
@@ -20,10 +20,10 @@ class User:
   
   username: str
 
-  _submissions: List[str]
+  _submissions: List[int]
   @property
-  def submissions(self) -> List[submission.Submissions]:
-    return [submission.Submissions.find_one({'id': s}) for s in self._submissions]
+  def submissions(self) -> List[submissionFile.Submission]:
+    return [submissionFile.Submission.find_one({'id': s}) for s in self._submissions]
 
   """Methods"""
 
@@ -31,7 +31,7 @@ class User:
     self.email = email
     self.username = username
 
-  def add_submission(self, newSubmission: submission.Submissions, save = True):
+  def add_submission(self, newSubmission: submissionFile.Submission, save = True):
     self._submissions.append(newSubmission.id)
     if save:
       self.save()
@@ -49,5 +49,6 @@ class User:
 
   @staticmethod
   def register() -> None:
-    db.create_collection('users')
+    if not 'users' in db.list_collection_names():
+      db.create_collection('users')
 
