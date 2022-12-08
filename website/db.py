@@ -2,7 +2,6 @@
 
 from flask import current_app, g
 from pymongo.database import Database
-from pymongo import MongoClient
 from werkzeug.local import LocalProxy
 from flask_pymongo import PyMongo
 
