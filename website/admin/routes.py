@@ -8,7 +8,7 @@ admin_bp = Blueprint('admin_bp', __name__,
 def admin():
     return render_template('admin.html')
 
-@admin_bp.route('/create_problem', methods=['GET', 'POST'])
+@admin_bp.route('/create/problem', methods=['GET', 'POST'])
 def create_problem():
     if request.method == 'POST':
         print(request.form)
@@ -23,7 +23,7 @@ def create_problem():
         # return redirect(url_for('admin_bp.admin'))
     return render_template('create_problem.html')
 
-@admin_bp.route('/create_prep')
+@admin_bp.route('/create/prep')
 def create_prep():
     raise NotImplementedError()
     return render_template('create_prep.html')

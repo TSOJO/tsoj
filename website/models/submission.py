@@ -10,55 +10,55 @@ from isolate_wrapper import Verdict, Result
 
 class Submission:
 
-  """Properties"""
+	"""Properties"""
 
-  id: int
-  user: str
-  final_verdict: Verdict
-  results: List[Result]
-  problem: str
-  submission_time: datetime
-  assignment: int
+	id: int
+	user: str
+	final_verdict: Verdict
+	results: List[Result]
+	problem: str
+	submission_time: datetime
+	assignment: int
 
-  """Methods"""
+	"""Methods"""
 
-  def __init__(self, 
-    user: str, 
-    final_verdict: Verdict, 
-    results: List[Result], 
-    problem: str, 
-    assignment: int, 
-    submission_time = datetime.now()):
-    self.user = user
-    self.final_verdict = final_verdict
-    self.results = results
-    self.problem = problem
-    self.assignment = assignment
-    self.submission_time = submission_time
+	def __init__(self, 
+		user: str, 
+		final_verdict: Verdict, 
+		results: List[Result], 
+		problem: str, 
+		assignment: int, 
+		submission_time = datetime.now()):
+		self.user = user
+		self.final_verdict = final_verdict
+		self.results = results
+		self.problem = problem
+		self.assignment = assignment
+		self.submission_time = submission_time
   
-  def get_user(self) -> User:
-    return User.find_one({'username': self.user})
+	def get_user(self) -> User:
+		return User.find_one({'username': self.user})
 
-  def get_problem(self):
-    return Problem.find_one({'id': self.problem})
+	def get_problem(self):
+		return Problem.find_one({'id': self.problem})
 
-  def get_assignment(self):
-    return Assignment.find_one({'id': self.assignment})
+	def get_assignment(self):
+		return Assignment.find_one({'id': self.assignment})
 
-  """Database Wrapper Methods"""
+	"""Database Wrapper Methods"""
 
-  @staticmethod
-  def find_one(filter) -> Submission | None:
-    # TODO
-    query = db.submissions.find_one(filter=filter)
-    print(query)
-    return None
+	@staticmethod
+	def find_one(filter) -> Submission | None:
+    	# TODO
+		query = db.submissions.find_one(filter=filter)
+		print(query)
+		return None
 
-  def save(self) -> Submission:
-    # TODO
-    return self
+	def save(self) -> Submission:
+		# TODO
+		return self
 
-  @staticmethod
-  def register() -> None:
-    if not 'submissions' in db.list_collection_names():
-      db.create_collection('submissions')
+	@staticmethod
+	def register() -> None:
+		if not 'submissions' in db.list_collection_names():
+			db.create_collection('submissions')

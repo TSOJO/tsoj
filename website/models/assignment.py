@@ -9,34 +9,34 @@ from ..db import db
 
 class Assignment:
 
-  """Properties"""
+	"""Properties"""
 
-  id: int
-  problems: List[str]
+	id: int
+	problems: List[str]
 
-  """Methods"""
+	"""Methods"""
 
-  def __init__(self, problems: List[str]):
-    # TODO auto increment id
-    self.id = 1
-    self.problems = problems
-    pass
+	def __init__(self, problems: List[str]):
+		# TODO auto increment id
+		self.id = 1
+		self.problems = problems
+		pass
 
-  def get_problems(self):
-    return [Problem.find_one({'id': p}) for p in self.problems]
+	def get_problems(self):
+		return [Problem.find_one({'id': p}) for p in self.problems]
 
-  """Database Wrapper Methods"""
+	"""Database Wrapper Methods"""
 
-  @staticmethod
-  def find_one(filter: object) -> Assignment | None:
-    print(db.assignments.find_one(), file=sys.stdout)
-    return None
+	@staticmethod
+	def find_one(filter: object) -> Assignment | None:
+		print(db.assignments.find_one(), file=sys.stdout)
+		return None
 
-  def save(self) -> Assignment:
-    # TODO
-    return self
+	def save(self) -> Assignment:
+		# TODO
+		return self
 
-  @staticmethod
-  def register() -> None:
-    if not 'assignments' in db.list_collection_names():
-      db.create_collection('assignments')
+	@staticmethod
+	def register() -> None:
+		if not 'assignments' in db.list_collection_names():
+			db.create_collection('assignments')
