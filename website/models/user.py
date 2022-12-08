@@ -1,6 +1,6 @@
 from __future__ import annotations
 from re import match
-from typing import List
+from typing import List, cast
 
 from ..db import db
 from . import submission as submissionFile
@@ -19,11 +19,12 @@ class User:
 		self._email = e
   
 	username: str
+	password: str
 
 	_submissions: List[int]
 	@property
 	def submissions(self) -> List[submissionFile.Submission]:
-		return [submissionFile.Submission.find_one({'id': s}) for s in self._submissions]
+		return [cast(submissionFile.Submission, submissionFile.Submission.find_one({'id': s})) for s in self._submissions]
 
 	"""Methods"""
 
@@ -38,8 +39,8 @@ class User:
 
 	"""Database Wrapper Methods"""
 
-	@staticmethod
-	def find_one(*args) -> User:
+	@classmethod
+	def find_one(cls, filter) -> User:
 		# TODO
 		pass
 
@@ -47,7 +48,7 @@ class User:
 		# TODO
 		return self
 
-	# @staticmethod
+	# @classmethod
 	# def register() -> None:
 	# 	if not 'users' in db.list_collection_names():
 	# 		db.create_collection('users')
