@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint, request, redirect, url_for
 from typing import List
 
-from ..models import Problem
+from website.models import Problem
 from isolate_wrapper import Testcase
 
 admin_bp = Blueprint('admin_bp', __name__,

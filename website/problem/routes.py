@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
-from isolate_wrapper import IsolateSandbox, Testcase
+from isolate_wrapper import IsolateSandbox
+from isolate_wrapper.types import Testcase
 
 problem_bp = Blueprint('problem_bp', __name__,
                        template_folder='templates',
@@ -32,10 +33,10 @@ def problem_submit() -> str:
         Testcase('10\n20\n', '30\n'),
     ]
     
-    restrictions = {
-        'time_limit': 1,
-        'memory_limit': 1024*64,
-    }
+    # restrictions = {
+    #     'time_limit': 1,
+    #     'memory_limit': 1024*64,
+    # }
     
     problem_info = {
         'id': 1,
@@ -46,7 +47,7 @@ def problem_submit() -> str:
     user_code = request.form['user_code']
     problem_id = request.form['problem_id']
     sandbox = IsolateSandbox()
-    final_verdict, results = sandbox.run_code(user_code, testcases, restrictions)
+    final_verdict, results = sandbox.run_code(user_code, testcases, time_limit=1, memory_limit=1024*64)
     return render_template('results.html',
                            problem=problem_info,
                            final_verdict=final_verdict,

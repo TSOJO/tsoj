@@ -1,12 +1,12 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import List, Optional, cast
+from isolate_wrapper.types import Verdict, Result
 
 from ..db import db
 from .user import User
 from .problem import Problem
 from .assignment import Assignment
-from isolate_wrapper import Verdict, Result
 
 class Submission:
 

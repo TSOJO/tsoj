@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import Any, List, Optional, cast
+from isolate_wrapper.types import Testcase
 
 from bson import ObjectId
-from ..db import db
-from isolate_wrapper import Testcase
+from website.db import db
 
 class Problem:
 
@@ -13,7 +13,7 @@ class Problem:
 	description: str
 	time_limit: int
 	memory_limit: int
-	test_cases: List[Testcase]
+	testcases: List[Testcase]
 	_object_id: Optional[ObjectId] = None
 
 	"""Methods"""
@@ -23,9 +23,9 @@ class Problem:
 		description: str, 
 		time_limit: int, 
 		memory_limit: int, 
-		test_cases: List[Testcase]):
-		self.problem_id, self.name, self.description, self.time_limit, self.memory_limit, self.test_cases = \
-		problem_id, name, description, time_limit, memory_limit, test_cases
+		testcases: List[Testcase]):
+		self.problem_id, self.name, self.description, self.time_limit, self.memory_limit, self.testcases = \
+		problem_id, name, description, time_limit, memory_limit, testcases
 		# TODO Validate if problem_id is unique
 
 	"""Database Wrapper Methods"""
@@ -53,7 +53,7 @@ class Problem:
 				'description': self.description,
 				'time_limit': self.time_limit,
 				'memory_limit': self.memory_limit,
-				'test_cases': self.test_cases
+				'testcases': self.testcases
 			})
 			self._object_id = new.inserted_id
 		else:
@@ -65,7 +65,7 @@ class Problem:
 				'description': self.description,
 				'time_limit': self.time_limit,
 				'memory_limit': self.memory_limit,
-				'test_cases': self.test_cases
+				'testcases': self.testcases
 			}, upsert=True)
 
 		return self

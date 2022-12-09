@@ -2,8 +2,8 @@ from __future__ import annotations
 from re import match
 from typing import List, cast
 
-from ..db import db
-from . import submission as submissionFile
+from website.db import db
+from . import submission as submission_file
 
 class User:
 	"""Properties"""
@@ -23,8 +23,8 @@ class User:
 
 	_submissions: List[int]
 	@property
-	def submissions(self) -> List[submissionFile.Submission]:
-		return [cast(submissionFile.Submission, submissionFile.Submission.find_one({'id': s})) for s in self._submissions]
+	def submissions(self) -> List[submission_file.Submission]:
+		return [cast(submission_file.Submission, submission_file.Submission.find_one({'id': s})) for s in self._submissions]
 
 	"""Methods"""
 
@@ -32,8 +32,8 @@ class User:
 		self.email = email
 		self.username = username
 
-	def add_submission(self, newSubmission: submissionFile.Submission, save = True):
-		self._submissions.append(newSubmission.id)
+	def add_submission(self, new_submission: submission_file.Submission, save = True):
+		self._submissions.append(new_submission.id)
 		if save:
 			self.save()
 

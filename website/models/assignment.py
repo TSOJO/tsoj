@@ -3,8 +3,8 @@ from typing import Any, List, Optional, cast
 
 from bson import ObjectId
 
-from .problem import Problem
-from ..db import db
+from website.models.problem import Problem
+from website.db import db
 
 class Assignment:
 
