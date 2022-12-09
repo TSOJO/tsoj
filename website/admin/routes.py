@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, request, redirect, url_for
 from typing import List
 
 from website.models import Problem
-from isolate_wrapper import Testcase
+from isolate_wrapper import Testcase, IsolateSandbox, Verdict
 
 admin_bp = Blueprint('admin_bp', __name__,
                      template_folder='templates',
@@ -17,14 +17,13 @@ def create_problem():
     if request.method == 'POST':
         # print(request.form)
         problem_info = {
-            'id': request.form['id'],
+            'problem_id': request.form['id'],
             'name': request.form['name'],
             'description': request.form['description'],
-            'time_limit': request.form['time-limit'],
-            'memory_limit': request.form['memory-limit'],
+            'time_limit': int(round(float(request.form['time-limit']))),
+            'memory_limit': int(round(float(request.form['memory-limit'])*1024)),
         }
-        inputs = []
-        answers = []
+        testcases: List[Testcase] = []
         i = 1
         while True:
             try:
@@ -32,16 +31,15 @@ def create_problem():
                 answer = request.form[f'answer{i}']
             except: # BadRequestKeyError
                 break
-            inputs.append(input)
-            answers.append(answer)
+            testcases.append(Testcase(input, answer))
             i += 1
             
-        testcases: List[Testcase] = []
         if 'generator-checkbox' in request.form:
             code = request.form['generator-code']
-            # TODO: gen answers
-        else:
-            testcases = [Testcase(input, answer) for input, answer in zip(inputs, answers)]
+            verdict: Verdict = IsolateSandbox().generate_answer(code, testcases, problem_info['time_limit'], problem_info['memory_limit'])
+            if not verdict.is_ac():
+                raise NotImplementedError()
+
         problem = Problem(**problem_info, testcases=testcases)
         # TODO: add problem to db
 
