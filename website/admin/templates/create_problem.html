@@ -3,57 +3,74 @@
 {% block title %}Create Problem{% endblock %}
 
 {% block content %}
-<h1>Create Problem</h1>
+<div class="mb-3">
+    <h1>Create Problem</h1>
+</div>
+
 <form method="POST">
-    <div class="form-group">
-        <label for="id">ID</label>
-        <input type="text" class="form-control" name="id" placeholder="eg. A1">
+    <div class="form-group mb-3">
+        <label for="id" class="form-label">ID</label>
+        <input type="text" class="form-control" name="id" placeholder="Enter problem ID">
     </div>
-    <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" name="name" placeholder="Enter name">
+
+    <div class="form-group mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" name="name" placeholder="Enter problem title">
     </div>
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea class="form-control" name="description" rows="3"></textarea>
+
+    <div class="form-group mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" name="description" rows="5" placeholder="Enter problem description"></textarea>
     </div>
-    <button type="button" class="btn btn-primary" onclick="add_field()">Add testcases</button>
-    <!-- dummy testcase -->
-    <div id="testcase-div" style="display: none">
-        <div class="container">
-            <div class="row">
-                <h5 class="col-sm-2">Testcase 1</h5>
-                <!-- <h5 class="col-sm-1">Testcase 1</h5> -->
-                <div class="col-sm-2">
-                    <button type="button" class="btn btn-danger" onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
-                </div> 
+
+    <label class="form-label">Testcases</label>
+    <div class="border p-4 mb-3">
+        <button type="button" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
+        <!-- dummy testcase -->
+        <div id="testcase-div" style="display: none" class="border p-4 mb-3">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="p2 mt-1">
+                        <h5 class="testcase-number">Testcase 1</h5>
+                    </div>
+                    <!-- <h5 class="col-sm-1">Testcase 1</h5> -->
+                    <div class="p2">
+                        <button type="button" class="btn btn-danger" onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
+                    </div> 
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label for="testcases" class="form-label">Input</label>
+                <textarea class="form-control testcase-input" rows="3"></textarea>
+            </div>
+            <div class="form-group mb-3">
+                <label for="testcases" class="form-label">Answer</label>
+                <textarea class="form-control testcase-answer"rows="3"></textarea>
             </div>
         </div>
-        <div class="form-group">
-            <label for="testcases">Input</label>
-            <textarea class="form-control testcase-input" rows="3"></textarea>
+        
+        <div id="testcase-container"></div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
+            <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate Answer</label>
         </div>
-        <div class="form-group">
-            <label for="testcases">Answer</label>
-            <textarea class="form-control testcase-answer"rows="3"></textarea>
+    
+        <div class="mb-3" id="editor-group" style="display:none">
+            <textarea name="generator-code" hidden></textarea>
+            <div id="editor"></div>
         </div>
     </div>
-    <div id="testcase-container" style="overflow-y:auto; max-height:400px;"></div>
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
-        <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate Answer</label>
-    </div>
-    <div class="mb-3" id="editor-group" style="display:none">
-        <textarea name="generator-code" hidden></textarea>
-        <div id="editor"></div>
-    </div>
-    <div class="form-group">
-        <label for="time-limit">Time Limit <small>in seconds, recommended: 1-10</small></label>
+
+    <label for="time-limit" class="form-label">Time limit</label>
+    <div class="input-group mb-3">
         <input type="text" class="form-control" name="time-limit" value="1.0">
+        <span class="input-group-text">seconds (recommended: 1-10)</span>
     </div>
-    <div class="form-group">
-        <label for="memory-limit">Memory Limit <small>in MB, recommended: 64-512</small></label>
+
+    <label for="memory-limit" class="form-label">Memory limit</label>
+    <div class="input-group mb-3">
         <input type="text" class="form-control" name="memory-limit" value="128">
+        <span class="input-group-text">MB (recommended: 64-512)</span>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 {% endblock %}
