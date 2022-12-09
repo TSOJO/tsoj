@@ -14,8 +14,8 @@
     </div>
 
     <div class="form-group mb-3">
-        <label for="title" class="form-label">Title</label>
-        <input type="text" class="form-control" name="name" placeholder="Enter problem title">
+        <label for="title" class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" placeholder="Enter problem name">
     </div>
 
     <div class="form-group mb-3">
@@ -33,7 +33,6 @@
                     <div class="p2 mt-1">
                         <h5 class="testcase-number">Testcase 1</h5>
                     </div>
-                    <!-- <h5 class="col-sm-1">Testcase 1</h5> -->
                     <div class="p2">
                         <button type="button" class="btn btn-danger" onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
                     </div> 
@@ -49,7 +48,8 @@
             </div>
         </div>
         
-        <div id="testcase-container"></div>
+        <div id="testcase-container" class="overflow-auto" style="max-height:760px;"></div>
+        <input id="testcases-count" name="testcases-count" type="text" hidden> 
         <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
             <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate Answer</label>

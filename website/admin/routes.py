@@ -24,19 +24,14 @@ def create_problem():
             'memory_limit': int(round(float(request.form['memory-limit'])*1024)),
         }
         testcases: List[Testcase] = []
-        i = 1
-        while True:
-            try:
-                input = request.form[f'input{i}']
-                answer = request.form[f'answer{i}']
-            except: # BadRequestKeyError
-                break
-            testcases.append(Testcase(input, answer))
-            i += 1
+        
+        testcases_count = int(request.form[f'testcases-count'])
+        for i in range(testcases_count):
+            testcases.append(Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}']))
             
         if 'generator-checkbox' in request.form:
             code = request.form['generator-code']
-            verdict: Verdict = IsolateSandbox().generate_answer(code, testcases, problem_info['time_limit'], problem_info['memory_limit'])
+            verdict: Verdict = IsolateSandbox().generate_answer(code, testcases, problem_info['time_limit'], problem_info['memory_limit'])[0]
             if not verdict.is_ac():
                 raise NotImplementedError()
 

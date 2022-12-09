@@ -2,6 +2,7 @@ let counter = 0
 
 function add_field() {
     counter++;
+    $('#testcases-count').val(counter);
     let testcase_node = document.getElementById('testcase-div').cloneNode(true);
     testcase_node.id = '';
     testcase_node.style.display = 'block';
@@ -16,10 +17,11 @@ function add_field() {
 }
 
 function remove_field(node) {
+    counter--;
+    $('#testcases-count').val(counter);
     let testcase_container = document.getElementById('testcase-container');
     testcase_container.removeChild(node);
     // reindex
-    counter--;
     for (let i = 0; i < counter; i++) {
         let testcase_node = testcase_container.childNodes[i];
         let h5_node = testcase_node.getElementsByTagName('h5')[0];
