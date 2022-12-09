@@ -1,6 +1,9 @@
 from __future__ import annotations
+import asyncio
 from datetime import datetime
-from typing import List, Optional, cast
+from typing import Any, Dict, List, Optional, cast
+
+from bson import ObjectId
 from isolate_wrapper.types import Verdict, Result
 
 from ..db import db
@@ -12,53 +15,80 @@ class Submission:
 
 	"""Properties"""
 
+	# Unknown until saved
 	submission_id: int
 	user: str
 	final_verdict: Verdict
-	results: List[Result]
-	problem: str
+	docs: List[Result]
+	problem_id: str
 	submission_time: datetime
 	assignment: int
+
+	_object_id: Optional[ObjectId] = None
 
 	"""Methods"""
 
 	def __init__(self, 
 		username: str, 
 		final_verdict: Verdict, 
-		results: List[Result], 
+		docs: List[Result], 
 		problem_id: str, 
 		assignment_id: int, 
 		submission_time = datetime.now()):
-		# TODO Auto increment submission id
-		self.submission_id = 1
-		self.username = username
-		self.final_verdict = final_verdict
-		self.results = results
-		self.problem_id = problem_id
-		self.assignment_id = assignment_id
-		self.submission_time = submission_time
+		self.username, self.final_verdict, self.docs, self.problem_id, self.assignment_id, self.submission_time = \
+		username, final_verdict,docs,problem_id,assignment_id,submission_time
   
 	async def fetch_user(self) -> User:
-		return User.find_one({'username': self.username})
+		return cast(User, await User.find_one({'username': self.username}))
 
 	async def fetch_problem(self) -> Problem:
 		return cast(Problem, await Problem.find_one({'id': self.problem_id}))
 
 	async def fetch_assignment(self) -> Optional[Assignment]:
 		if self.assignment_id == None: return None
-		return Assignment.find_one({'id': self.assignment_id})
+		return await Assignment.find_one({'id': self.assignment_id})
 
 	"""Database Wrapper Methods"""
 
 	@classmethod
-	def find_one(cls, filter) -> Submission | None:
-    	# TODO
-		query = db.submissions.find_one(filter=filter)
-		print(query)
-		return None
+	def _cast_from_document(cls, document: Any) -> Submission:
+		new = Submission(**document)
+		new.assignment_id = document.assignment_id
+		new._object_id = document._id
+		return new
 
-	def save(self) -> Submission:
-		# TODO
+	def _cast_to_document(self) -> Dict[str, object]:
+		return {
+			'username': self.username,
+			'final_verdict': self.final_verdict,
+			'docs': self.docs,
+			'problem_id': self.problem_id,
+			'assignment_id': self.assignment_id,
+			'submission_time': self.submission_time,
+			'assignment': self.assignment
+		}
+
+	@classmethod
+	async def find_one(cls, filter) -> Submission | None:
+		doc = await asyncio.to_thread(db.submissions.find_one, filter=filter)
+		if doc == None: return None
+		return cls._cast_from_document(doc)
+
+	@classmethod
+	async def find_all(cls, filter) -> List[Submission]:
+		docs = await asyncio.to_thread(db.sumbissons.find, filter=filter)
+		return [cls._cast_from_document(doc) for doc in docs]
+
+	async def save(self) -> Submission:
+		# TODO Auto increment submission id
+		if not self._object_id:
+			new = await asyncio.to_thread(db.submissions.insert_one, self._cast_to_document())
+			self._object_id = new.inserted_id
+		else:
+			await asyncio.to_thread(db.submissions.update_one, {
+				'_id': self._object_id,
+			}, self._cast_to_document(), upsert=True)
+
 		return self
 
 	# @classmethod

@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Any, List, Optional, cast
+import asyncio
+from typing import Any, Dict, List, Optional, cast
 
 from bson import ObjectId
 
@@ -31,41 +32,36 @@ class Assignment:
 	"""Database Wrapper Methods"""
 
 	@classmethod
-	def find_one(cls, filter: object) -> Optional[Assignment]:
-		result = db.assignments.find_one(filter=filter)
-		if result == None: return None
-		result = cast(Any, result)
-		new = Assignment(**result)
-		new._assignment_id = result.assignment_id
-		new._object_id = result._id
+	def _cast_from_document(cls, document: Any) -> Assignment:
+		new = Assignment(**document)
+		new._object_id = document._id
 		return new
 
+	def _cast_to_document(self) -> Dict[str, object]:
+		return {
+			'assignment_id': self.assignment_id,
+			'problems': self.problem_ids
+		}
+
 	@classmethod
-	def find_all(cls, filter: object) -> List[Assignment]:
-		results = db.assignments.find(filter=filter)
-		news: List[Assignment] = []
-		for result in results:
-			result = cast(Any, result)
-			new = Assignment(**result)
-			new._assignment_id = result.assignment_id
-			new._object_id = result._id
-			news.append(new)
-		return news
+	async def find_one(cls, filter: object) -> Optional[Assignment]:
+		result = await asyncio.to_thread(db.assignments.find_one, filter=filter)
+		if result == None: return None
+		return cls._cast_from_document(result)
+
+	@classmethod
+	async def find_all(cls, filter: object) -> List[Assignment]:
+		results = await asyncio.to_thread(db.assignments.find, filter=filter)
+		return [cls._cast_from_document(result) for result in results]
 
 	async def save(self) -> Assignment:
 		if not self._object_id:
-			new = db.assignments.insert_one({
-				'assignment_id': self._assignment_id,
-				'problems': self.problem_ids
-			})
+			new = await asyncio.to_thread(db.assignments.insert_one, self._cast_to_document())
 			self._object_id = new.inserted_id
 		else:
-			db.assignments.update_one({
+			await asyncio.to_thread(db.assignments.update_one,{
 				'_id': self._object_id,
-			}, {
-				'assignment_id': self._assignment_id,
-				'problems': self.problem_ids
-			}, upsert=True)
+			}, self._cast_to_document(), upsert=True)
 
 		return self
 
