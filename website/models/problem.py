@@ -1,7 +1,7 @@
 from __future__ import annotations
 import asyncio
 from typing import Any, Dict, List, Optional, cast
-from isolate_wrapper.types import Testcase
+from isolate_wrapper.custom_types import Testcase
 
 from bson import ObjectId
 from website.db import db

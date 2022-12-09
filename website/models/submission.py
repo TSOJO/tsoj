@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, cast
 
 from bson import ObjectId
-from isolate_wrapper.types import Verdict, Result
+from isolate_wrapper.custom_types import Verdict, Result
 
 from ..db import db
 from .user import User
