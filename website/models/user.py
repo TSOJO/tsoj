@@ -21,9 +21,10 @@ class User:
 	
 	"""Methods"""
 
-	def __init__(self, email, username): 
+	def __init__(self, username: str, email: str, password: str): 
 		self.email = email
 		self.username = username
+		self.password = password
 
 	async def fetch_submissions(self) -> List[submission_file.Submission]:
 		# TODO Optimize this
