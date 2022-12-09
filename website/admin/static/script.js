@@ -5,7 +5,7 @@ function add_field() {
     let testcase_node = document.getElementById('testcase-div').cloneNode(true);
     testcase_node.id = '';
     testcase_node.style.display = 'block';
-    let h5_node = testcase_node.getElementsByTagName('h5')[0];
+    let h5_node = testcase_node.getElementsByClassName('testcase-number')[0];
     h5_node.innerHTML = 'Testcase ' + counter;
     let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
     input_node.name = 'input' + counter;
