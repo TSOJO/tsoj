@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Any, List, Optional, cast
-from isolate_wrapper.types import Testcase
+from isolate_wrapper import Testcase
 
 from bson import ObjectId
 from website.db import db
