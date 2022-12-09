@@ -14,8 +14,8 @@ Start the server by running the `wsgi.py` file.
 
 ## MongoDB Server
 
-In `.env`, add a line: `MONGO_CONNECTION_URI=<connection-string>`
-You can create a hosted online free database (here)[https://www.mongodb.com/atlas/database]
+In `.env`, add a line: `MONGO_URI=<connection-string>`
+Remember to put database name (`tsoj`) in the connection string, after the last `/`.
 
 ## Typings
 
