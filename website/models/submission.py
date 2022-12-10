@@ -1,15 +1,18 @@
 from __future__ import annotations
+
 import asyncio
 from datetime import datetime
 from typing import Any, Dict, List, Optional, cast
 
 from bson import ObjectId
-from isolate_wrapper.custom_types import Verdict, Result
+
+from isolate_wrapper.custom_types import Result, Verdict
 
 from ..db import db
-from .user import User
-from .problem import Problem
 from .assignment import Assignment
+from .problem import Problem
+from .user import User
+
 
 class Submission:
 

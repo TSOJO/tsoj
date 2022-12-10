@@ -1,11 +1,13 @@
 from __future__ import annotations
+
 import asyncio
 from typing import Any, Dict, List, Optional, cast
 
 from bson import ObjectId
 
-from website.models.problem import Problem
 from website.db import db
+from website.models.problem import Problem
+
 
 class Assignment:
 
@@ -27,7 +29,7 @@ class Assignment:
 
 	async def fetch_problems(self):
 		# TODO optimize this with only one query
-		return [Problem.find_one({'id': p}) for p in self.problems]
+		return [Problem.find_one({'id': p}) for p in self.problem_ids]
 
 	"""Database Wrapper Methods"""
 
@@ -75,4 +77,6 @@ class Assignment:
 	@classmethod
 	async def init(cls) -> None:
 		# Get and store max ID for incrementation.
-		cls._max_id = max([cast(int, a._id) for a in await cls.find_all()] or [0])
+		all_assignments = await cls.find_all()
+		all_ids = [cast(int, a._id) for a in all_assignments]
+		cls._max_id = max(all_ids or [0])

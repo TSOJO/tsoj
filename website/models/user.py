@@ -1,21 +1,33 @@
 from __future__ import annotations
+
 import asyncio
+from random import choice
+import string
+from email.message import EmailMessage
+from os import environ
+import smtplib
+import ssl
 from typing import Any, Dict, List, Optional, cast
 
 from bson import ObjectId
+from flask import url_for
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from website.db import db
+
 from . import submission as submission_file
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class User:
 
-	def __init__(self, username: str, email: str, plaintext_password: str, **_): 
+	def __init__(self, username: str, email: str, plaintext_password: str = '', **_): 
 		# Public properties
 		self.username = username
 		self.email = email
 		
 		# Private properties
+		self._is_verified: bool = False
+		self._verification_code: str = ''
 		self._hashed_password = generate_password_hash(plaintext_password)
 		self._submission_ids: List[int] = []
 		self._object_id: Optional[ObjectId] = None
@@ -35,6 +47,40 @@ class User:
 		if save:
 			await self.save()
 
+	def clear_verification_code(self):
+		self._verification_code = ''
+
+	async def send_verification_email(self):
+		print('called')
+		if self._verification_code == '':
+			char_set = string.ascii_lowercase + string.digits
+			self._verification_code = ''.join([choice(char_set) for _ in range(12)])
+
+		sender = environ.get('GMAIL_EMAIL')
+		pwd = environ.get('GMAIL_APP_PWD')
+		print(pwd)
+		subject = 'Verify your email on TSOJ'
+		body = f'''
+		Hi {self.username},
+
+		Verify your email by clicking this link:
+		{environ.get('BASE_URL')}/auth?code={self._verification_code}
+		'''
+
+		email = EmailMessage()
+		email['From'] = sender
+		email['To'] = self.email
+		email['Subject'] = subject
+		email.set_content(body)
+
+		ctx = ssl.create_default_context()
+
+		with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=ctx) as smtp:
+			await asyncio.to_thread(smtp.login, sender, pwd)
+			print('logged in')
+			await asyncio.to_thread(smtp.sendmail, sender, self.email, email.as_string())
+			print('sent')
+
 	"""Database Wrapper Methods"""
 
 	@classmethod
@@ -49,7 +95,8 @@ class User:
 			'username': self.username,
 			'email': self.email,
 			'hashed_password': self._hashed_password,
-			'submission_ids': self._submission_ids
+			'submission_ids': self._submission_ids,
+			'is_verified': self._is_verified
 		}
 
 	@classmethod

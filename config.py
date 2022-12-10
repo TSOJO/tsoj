@@ -9,3 +9,5 @@ TESTING = True
 DEBUG = True
 
 MONGO_URI = environ.get('MONGO_URI')
+GMAIL_APP_PWD = environ.get('GMAIL_APP_PWD')
+GMAIL_EMAIL = environ.get('GMAIL_EMAIL')

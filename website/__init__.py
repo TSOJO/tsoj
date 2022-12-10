@@ -1,4 +1,5 @@
 import asyncio
+from os import environ
 from flask import Flask
 from website.models import Assignment, Submission, User
 
@@ -31,13 +32,11 @@ def init_app() -> Flask:
     app.register_error_handler(404, page_not_found)
 
     # Testing db, only after reloaded
-    # if os.environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
+    if environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
 
     return app
 
 async def test():
     with app.app_context():
-       user = User('Eden', '19CheungYHE@tonbridge-school.org', 'mypassword')
-       await user.save()
-       print(user.check_password('mypassword'))
-       print(user.check_password('notmypassword'))
+       user = await User.find_one({'username': 'Eden'})
+       await user.send_verification_email()
