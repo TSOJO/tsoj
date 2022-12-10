@@ -9,6 +9,10 @@ Run the following:
 - `pip install -r requirements.txt`.
 - `docker run -p 6379:6379 --name tsoj-redis -d redis`
 
+Alternate Redis installation:
+- [Install redis](https://redis.io/docs/getting-started/installation/install-redis-on-linux/)
+- `redis-server`
+
 ## Run server instructions
 
 Open three terminals, each running the following:
