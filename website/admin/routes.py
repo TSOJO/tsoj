@@ -2,7 +2,8 @@ from flask import render_template, Blueprint, request, redirect, url_for
 from typing import List
 
 from website.models import Problem
-from isolate_wrapper import Testcase, IsolateSandbox, Verdict
+from isolate_wrapper import IsolateSandbox
+from isolate_wrapper.custom_types import Verdict, Testcase
 
 admin_bp = Blueprint('admin_bp', __name__,
                      template_folder='templates',
