@@ -1,5 +1,6 @@
 # from https://www.mongodb.com/compatibility/setting-up-flask-with-mongodb
 
+from typing import cast
 from flask import current_app, g
 from pymongo.database import Database
 from werkzeug.local import LocalProxy
@@ -18,4 +19,4 @@ def get_db() -> Database:
 
 
 # Use LocalProxy to read the global db instance with just `db`
-db:Database = LocalProxy(get_db)
+db = cast(Database, LocalProxy(get_db))

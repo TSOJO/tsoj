@@ -7,39 +7,35 @@ from bson import ObjectId
 from website.db import db
 
 class Problem:
-
-	"""Properties"""
-	problem_id: str
-	name: str
-	description: str
-	time_limit: int
-	memory_limit: int
-	testcases: List[Testcase]
-	_object_id: Optional[ObjectId] = None
-
-	"""Methods"""
 	def __init__(self, 
-		problem_id: str, 
+		id: str, 
 		name: str, 
 		description: str, 
-		time_limit: int, 
-		memory_limit: int, 
-		testcases: List[Testcase]):
-		self.problem_id, self.name, self.description, self.time_limit, self.memory_limit, self.testcases = \
-		problem_id, name, description, time_limit, memory_limit, testcases
-		# TODO Validate if problem_id is unique
+		time_limit: float, 
+		memory_limit: float, 
+		testcases: List[Testcase], **_):
+		# Public properties.
+		self.id = id
+		self.name = name 
+		self.description = description
+		self.time_limit = time_limit 
+		self.memory_limit = memory_limit
+		self.testcases = testcases
+
+		# Private properties
+		self._object_id: Optional[ObjectId] = None
 
 	"""Database Wrapper Methods"""
 
 	@classmethod
 	def _cast_from_document(cls, document: Any) -> Problem:
 		new = Problem(**document)
-		new._object_id = document._id
+		new._object_id = document['_id']
 		return new
 
 	def _cast_to_document(self) -> Dict[str, object]:
 		return {
-			'problem_id': self.problem_id,
+			'id': self.id,
 			'name': self.name,
 			'description': self.description,
 			'time_limit': self.time_limit,
@@ -59,12 +55,11 @@ class Problem:
 		return [cls._cast_from_document(result) for result in results]
 
 	async def save(self) -> Problem:
-		# TODO Validate if problem_id is unique
 		if not self._object_id:
 			new = await asyncio.to_thread(db.problems.insert_one, self._cast_to_document())
 			self._object_id = new.inserted_id
 		else:
-			await asyncio.to_thread(db.problems.update_one, {
+			await asyncio.to_thread(db.problems.replace_one, {
 				'_id': self._object_id,
 			}, self._cast_to_document(), upsert=True)
 

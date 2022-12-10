@@ -6,32 +6,32 @@ from bson import ObjectId
 
 from website.db import db
 from . import submission as submission_file
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User:
-	"""Properties"""
-  
-	username: str
-	email: str
-	# TODO Implement getter and setter to encrypt password
-	password: str
-	submission_ids: List[int]
 
-	_object_id: Optional[ObjectId] = None
-
-	
-	"""Methods"""
-
-	def __init__(self, username: str, email: str, password: str): 
-		self.email = email
+	def __init__(self, username: str, email: str, plaintext_password: str, **_): 
+		# Public properties
 		self.username = username
-		self.password = password
+		self.email = email
+		
+		# Private properties
+		self._hashed_password = generate_password_hash(plaintext_password)
+		self._submission_ids: List[int] = []
+		self._object_id: Optional[ObjectId] = None
+
+	def set_password(self, plaintext_password):
+		self._hashed_password = generate_password_hash(plaintext_password)
+	
+	def check_password(self, plaintext_password):
+		return check_password_hash(self._hashed_password, plaintext_password)
 
 	async def fetch_submissions(self) -> List[submission_file.Submission]:
-		# TODO Optimize this
-		return [cast(submission_file.Submission, submission_file.Submission.find_one({'submission_id': s})) for s in self.submission_ids]
+		# TODO Optimize this with one query.
+		return [cast(submission_file.Submission, await asyncio.to_thread(submission_file.Submission.find_one, {'submission_id': s})) for s in self._submission_ids]
 
-	async def add_submission(self, new_submission: submission_file.Submission, save = True):
-		self.submission_ids.append(new_submission.submission_id)
+	async def add_submission(self, submission_id: int, save = True):
+		self._submission_ids.append(submission_id)
 		if save:
 			await self.save()
 
@@ -40,15 +40,16 @@ class User:
 	@classmethod
 	def _cast_from_document(cls, document: Any) -> User:
 		new = User(**document)
-		new._object_id = document._id
+		new._object_id = document['_id']
+		new._hashed_password = document['hashed_password']
 		return new
 
 	def _cast_to_document(self) -> Dict[str, object]:
 		return {
 			'username': self.username,
 			'email': self.email,
-			'password': self.password,
-			'submission_ids': self.submission_ids
+			'hashed_password': self._hashed_password,
+			'submission_ids': self._submission_ids
 		}
 
 	@classmethod
@@ -67,13 +68,8 @@ class User:
 			new = await asyncio.to_thread(db.users.insert_one, self._cast_to_document())
 			self._object_id = new.inserted_id
 		else:
-			await asyncio.to_thread(db.users.update_one, {
+			await asyncio.to_thread(db.users.replace_one, {
 				'_id': self._object_id,
 			}, self._cast_to_document(), upsert=True)
 
 		return self
-
-	# @classmethod
-	# def register() -> None:
-	# 	if not 'users' in db.list_collection_names():
-	# 		db.create_collection('users')

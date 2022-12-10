@@ -1,18 +1,17 @@
-from os import environ
+import asyncio
+import os
 from flask import Flask
-from flask_pymongo import PyMongo
+from website.models import Assignment, Submission, User
+
+app: Flask = Flask(__name__)
 
 def init_app() -> Flask:
     # Initial config.
-    app: Flask = Flask(__name__)
     app.config.from_pyfile('../config.py')
     
-    # from .models import Assignment, User, Problem, Submission
-    # with app.app_context():
-    #     User.register()
-    #     Problem.register()
-    #     Submission.register()
-    #     Assignment.register()
+    with app.app_context():
+        asyncio.run(Submission.init())
+        asyncio.run(Assignment.init())
         
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
@@ -34,9 +33,14 @@ def init_app() -> Flask:
     from .errors import page_not_found
     app.register_error_handler(404, page_not_found)
 
-    # with app.app_context():
-    #     Assignment.find_one({
-    #         'id': 69
-    #     })
+    # Testing db, only after reloaded
+    # if os.environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
 
     return app
+
+async def test():
+    with app.app_context():
+       user = User('Eden', '19CheungYHE@tonbridge-school.org', 'mypassword')
+       await user.save()
+       print(user.check_password('mypassword'))
+       print(user.check_password('notmypassword'))

@@ -13,20 +13,7 @@ from .assignment import Assignment
 
 class Submission:
 
-	"""Properties"""
-
-	# Unknown until saved
-	submission_id: int
-	user: str
-	final_verdict: Verdict
-	docs: List[Result]
-	problem_id: str
-	submission_time: datetime
-	assignment: int
-
-	_object_id: Optional[ObjectId] = None
-
-	"""Methods"""
+	_max_id: int
 
 	def __init__(self, 
 		username: str, 
@@ -34,9 +21,21 @@ class Submission:
 		docs: List[Result], 
 		problem_id: str, 
 		assignment_id: int, 
-		submission_time = datetime.now()):
-		self.username, self.final_verdict, self.docs, self.problem_id, self.assignment_id, self.submission_time = \
-		username, final_verdict,docs,problem_id,assignment_id,submission_time
+		submission_time = datetime.now(), **_):
+		# Public properties.
+		self.username = username
+		self.final_verdict = final_verdict
+		self.docs = docs
+		self.problem_id = problem_id
+		self.assignment_id = assignment_id
+		self.submission_time = submission_time
+
+		# Private properties.		
+		self._id: Optional[int] = None
+		self._object_id: Optional[ObjectId] = None
+
+	@property
+	def id(self): return self._id
   
 	async def fetch_user(self) -> User:
 		return cast(User, await User.find_one({'username': self.username}))
@@ -53,19 +52,19 @@ class Submission:
 	@classmethod
 	def _cast_from_document(cls, document: Any) -> Submission:
 		new = Submission(**document)
-		new.assignment_id = document.assignment_id
-		new._object_id = document._id
+		new._id = document['id']
+		new._object_id = document['_id']
 		return new
 
 	def _cast_to_document(self) -> Dict[str, object]:
 		return {
+			'id': self._id,
 			'username': self.username,
 			'final_verdict': self.final_verdict,
 			'docs': self.docs,
 			'problem_id': self.problem_id,
 			'assignment_id': self.assignment_id,
 			'submission_time': self.submission_time,
-			'assignment': self.assignment
 		}
 
 	@classmethod
@@ -75,23 +74,30 @@ class Submission:
 		return cls._cast_from_document(doc)
 
 	@classmethod
-	async def find_all(cls, filter) -> List[Submission]:
+	async def find_all(cls, filter: Dict = {}) -> List[Submission]:
 		docs = await asyncio.to_thread(db.sumbissons.find, filter=filter)
 		return [cls._cast_from_document(doc) for doc in docs]
 
 	async def save(self) -> Submission:
 		# TODO Auto increment submission id
 		if not self._object_id:
-			new = await asyncio.to_thread(db.submissions.insert_one, self._cast_to_document())
+			doc = self._cast_to_document()
+
+			# Generate new incremented ID
+			Submission._max_id += 1
+			doc['assignment_id'] = Submission._max_id
+			self._id = Submission._max_id
+
+			new = await asyncio.to_thread(db.submissions.insert_one, doc)
 			self._object_id = new.inserted_id
 		else:
-			await asyncio.to_thread(db.submissions.update_one, {
+			await asyncio.to_thread(db.submissions.replace_one, {
 				'_id': self._object_id,
 			}, self._cast_to_document(), upsert=True)
 
 		return self
 
-	# @classmethod
-	# def register() -> None:
-	# 	if not 'submissions' in db.list_collection_names():
-	# 		db.create_collection('submissions')
+	@classmethod
+	async def init(cls) -> None:
+		# Get and store max ID for incrementation.
+		cls._max_id = max([cast(int, s._id) for s in await cls.find_all()] or [0])

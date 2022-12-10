@@ -9,38 +9,39 @@ from website.db import db
 
 class Assignment:
 
-	"""Properties"""
+	_max_id: int = 0
 
-	problem_ids: List[str]
-	_assignment_id: int
+	def __init__(self, problem_ids: List[str], **_):
+		# Public properties.
+		self.problem_ids: List[str] = problem_ids
+		
+		# Private properties.
+		self._id: Optional[int] = None
+		self._object_id: Optional[ObjectId] = None
+
 	@property
-	def assignment_id(self):
-		return self._assignment_id
-	_object_id: Optional[ObjectId] = None
+	def id(self): return self._id
+
+	def add_problem(self, problem_id: str):
+		self.problem_ids.append(problem_id)
 
 	async def fetch_problems(self):
 		# TODO optimize this with only one query
 		return [Problem.find_one({'id': p}) for p in self.problems]
-
-	"""Methods"""
-	def __init__(self, problem_ids: List[str]):
-		# TODO auto increment id
-		self._assignment_id = 1
-		self.problem_ids = problem_ids
-		pass
 
 	"""Database Wrapper Methods"""
 
 	@classmethod
 	def _cast_from_document(cls, document: Any) -> Assignment:
 		new = Assignment(**document)
-		new._object_id = document._id
+		new._id = document['id']
+		new._object_id = document['_id']
 		return new
 
 	def _cast_to_document(self) -> Dict[str, object]:
 		return {
-			'assignment_id': self.assignment_id,
-			'problems': self.problem_ids
+			'id': self._id,
+			'problem_ids': self.problem_ids
 		}
 
 	@classmethod
@@ -50,22 +51,28 @@ class Assignment:
 		return cls._cast_from_document(result)
 
 	@classmethod
-	async def find_all(cls, filter: object) -> List[Assignment]:
+	async def find_all(cls, filter: object = {}) -> List[Assignment]:
 		results = await asyncio.to_thread(db.assignments.find, filter=filter)
 		return [cls._cast_from_document(result) for result in results]
 
 	async def save(self) -> Assignment:
 		if not self._object_id:
-			new = await asyncio.to_thread(db.assignments.insert_one, self._cast_to_document())
+			doc = self._cast_to_document()
+
+			# Generate new incremented ID
+			Assignment._max_id += 1
+			doc['assignment_id'] = Assignment._max_id
+			self._id = Assignment._max_id
+			
+			new = await asyncio.to_thread(db.assignments.insert_one, doc)
 			self._object_id = new.inserted_id
 		else:
-			await asyncio.to_thread(db.assignments.update_one,{
+			await asyncio.to_thread(db.assignments.replace_one,{
 				'_id': self._object_id,
-			}, self._cast_to_document(), upsert=True)
+			}, self._cast_to_document())
 
 		return self
-
-	# @classmethod
-	# def register() -> None:
-	# 	if not 'assignments' in db.list_collection_names():
-	# 		db.create_collection('assignments')
+	@classmethod
+	async def init(cls) -> None:
+		# Get and store max ID for incrementation.
+		cls._max_id = max([cast(int, a._id) for a in await cls.find_all()] or [0])
