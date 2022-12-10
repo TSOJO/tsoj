@@ -2,15 +2,27 @@
 
 Tonbridge School Online Judge
 
-## Build instructions
+## Installation instructions
 
 Add `SECRET_KEY` to the environment by creating a file called `.env` in the root folder and adding this:
 
     SECRET_KEY="dev"  # can be whatever
    
-  Run `pip install -r requirements.txt`.
+Download [docker](https://docs.docker.com/get-docker/).
 
-Start the server by running the `wsgi.py` file.
+Run the following:
+- `pip install -r requirements.txt`.
+- `docker run -p 6379:6379 --name tsoj-redis -d redis`
+
+## Run server instructions
+
+Open three terminals, each running the following:
+- `python wsgi.py`
+- `celery -A website.celery_tasks worker --loglevel=INFO`
+- `celery -A website.celery_tasks flower`
+
+Visit website at `localhost:5000`
+Visit celery monitor at `localhost:5555`
 
 ## MongoDB Server
 
