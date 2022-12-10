@@ -3,11 +3,6 @@
 Tonbridge School Online Judge
 
 ## Installation instructions
-
-Add `SECRET_KEY` to the environment by creating a file called `.env` in the root folder and adding this:
-
-    SECRET_KEY="dev"  # can be whatever
-   
 Download [docker](https://docs.docker.com/get-docker/).
 
 Run the following:
@@ -24,10 +19,12 @@ Open three terminals, each running the following:
 Visit website at `localhost:5000`
 Visit celery monitor at `localhost:5555`
 
-## MongoDB Server
+## .env configuration
 
-In `.env`, add a line: `MONGO_URI=<connection-string>`
-Remember to put database name (`tsoj`) in the connection string, after the last `/`.
+	SECRET_KEY="dev"  # can be whatever
+	MONGO_URI=<connection-string> # Remember to put database name (tsoj) in the connection string, after the last `/`.
+	CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # the port is the one you set up in docker
+	CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 ## Typings
 
