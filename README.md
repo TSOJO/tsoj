@@ -15,7 +15,24 @@ Start the server by running the `wsgi.py` file.
 ## MongoDB Server
 
 In `.env`, add a line: `MONGO_URI=<connection-string>`
-Remember to put database name (`tsoj`) in the connection string, after the last `/`.
+Remember to put database name (`dev` if for development, `prod` if for production) in the connection string, after the last `/`.
+
+## Setting up email verification
+
+1. Go to [Account Security](https://myaccount.google.com/u/0/security)
+2. Enable 2FA
+3. Go to [App Passwords](https://myaccount.google.com/u/0/apppasswords)
+4. Select app `Other` and select device `Other` and click `Generate`
+5. Copy the password and paste into `.env` as `GMAIL_APP_PWD`
+6. Put the email address into `.env` as `GMAIL_EMAIL`
+
+Or more convienienty, use this (cause you don't really need to create a new email address for testing)
+Email: tsojauth@gmail.com
+App pwd: pxezvdeozcdfslbr
+
+## Defining base url
+
+Add `BASE_URL` into `.env` (eg. http://127.0.0.1:5000)
 
 ## Typings
 

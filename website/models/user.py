@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import asyncio
-from random import choice
-import string
-from email.message import EmailMessage
-from os import environ
+import secrets
 import smtplib
 import ssl
+from email.message import EmailMessage
+from os import environ
 from typing import Any, Dict, List, Optional, cast
+from uuid import uuid4
 
 from bson import ObjectId
 from flask import url_for
@@ -53,8 +53,8 @@ class User:
 	async def send_verification_email(self):
 		print('called')
 		if self._verification_code == '':
-			char_set = string.ascii_lowercase + string.digits
-			self._verification_code = ''.join([choice(char_set) for _ in range(12)])
+			self._verification_code = secrets.token_urlsafe(16)
+			self.save()
 
 		sender = environ.get('GMAIL_EMAIL')
 		pwd = environ.get('GMAIL_APP_PWD')
@@ -73,12 +73,13 @@ class User:
 		email['Subject'] = subject
 		email.set_content(body)
 
-		ctx = ssl.create_default_context()
+		context = ssl.create_default_context()
 
-		with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=ctx) as smtp:
-			await asyncio.to_thread(smtp.login, sender, pwd)
+		with smtplib.SMTP('smtp.gmail.com', 587) as server:
+			await asyncio.to_thread(server.starttls, context=context)
+			await asyncio.to_thread(server.login, sender, pwd)
 			print('logged in')
-			await asyncio.to_thread(smtp.sendmail, sender, self.email, email.as_string())
+			await asyncio.to_thread(server.sendmail, sender, self.email, email.as_string())
 			print('sent')
 
 	"""Database Wrapper Methods"""
