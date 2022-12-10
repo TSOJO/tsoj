@@ -2,22 +2,29 @@
 
 Tonbridge School Online Judge
 
-## Build instructions
+## Installation instructions
+Download [docker](https://docs.docker.com/get-docker/).
 
-Add `SECRET_KEY` to the environment by creating a file called `.env` in the root folder and adding this:
+Run the following:
+- `pip install -r requirements.txt`.
+- `docker run -p 6379:6379 --name tsoj-redis -d redis`
 
-    SECRET_KEY="dev"  # can be whatever
-   
-  Run `pip install -r requirements.txt`.
+## Run server instructions
 
-Start the server by running the `wsgi.py` file.
+Open three terminals, each running the following:
+- `python wsgi.py`
+- `celery -A website.celery_tasks worker --loglevel=INFO`
+- `celery -A website.celery_tasks flower`
 
-## MongoDB Server
+Visit website at `localhost:5000`
+Visit celery monitor at `localhost:5555`
 
 In `.env`, add a line: `MONGO_URI=<connection-string>`
 Remember to put database name (`dev` if for development, `prod` if for production) in the connection string, after the last `/`.
 
 ## Setting up email verification
+
+See [.env configuration](#env-configuration) for a email address you can use without all the setup
 
 1. Go to [Account Security](https://myaccount.google.com/u/0/security)
 2. Enable 2FA
@@ -26,13 +33,15 @@ Remember to put database name (`dev` if for development, `prod` if for productio
 5. Copy the password and paste into `.env` as `GMAIL_APP_PWD`
 6. Put the email address into `.env` as `GMAIL_EMAIL`
 
-Or more convienienty, use this (cause you don't really need to create a new email address for testing)
-Email: tsojauth@gmail.com
-App pwd: pxezvdeozcdfslbr
+## .env configuration
 
-## Defining base url
-
-Add `BASE_URL` into `.env` (eg. http://127.0.0.1:5000)
+	SECRET_KEY="dev"  # can be whatever
+	MONGO_URI=<connection-string> # Remember to put database name (tsoj) in the connection string, after the last `/`.
+	GMAIL_EMAIL=tsojauth@gmail.com
+	GMAIL_APP_PWD=pxezvdeozcdfslbr
+	BASE_URL = 'http://127.0.0.1:5000'
+	CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # the port is the one you set up in docker
+	CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 ## Typings
 

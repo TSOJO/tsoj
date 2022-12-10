@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request
-from isolate_wrapper import IsolateSandbox
-from isolate_wrapper.custom_types import Testcase
+from flask import Blueprint, render_template, request, redirect
+from isolate_wrapper import IsolateSandbox, Testcase, Result, Verdict
+from typing import List, Tuple
+from website.celery_tasks import judge
 
 problem_bp = Blueprint('problem_bp', __name__,
                        template_folder='templates',
@@ -28,27 +29,13 @@ def problem_submit() -> str:
 
     # Note this is hardcoded for development.
     # Probably get this from `problem_id` in production.
-    testcases = [
-        Testcase('2\n9\n', '11\n'),
-        Testcase('10\n20\n', '30\n'),
-    ]
-    
-    # restrictions = {
-    #     'time_limit': 1,
-    #     'memory_limit': 1024*64,
-    # }
-    
-    problem_info = {
-        'id': 1,
-        'title': 'Sum',
-        'description': 'Given two numbers, print their sum.',
-    }
     
     user_code = request.form['user_code']
     problem_id = request.form['problem_id']
-    sandbox = IsolateSandbox()
-    final_verdict, results = sandbox.judge(user_code, testcases, time_limit=1, memory_limit=1024*64)
-    return render_template('results.html',
-                           problem=problem_info,
-                           final_verdict=final_verdict,
-                           results=results)
+    # final_verdict, results = judge(user_code, testcases, 1, 1024*64)
+    task = judge.delay(user_code, problem_id)
+    return redirect('/')
+    # return render_template('results.html',
+    #                        problem=problem_info,
+    #                        final_verdict=final_verdict,
+    #                        results=results)
