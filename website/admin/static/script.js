@@ -13,6 +13,8 @@ function add_field() {
     let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
     answer_node.name = 'answer' + testcases_count;
     let testcase_container = document.getElementById('testcase-container');
+    input_node.setAttribute('required', '');
+    answer_node.setAttribute('required', '');
     testcase_container.appendChild(testcase_node);
 }
 
