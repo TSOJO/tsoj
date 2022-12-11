@@ -6,7 +6,7 @@
 <h1>Problem {{problem.id}}: {{problem.name}}</h1>
 <p>{{problem.description}}</p>
 <div class="mb-3">
-    <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}" id="codeForm">
+    <form method="POST" action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}" id="codeForm">
         <input type="hidden" name="problem_id" value="{{problem.id}}" />
         <div class="mb-3">
             <textarea name="user_code"></textarea>

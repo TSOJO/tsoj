@@ -18,13 +18,13 @@ class Submission:
 
 	_max_id: int
 
-	def __init__(self, 
-		username: str, 
-		final_verdict: Verdict, 
-		docs: List[Result], 
-		problem_id: str, 
-		assignment_id: int, 
-		submission_time = datetime.now(), **_):
+	def __init__(self,
+				 username: str,
+				 final_verdict: Verdict,
+				 docs: List[Result],
+				 problem_id: str,
+				 assignment_id: int,
+				 submission_time=datetime.now(), **_):
 		# Public properties.
 		self.username = username
 		self.final_verdict = final_verdict
@@ -33,13 +33,13 @@ class Submission:
 		self.assignment_id = assignment_id
 		self.submission_time = submission_time
 
-		# Private properties.		
+		# Private properties.
 		self._id: Optional[int] = None
 		self._object_id: Optional[ObjectId] = None
 
 	@property
 	def id(self): return self._id
-  
+
 	async def fetch_user(self) -> User:
 		return cast(User, await User.find_one({'username': self.username}))
 
@@ -47,7 +47,8 @@ class Submission:
 		return cast(Problem, await Problem.find_one({'id': self.problem_id}))
 
 	async def fetch_assignment(self) -> Optional[Assignment]:
-		if self.assignment_id == None: return None
+		if self.assignment_id == None:
+			return None
 		return await Assignment.find_one({'id': self.assignment_id})
 
 	"""Database Wrapper Methods"""
@@ -73,7 +74,8 @@ class Submission:
 	@classmethod
 	async def find_one(cls, filter) -> Submission | None:
 		doc = await asyncio.to_thread(db.submissions.find_one, filter=filter)
-		if doc == None: return None
+		if doc == None:
+			return None
 		return cls._cast_from_document(doc)
 
 	@classmethod
