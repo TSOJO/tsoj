@@ -15,15 +15,15 @@ def admin():
 
 
 @admin_bp.route('/create/problem', methods=['GET', 'POST'])
-def create_problem():
+async def create_problem():
     if request.method == 'POST':
         # print(request.form)
         problem_info = {
-            'problem_id': request.form['id'],
+            'id': request.form['id'],
             'name': request.form['name'],
             'description': request.form['description'],
-            'time_limit': int(round(float(request.form['time-limit']))),
-            'memory_limit': int(round(float(request.form['memory-limit'])*1024)),
+            'time_limit': int(round(float(request.form['time-limit']) * 1000)),
+            'memory_limit': int(round(float(request.form['memory-limit'])* 1024)),
         }
         testcases: List[Testcase] = []
 
@@ -40,7 +40,7 @@ def create_problem():
                 raise NotImplementedError()
 
         problem = Problem(**problem_info, testcases=testcases)
-        # TODO: add problem to db
+        await problem.save()
 
         # ? redirect to /problem/<id>/edit
         return redirect(url_for('admin_bp.admin'))
@@ -48,18 +48,6 @@ def create_problem():
 
 
 @admin_bp.route('/create/assignment')
-def create_prep():
-    # TODO: Un-hardcode
-    problems = [
-        {
-            'id': 'A1',
-            'name': 'Sum',
-            'description': 'Given two numbers, print their sum.',
-        },
-        {
-            'id': 'A2',
-            'name': 'Difference',
-            'description': 'Given two numbers, print their difference.',
-        }
-    ]
+async def create_prep():
+    problems = await Problem.find_all()
     return render_template('create_assignment.html', problems=problems)

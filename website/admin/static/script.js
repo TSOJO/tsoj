@@ -13,8 +13,8 @@ function add_field() {
     let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
     answer_node.name = 'answer' + testcases_count;
     let testcase_container = document.getElementById('testcase-container');
-    input_node.setAttribute('required', '');
-    answer_node.setAttribute('required', '');
+    // input_node.setAttribute('required', '');
+    // answer_node.setAttribute('required', '');
     testcase_container.appendChild(testcase_node);
 }
 
@@ -51,10 +51,10 @@ function remove_field(node) {
 // Form validation. (https://getbootstrap.com/docs/5.2/forms/validation/)
 (() => {
     'use strict'
-  
+
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     const forms = document.querySelectorAll('.needs-validation')
-  
+
     // Loop over them and prevent submission
     Array.from(forms).forEach(form => {
         form.addEventListener('submit', event => {
@@ -62,15 +62,16 @@ function remove_field(node) {
                 event.preventDefault()
                 event.stopPropagation()
             }
-    
+
             form.classList.add('was-validated')
         }, false)
     })
 })()
 
-window.onpageshow = function(event) {
-    add_field()
-
+window.onpageshow = function (event) {
+    if (testcases_count == 0) {
+        add_field()
+    }
     // Initialise code editor.
     let editor = ace.edit('editor');
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/');

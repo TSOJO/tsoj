@@ -19,18 +19,14 @@ async def problem(id: str) -> str:
 # Code submission.
 @problem_bp.route('/<id>/submit', methods=['GET', 'POST'])
 def problem_submit(id: str) -> str:
-    # TODO: Remove hardcoded problem id.
     # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
     # ? Maybe should look like:
     # ? Submit code --(POST)--> /submit (judge + add to DB) --(redirect with submission ID)--> /submission/<id>
-
-    # Note this is hardcoded for development.
-    # Probably get this from `problem_id` in production.
     
     user_code = request.form['user_code']
-    # final_verdict, results = judge(user_code, testcases, 1, 1024*64)
     judge.delay(user_code, id)
     return redirect('/')
+    # final_verdict, results = judge(user_code, testcases, 1, 1024*64)
     # return render_template('results.html',
     #                        problem=problem_info,
     #                        final_verdict=final_verdict,

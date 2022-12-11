@@ -7,6 +7,7 @@ from pymongo.errors import DuplicateKeyError
 from isolate_wrapper.custom_types import Testcase
 from website.db import db
 
+
 class Problem:
     def __init__(self,
                  id: str,
@@ -29,7 +30,7 @@ class Problem:
     def _cast_from_document(cls, document: Any) -> Problem:
         return Problem(id=document['id'],
                        name=document['name'],
-                       description=document['description'], 
+                       description=document['description'],
                        time_limit=document['time_limit'],
                        memory_limit=document['memory_limit'],
                        testcases=[Testcase(**testcase) for testcase in document['testcases']])
@@ -46,7 +47,7 @@ class Problem:
         }
 
     @classmethod
-    async def find_one(cls, filter) -> Optional[Problem]:
+    async def find_one(cls, filter={}) -> Optional[Problem]:
         result = await asyncio.to_thread(db.problems.find_one, filter=filter)
         if result == None:
             return None
@@ -72,4 +73,3 @@ class Problem:
     # def register() -> None:
     # 	if not 'problems' in db.list_collection_names():
     # 		db.create_collection('problems')
-
