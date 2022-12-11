@@ -3,6 +3,7 @@ from flask import Blueprint, render_template
 from website.models import Problem
 
 home_bp = Blueprint('home_bp', __name__,
+                    static_url_path='/home/static',  # Because url prefix is '/'
                     template_folder='templates',
                     static_folder='static')
 
