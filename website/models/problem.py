@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Dict, List, Optional, cast
-
-from bson import ObjectId
+from typing import Any, Dict, List, Optional
+from pymongo.errors import DuplicateKeyError
 
 from isolate_wrapper.custom_types import Testcase
 from website.db import db
-
-from pymongo.errors import DuplicateKeyError
 
 class Problem:
     def __init__(self,

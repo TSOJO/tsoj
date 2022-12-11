@@ -1,7 +1,7 @@
 import asyncio
 
-from website.models import Submission, Problem
-from isolate_wrapper import IsolateSandbox, Testcase, Result
+from website.models import Problem
+from isolate_wrapper import IsolateSandbox
 from website import celery
 
 @celery.task(name='judge')
