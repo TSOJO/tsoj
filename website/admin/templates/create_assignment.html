@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Create Problem{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <h1>Create Assignment</h1>
+</div>
+
+<form method="POST" class="needs-validation" novalidate>
+    <label class="form-label">Problems</label>
+    <div class="border p-4 mb-3" id="problem-container">
+        <div class="form-group mb-3">
+            <select class="selectpicker" data-live-search="true" data-width="fit" data-show-subtext="true" title="Choose problem">
+                {% for problem in problems %}
+                <option data-subtext="{{problem.id}}">{{problem.name}}</option>
+                {% endfor %}
+            </select>
+            
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
+{% endblock %}

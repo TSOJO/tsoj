@@ -47,7 +47,19 @@ def create_problem():
     return render_template('create_problem.html')
 
 
-@admin_bp.route('/create/prep')
+@admin_bp.route('/create/assignment')
 def create_prep():
-    raise NotImplementedError()
-    return render_template('create_prep.html')
+    # TODO: Un-hardcode
+    problems = [
+        {
+            'id': 'A1',
+            'name': 'Sum',
+            'description': 'Given two numbers, print their sum.',
+        },
+        {
+            'id': 'A2',
+            'name': 'Difference',
+            'description': 'Given two numbers, print their difference.',
+        }
+    ]
+    return render_template('create_assignment.html', problems=problems)

@@ -13,12 +13,12 @@ def problems():
     problems_list = [
         {
             'id': 'A1',
-            'title': 'Sum',
+            'name': 'Sum',
             'description': 'Given two numbers, print their sum.',
         },
         {
             'id': 'A2',
-            'title': 'Difference',
+            'name': 'Difference',
             'description': 'Given two numbers, print their difference.',
         }
     ]

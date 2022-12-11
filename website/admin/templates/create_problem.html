@@ -10,17 +10,17 @@
 <form method="POST" class="needs-validation" novalidate>
     <div class="form-group mb-3">
         <label for="id" class="form-label">ID</label>
-        <input type="text" class="form-control" name="id" placeholder="Enter problem ID" required>
+        <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" required>
     </div>
 
     <div class="form-group mb-3">
-        <label for="title" class="form-label">Name</label>
-        <input type="text" class="form-control" name="name" placeholder="Enter problem name" required>
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name" required>
     </div>
 
     <div class="form-group mb-3">
         <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" name="description" rows="5" placeholder="Enter problem description" required></textarea>
+        <textarea class="form-control" name="description" id="description" rows="5" placeholder="Enter problem description" required></textarea>
     </div>
 
     <label class="form-label">Testcases</label>
@@ -40,11 +40,11 @@
                 </div>
             </div>
             <div class="form-group mb-3">
-                <label for="testcases" class="form-label">Input</label>
+                <label class="form-label">Input</label>
                 <textarea class="form-control testcase-input" rows="3"></textarea>
             </div>
             <div class="form-group mb-3">
-                <label for="testcases" class="form-label">Answer</label>
+                <label class="form-label">Answer</label>
                 <textarea class="form-control testcase-answer"rows="3"></textarea>
             </div>
         </div>
@@ -64,14 +64,15 @@
 
     <label for="time-limit" class="form-label">Time limit</label>
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="time-limit" value="1.0" required>
+        <input type="text" class="form-control" name="time-limit" id="time-limit" value="1.0" required>
         <span class="input-group-text">seconds (recommended: 1-10)</span>
     </div>
 
     <label for="memory-limit" class="form-label">Memory limit</label>
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="memory-limit" value="128" required>
+        <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="128" required>
         <span class="input-group-text">MB (recommended: 64-512)</span>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 {% endblock %}

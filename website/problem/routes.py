@@ -13,7 +13,7 @@ def problem(id: str) -> str:
     # Hardcoded for now.
     problem_info = {
         'id': 'A1',
-        'title': 'Sum',
+        'name': 'Sum',
         'description': 'Given two numbers, print their sum.',
     }
     assignment_id = request.args.get('assignment_id')

@@ -3,7 +3,7 @@
 {% block title %}Problem {{problem.id}}{% endblock %}
 
 {% block content %}
-<h1>Problem {{problem.id}}: {{problem.title}}</h1>
+<h1>Problem {{problem.id}}: {{problem.name}}</h1>
 <p>{{problem.description}}</p>
 <div class="mb-3">
     <form method="POST" action="{{ url_for('problem_bp.problem_submit') }}" id="codeForm">
