@@ -21,9 +21,11 @@ Open three terminals, each running the following:
 - `celery -A website.celery_tasks flower`
 
 Visit website at `localhost:5000`
+
 Visit celery monitor at `localhost:5555`
 
 In `.env`, add a line: `MONGO_URI=<connection-string>`
+
 Remember to put database name (`dev` if for development, `prod` if for production) in the connection string, after the last `/`.
 
 ## Setting up email verification
