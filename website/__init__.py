@@ -19,9 +19,9 @@ def init_app() -> Flask:
     # Initial config.
     app.config.from_pyfile('../config.py')
     
-    # with app.app_context():
-        # asyncio.run(Submission.init())
-        # asyncio.run(Assignment.init())
+    with app.app_context():
+        asyncio.run(Submission.init())
+        asyncio.run(Assignment.init())
         
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
@@ -42,7 +42,7 @@ def init_app() -> Flask:
     app.register_error_handler(404, page_not_found)
 
     # Testing db, only after reloaded
-    # if environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
+    if environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
 
     asyncio.run(debug_db())
 
