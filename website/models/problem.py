@@ -12,8 +12,8 @@ class Problem:
                  id: str,
                  name: str,
                  description: str,
-                 time_limit: float,  # ms
-                 memory_limit: float,  # KB
+                 time_limit: int,  # ms
+                 memory_limit: int,  # KB
                  testcases: List[Testcase], **_):
         # Public properties.
         self.id = id
@@ -30,8 +30,8 @@ class Problem:
         return Problem(id=document['id'],
                        name=document['name'],
                        description=document['description'], 
-                       time_limit=document['time_limit'] / 1000,
-                       memory_limit=document['memory_limit']/1024,
+                       time_limit=document['time_limit'],
+                       memory_limit=document['memory_limit'],
                        testcases=[Testcase(**testcase) for testcase in document['testcases']])
 
     def _cast_to_document(self) -> Dict[str, object]:
@@ -40,8 +40,8 @@ class Problem:
             'id': self.id,
             'name': self.name,
             'description': self.description,
-            'time_limit': int(round(self.time_limit * 1000)),
-            'memory_limit': int(round(self.memory_limit * 1024)),
+            'time_limit': self.time_limit,
+            'memory_limit': self.memory_limit,
             'testcases': [testcase.__dict__ for testcase in self.testcases]
         }
 

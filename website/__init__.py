@@ -42,7 +42,7 @@ def init_app() -> Flask:
     app.register_error_handler(404, page_not_found)
 
     # Testing db, only after reloaded
-    if environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
+    # if environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
 
     asyncio.run(debug_db())
 
@@ -55,8 +55,8 @@ async def debug_db():
             'id': 'A1',
             'name': 'Sum',
             'description': 'Given two numbers, print their sum.',
-            'time_limit': 1,
-            'memory_limit': 64,
+            'time_limit': 1000,
+            'memory_limit': 1024 * 64,
             'testcases': [
                 Testcase('2\n9\n', '11\n'),
                 Testcase('10\n20\n', '30\n'),
@@ -66,8 +66,8 @@ async def debug_db():
             'id': 'A2',
             'name': 'Difference',
             'description': 'Given two numbers, print their difference.',
-            'time_limit': 1,
-            'memory_limit': 64,
+            'time_limit': 1000,
+            'memory_limit': 1024 * 64,
             'testcases': [
                 Testcase('2\n9\n', '-7\n'),
                 Testcase('10\n20\n', '-10\n'),
