@@ -58,7 +58,7 @@ class User:
 
 		sender = environ.get('GMAIL_EMAIL')
 		pwd = environ.get('GMAIL_APP_PWD')
-		print(pwd)
+		print(self.email)
 		subject = 'Verify your email on TSOJ'
 		body = f'''
 		Hi {self.username},
@@ -89,6 +89,8 @@ class User:
 		new = User(**document)
 		new._object_id = document['_id']
 		new._hashed_password = document['hashed_password']
+		new._is_verified = document['is_verified']
+		new._verification_code = document['verification_code']
 		return new
 
 	def _cast_to_document(self) -> Dict[str, object]:
@@ -97,7 +99,8 @@ class User:
 			'email': self.email,
 			'hashed_password': self._hashed_password,
 			'submission_ids': self._submission_ids,
-			'is_verified': self._is_verified
+			'is_verified': self._is_verified,
+			'verification_code': self._verification_code
 		}
 
 	@classmethod
