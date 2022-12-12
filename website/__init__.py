@@ -21,7 +21,7 @@ def init_app() -> Flask:
     
     with app.app_context():
         asyncio.run(Submission.init())
-        asyncio.run(Assignment.init())
+        Assignment.init()
         
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
@@ -83,5 +83,5 @@ async def debug_db():
 
 async def test():
     with app.app_context():
-       user = await User.find_one({'username': 'Eden'})
-       await user.send_verification_email()
+        user = await User.find_one({'username': 'Eden'})
+        await user.send_verification_email()

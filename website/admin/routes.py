@@ -52,11 +52,11 @@ def create_problem():
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
-        new_assignment = Assignment([])
+        new_assignment = Assignment()
         for _, problem_id in request.form.to_dict().items():
             # Will only be `problemX`
             new_assignment.add_problem(problem_id)
-        asyncio.run(new_assignment.save())
+        new_assignment.save()
 
         flash('Assignment created', 'success')
         # ? redirect to /assignments/ something something
