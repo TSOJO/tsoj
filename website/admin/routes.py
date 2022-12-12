@@ -52,9 +52,9 @@ def create_problem():
 def create_assignment():
     if request.method == 'POST':
         new_assignment = Assignment()
-        for _, problem_id in request.form.to_dict().items():
-            # Will only be `problemX`
-            new_assignment.add_problem(problem_id)
+        # Only has problems.
+        problems = request.form.to_dict().values()
+        new_assignment.add_problems(*problems)
         new_assignment.save()
 
         flash('Assignment created', 'success')
