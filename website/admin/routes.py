@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, redirect, url_for
+from flask import render_template, Blueprint, request, redirect, url_for, flash
 from typing import List
 import asyncio
 
@@ -43,6 +43,7 @@ def create_problem():
         problem = Problem(**problem_info, testcases=testcases)
         asyncio.run(problem.save())
 
+        flash('Problem created', 'success')
         # ? redirect to /problem/<id>/edit
         return redirect(url_for('admin_bp.admin'))
     return render_template('create_problem.html')
@@ -56,6 +57,8 @@ def create_assignment():
             # Will only be `problemX`
             new_assignment.add_problem(problem_id)
         asyncio.run(new_assignment.save())
+
+        flash('Assignment created', 'success')
         # ? redirect to /assignments/ something something
         return redirect(url_for('admin_bp.admin'))
     problems = asyncio.run(Problem.find_all())
