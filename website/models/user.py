@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import secrets
 import smtplib
 import ssl
@@ -38,19 +37,19 @@ class User:
 	def check_password(self, plaintext_password):
 		return check_password_hash(self._hashed_password, plaintext_password)
 
-	async def fetch_submissions(self) -> List[submission_file.Submission]:
+	def fetch_submissions(self) -> List[submission_file.Submission]:
 		# TODO Optimize this with one query.
 		return [cast(submission_file.Submission, await asyncio.to_thread(submission_file.Submission.find_one, {'submission_id': s})) for s in self._submission_ids]
 
-	async def add_submission(self, submission_id: int, save = True):
+	def add_submission(self, submission_id: int, save = True):
 		self._submission_ids.append(submission_id)
 		if save:
-			await self.save()
+			self.save()
 
 	def clear_verification_code(self):
 		self._verification_code = ''
 
-	async def send_verification_email(self):
+	def send_verification_email(self):
 		print('called')
 		if self._verification_code == '':
 			self._verification_code = secrets.token_urlsafe(16)
@@ -76,10 +75,10 @@ class User:
 		context = ssl.create_default_context()
 
 		with smtplib.SMTP('smtp.gmail.com', 587) as server:
-			await asyncio.to_thread(server.starttls, context=context)
-			await asyncio.to_thread(server.login, sender, pwd)
+			server.starttls(context=context)
+			server.login(sender, pwd)
 			print('logged in')
-			await asyncio.to_thread(server.sendmail, sender, self.email, email.as_string())
+			server.sendmail(sender, self.email, email.as_string())
 			print('sent')
 
 	"""Database Wrapper Methods"""
@@ -104,23 +103,23 @@ class User:
 		}
 
 	@classmethod
-	async def find_one(cls, filter) -> Optional[User]:
-		doc = await asyncio.to_thread(db.users.find_one, filter)
-		if doc == None: return None
+	def find_one(cls, filter) -> Optional[User]:
+		doc = db.users.find_one(filter=filter)
+		if doc is None: return None
 		return cls._cast_from_document(doc)
 	
 	@classmethod
-	async def find_all(cls, filter) -> List[User]:
-		docs = await asyncio.to_thread(db.users.find, filter)
+	def find_all(cls, filter) -> List[User]:
+		docs = db.users.find(filter=filter)
 		return [cls._cast_from_document(doc) for doc in docs]
 
-	async def save(self) -> User:
+	def save(self) -> User:
 		if not self._object_id:
-			new = await asyncio.to_thread(db.users.insert_one, self._cast_to_document())
+			new = db.users.insert_one(self._cast_to_document())
 			self._object_id = new.inserted_id
 		else:
-			await asyncio.to_thread(db.users.replace_one, {
+			db.users.replace_one({
 				'_id': self._object_id,
-			}, self._cast_to_document(), upsert=True)
+			}, replacement=self._cast_to_document(), upsert=True)
 
 		return self

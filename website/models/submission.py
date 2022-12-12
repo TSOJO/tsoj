@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime
 from typing import Any, Dict, List, Optional, cast
 
@@ -40,16 +39,16 @@ class Submission:
 	@property
 	def id(self): return self._id
 
-	async def fetch_user(self) -> User:
-		return cast(User, await User.find_one({'username': self.username}))
+	def fetch_user(self) -> User:
+		return cast(User, User.find_one({'username': self.username}))
 
-	async def fetch_problem(self) -> Problem:
+	def fetch_problem(self) -> Problem:
 		return cast(Problem, await Problem.find_one({'id': self.problem_id}))
 
-	async def fetch_assignment(self) -> Optional[Assignment]:
-		if self.assignment_id == None:
+	def fetch_assignment(self) -> Optional[Assignment]:
+		if self.assignment_id is None:
 			return None
-		return await Assignment.find_one({'id': self.assignment_id})
+		return Assignment.find_one({'id': self.assignment_id})
 
 	"""Database Wrapper Methods"""
 
@@ -72,18 +71,18 @@ class Submission:
 		}
 
 	@classmethod
-	async def find_one(cls, filter) -> Submission | None:
-		doc = await asyncio.to_thread(db.submissions.find_one, filter=filter)
-		if doc == None:
+	def find_one(cls, filter) -> Submission | None:
+		doc = db.submissions.find_one(filter=filter)
+		if doc is None:
 			return None
 		return cls._cast_from_document(doc)
 
 	@classmethod
-	async def find_all(cls, filter: Dict = {}) -> List[Submission]:
-		docs = await asyncio.to_thread(db.sumbissons.find, filter=filter)
+	def find_all(cls, filter: Dict = {}) -> List[Submission]:
+		docs = db.sumbissons.find(filter=filter)
 		return [cls._cast_from_document(doc) for doc in docs]
 
-	async def save(self) -> Submission:
+	def save(self) -> Submission:
 		# TODO Auto increment submission id
 		if not self._object_id:
 			doc = self._cast_to_document()
@@ -93,16 +92,16 @@ class Submission:
 			doc['assignment_id'] = Submission._max_id
 			self._id = Submission._max_id
 
-			new = await asyncio.to_thread(db.submissions.insert_one, doc)
+			new = db.submissions.insert_one(doc)
 			self._object_id = new.inserted_id
 		else:
-			await asyncio.to_thread(db.submissions.replace_one, {
+			db.submissions.replace_one(filter={
 				'_id': self._object_id,
-			}, self._cast_to_document(), upsert=True)
+			}, replacement=self._cast_to_document(), upsert=True)
 
 		return self
 
 	@classmethod
-	async def init(cls) -> None:
+	def init(cls) -> None:
 		# Get and store max ID for incrementation.
-		cls._max_id = max([cast(int, s._id) for s in await cls.find_all()] or [0])
+		cls._max_id = max([cast(int, s._id) for s in cls.find_all()] or [0])

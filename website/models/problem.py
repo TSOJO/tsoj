@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from typing import Any, Dict, List, Optional
 from pymongo.errors import DuplicateKeyError
 
@@ -10,14 +9,14 @@ from website.db import db
 
 class Problem:
     def __init__(self,
-                 id: str,
+                 problem_id: str,
                  name: str,
                  description: str,
                  time_limit: int,  # ms
                  memory_limit: int,  # KB
-                 testcases: List[Testcase], **_):
+                 testcases: List[Testcase]):
         # Public properties.
-        self.id = id
+        self.problem_id = problem_id
         self.name = name
         self.description = description
         self.time_limit = time_limit
@@ -28,7 +27,7 @@ class Problem:
 
     @classmethod
     def _cast_from_document(cls, document: Any) -> Problem:
-        return Problem(id=document['id'],
+        return Problem(problem_id=document['problem_id'],
                        name=document['name'],
                        description=document['description'],
                        time_limit=document['time_limit'],
@@ -47,26 +46,26 @@ class Problem:
         }
 
     @classmethod
-    async def find_one(cls, filter={}) -> Optional[Problem]:
-        result = await asyncio.to_thread(db.problems.find_one, filter=filter)
+    def find_one(cls, filter={}) -> Optional[Problem]:
+        result = db.problems.find_one(filter=filter)
         if result == None:
             return None
         return cls._cast_from_document(result)
 
     @classmethod
-    async def find_all(cls, filter={}) -> List[Problem]:
-        results = await asyncio.to_thread(db.problems.find, filter=filter)
+    def find_all(cls, filter={}) -> List[Problem]:
+        results = db.problems.find(filter=filter)
         return [cls._cast_from_document(result) for result in results]
 
-    async def save(self, replace=False) -> Problem:
+    def save(self, replace=False) -> Problem:
         if not replace:
             try:
-                new = await asyncio.to_thread(db.problems.insert_one, self._cast_to_document())
+                new = db.problems.insert_one(self._cast_to_document())
             except DuplicateKeyError:
                 print(
                     'Warning: attempt to insert a document with the same _id. Use replace=True if you want to replace the document.')
         else:
-            await asyncio.to_thread(db.problems.replace_one, self._cast_to_document(), upsert=True)
+            db.problems.replace_one(self._cast_to_document(), upsert=True)
         return self
 
     # @classmethod
