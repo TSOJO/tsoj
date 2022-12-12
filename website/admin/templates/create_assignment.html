@@ -3,23 +3,23 @@
 {% block title %}Create Problem{% endblock %}
 
 {% block content %}
-<div class="mb-3">
-    <h1>Create Assignment</h1>
-</div>
-
-<form method="POST" class="needs-validation" novalidate>
-    <label class="form-label">Problems</label>
-    <div class="border p-4 mb-3" id="problem-container">
-        <div class="form-group mb-3">
-            <select class="selectpicker" data-live-search="true" data-width="fit" data-show-subtext="true" title="Choose problem">
+<div id="create-assignment-page">
+    <div class="mb-3">
+        <h1>Create Assignment</h1>
+    </div>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <p>Problems</p>
+            <select class="selectpicker form-control" id="problem-selector" data-live-search="true" data-width="fit" data-show-subtext="true">
                 {% for problem in problems %}
-                <option data-subtext="{{problem.id}}">{{problem.name}}</option>
+                <option data-subtext="{{problem.id}}" value="{{problem.id}}">{{problem.name}}</option>
                 {% endfor %}
             </select>
-            
+            <button type="button" class="btn btn-primary" id="add-problem-button">Add Problem</button>
         </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-
-</form>
+        <div class="border p-4 mb-3" id="problem-container"></div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
 {% endblock %}

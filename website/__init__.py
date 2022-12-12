@@ -30,12 +30,14 @@ def init_app() -> Flask:
     from .admin.routes import admin_bp
     from .assignment.routes import assignment_bp
     from .home.routes import home_bp
+    from .api import api_bp
     
     # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(assignment_bp, url_prefix='/assignment')
     app.register_blueprint(home_bp, url_prefix='/')
+    app.register_blueprint(api_bp, url_prefix='/api')
     
     # Register error handler.
     from .errors import page_not_found
