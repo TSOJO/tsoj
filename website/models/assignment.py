@@ -55,7 +55,6 @@ class Assignment:
     @classmethod
     def find_all(cls, filter: Optional[Mapping[str, Any]]=None) -> List[Assignment]:
         results = db.assignments.find(filter=filter)
-        for result in results: print(result)
         return [cls._cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> Assignment:
