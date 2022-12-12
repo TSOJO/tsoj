@@ -2,7 +2,6 @@ from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 from os import environ
 from flask import Flask
 from celery import Celery
-from website.models import Assignment, Submission, User, Problem
 
 app: Flask = Flask(__name__)
 
@@ -23,6 +22,7 @@ def init_app() -> Flask:
     # Initial config.
     app.config.from_pyfile('../config.py')
 
+    from website.models import Assignment, Submission, User, Problem
     with app.app_context():
         Submission.init()
         Assignment.init()
@@ -54,6 +54,7 @@ def init_app() -> Flask:
 
 def debug_db():
     from isolate_wrapper import Testcase
+    from website.models import Assignment, Submission, User, Problem
     problems_list = [
         {
             'id': 'A1',

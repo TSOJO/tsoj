@@ -5,14 +5,13 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 from os import environ
-from typing import Any, Dict, List, Optional, cast
-from pymongo.errors import DuplicateKeyError
-import logging
+from typing import *
 
 from bson import ObjectId
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from website.db import db
+from website.celery_tasks import add_to_db
 
 from . import submission as submission_file
 
@@ -123,13 +122,5 @@ class User:
         return [cls._cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> User:
-        if not replace:
-            try:
-                db.users.insert_one(self._cast_to_document())
-            except DuplicateKeyError:
-                logging.warning('Save failed: ID already exists. Use replace=True for replacement.')
-        else:
-            db.users.replace_one(filter={'username': self.username},
-                                 replacement=self._cast_to_document(),
-                            	 upsert=True)
+        add_to_db('user', self._cast_to_document(), replace)
         return self

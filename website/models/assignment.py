@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from typing import Any, Mapping, Dict, List, Optional, cast
-from pymongo.errors import DuplicateKeyError
-import logging
 
 from website.db import db
 from website.models.problem import Problem
+from website.celery_tasks import add_to_db
 
 
 class Assignment:
@@ -59,14 +58,11 @@ class Assignment:
         for result in results: print(result)
         return [cls._cast_from_document(result) for result in results]
 
-    def save(self) -> Assignment:
-        Assignment._max_id += 1
-        self.id = Assignment._max_id
-        doc = self._cast_to_document()
-        try:
-            db.assignment.insert_one(doc)
-        except DuplicateKeyError:
-            logging.warning('Save failed: ID already exists.')
+    def save(self, replace=False) -> Assignment:
+        if not self.id:
+            Assignment._max_id += 1
+            self.id = Assignment._max_id
+        add_to_db('assignment', self._cast_to_document(), replace)
         return self
 
     @classmethod

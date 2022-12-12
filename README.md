@@ -11,7 +11,7 @@ Run the following:
 
 Alternate Redis installation:
 - [Install redis](https://redis.io/docs/getting-started/installation/install-redis-on-linux/)
-- `redis-server`
+- `sudo service redis-server start`
 
 ## Run server instructions
 
@@ -46,7 +46,7 @@ See [.env configuration](#env-configuration) for a email address you can use wit
 	GMAIL_EMAIL=tsojauth@gmail.com
 	GMAIL_APP_PWD=pxezvdeozcdfslbr
 	BASE_URL = 'http://127.0.0.1:5000'
-	CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # the port is the one you set up in docker
+	CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # default is port 6379
 	CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 ## Typings

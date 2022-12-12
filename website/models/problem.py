@@ -6,7 +6,7 @@ import logging
 
 from isolate_wrapper.custom_types import Testcase
 from website.db import db
-
+from website.celery_tasks import add_to_db
 
 class Problem:
     def __init__(self,
@@ -59,13 +59,5 @@ class Problem:
         return [cls._cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> Problem:
-        if not replace:
-            try:
-                db.problems.insert_one(self._cast_to_document())
-            except DuplicateKeyError:
-                logging.warning('Save failed: ID already exists. Use replace=True for replacement.')
-        else:
-            db.problems.replace_one(filter={'id': self.id},
-                                    replacement=self._cast_to_document(),
-                                    upsert=True)
+        add_to_db.delay('problems', self._cast_to_document(), replace=replace)
         return self

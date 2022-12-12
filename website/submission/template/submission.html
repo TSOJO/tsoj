@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Submission {{submission.id}}{% endblock %}
+
+{% block content %}
+<h1>Submission {{submission.id}}</h1>
+<p>to problem: {{submission.problem_id}}</p>
+<p>from user: {{submission.username}}</p>
+<div class="container">
+    {% for i, result in enumerate(submission.results) %}
+    <div class="row">
+        <div class="col">{{i + 1}}} </div>
+        <div class="col">{{result.verdict}}</div>
+        <div class="col">{{result.time}}</div>
+        <div class="col">{{result.memory}}</div>
+    </div>
+</div>
+{% endblock %}
