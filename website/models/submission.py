@@ -95,7 +95,7 @@ class Submission:
 			Submission._max_id += 1
 			self.id = Submission._max_id
 		doc = self._cast_to_document()
-		add_to_db.delay('submission', doc, replace)
+		add_to_db.delay('submissions', doc, replace)
 		return self
 
 	@classmethod

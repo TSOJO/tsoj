@@ -122,5 +122,5 @@ class User:
         return [cls._cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> User:
-        add_to_db('user', self._cast_to_document(), replace)
+        add_to_db('users', self._cast_to_document(), replace)
         return self

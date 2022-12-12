@@ -62,7 +62,7 @@ class Assignment:
         if not self.id:
             Assignment._max_id += 1
             self.id = Assignment._max_id
-        add_to_db('assignment', self._cast_to_document(), replace)
+        add_to_db('assignments', self._cast_to_document(), replace)
         return self
 
     @classmethod
