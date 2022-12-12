@@ -11,8 +11,8 @@ problem_bp = Blueprint('problem_bp', __name__,
 
 # Load problem main screen.
 @problem_bp.route('/<id>')
-async def problem(id: str) -> str:
-    problem = await Problem.find_one({'id': id})
+def problem(id: str) -> str:
+    problem = Problem.find_one({'id': id})
     assignment_id = request.args.get('assignment_id')
     return render_template('problem.html', problem=problem, assignment_id=assignment_id)
 

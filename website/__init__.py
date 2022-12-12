@@ -1,4 +1,4 @@
-import asyncio
+from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 from os import environ
 from flask import Flask
 from celery import Celery
@@ -6,23 +6,27 @@ from website.models import Assignment, Submission, User, Problem
 
 app: Flask = Flask(__name__)
 
-from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
-celery = Celery(__name__, broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND, include=['website.celery_tasks'])
+celery = Celery(__name__, broker=CELERY_BROKER_URL,
+                backend=CELERY_RESULT_BACKEND, include=['website.celery_tasks'])
+
+
 class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
+    def __call__(self, *args, **kwargs):
+        with app.app_context():
+            return self.run(*args, **kwargs)
+
+
 celery.Task = ContextTask
 
 
 def init_app() -> Flask:
     # Initial config.
     app.config.from_pyfile('../config.py')
-    
+
     with app.app_context():
-        asyncio.run(Submission.init())
+        Submission.init()
         Assignment.init()
-        
+
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
     # ! Moving this up results in circular imports.
@@ -31,26 +35,24 @@ def init_app() -> Flask:
     from .assignment.routes import assignment_bp
     from .home.routes import home_bp
     from .api import api_bp
-    
+
     # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(assignment_bp, url_prefix='/assignment')
     app.register_blueprint(home_bp, url_prefix='/')
     app.register_blueprint(api_bp, url_prefix='/api')
-    
+
     # Register error handler.
     from .errors import page_not_found
     app.register_error_handler(404, page_not_found)
 
-    # Testing db, only after reloaded
-    # if environ.get('WERKZEUG_RUN_MAIN') == 'true': asyncio.run(test())
-
-    asyncio.run(debug_db())
+    debug_db()
 
     return app
 
-async def debug_db():
+
+def debug_db():
     from isolate_wrapper import Testcase
     problems_list = [
         {
@@ -79,9 +81,15 @@ async def debug_db():
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)
         with app.app_context():
-            await problem.save()
-
-async def test():
+            problem.save()
+    
+    assignment = Assignment()
+    assignment.add_problems('A1', 'A2')
     with app.app_context():
-        user = await User.find_one({'username': 'Eden'})
-        await user.send_verification_email()
+        assignment.save()
+
+
+def test():
+    with app.app_context():
+        user = User.find_one({'username': 'Eden'})
+        user.send_verification_email()

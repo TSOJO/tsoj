@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from typing import Any, Mapping, Dict, List, Optional, cast
+from pymongo.errors import DuplicateKeyError
+import logging
 
 from website.db import db
 from website.models.problem import Problem
@@ -10,18 +12,18 @@ class Assignment:
 
     _max_id: int = 0
 
-    def __init__(self, problem_ids: Optional[List[str]] = None, assignment_id: Optional[int] = None):
+    def __init__(self, id: Optional[int]=None, problem_ids: Optional[List[str]]=None):
         if problem_ids is None:
             problem_ids = []
         # Public properties.
         self.problem_ids: List[str] = problem_ids
-        self.assignment_id: Optional[int] = assignment_id
+        self.id: Optional[int] = id
 
         # Private properties.
         # self._id: Optional[int] = None
 
-    def add_problem(self, problem_id: str):
-        self.problem_ids.append(problem_id)
+    def add_problems(self, *problem_ids):
+        self.problem_ids.extend(problem_ids)
 
     def fetch_problems(self):
         # TODO optimize this with only one query
@@ -32,14 +34,15 @@ class Assignment:
     @classmethod
     def _cast_from_document(cls, document: Any) -> Assignment:
         assignment_obj = Assignment(
+            id=document['id'],
             problem_ids=document['problem_ids'],
-            assignment_id=document['assignment_id'],
         )
         return assignment_obj
 
     def _cast_to_document(self) -> Dict[str, object]:
         return {
-            'assignment_id': self.assignment_id,
+            '_id': self.id,
+            'id': self.id,
             'problem_ids': self.problem_ids
         }
 
@@ -51,16 +54,19 @@ class Assignment:
         return cls._cast_from_document(result)
 
     @classmethod
-    def find_all(cls, filter: Optional[Mapping[str, Any]] = None) -> List[Assignment]:
+    def find_all(cls, filter: Optional[Mapping[str, Any]]=None) -> List[Assignment]:
         results = db.assignments.find(filter=filter)
+        for result in results: print(result)
         return [cls._cast_from_document(result) for result in results]
 
     def save(self) -> Assignment:
         Assignment._max_id += 1
-        self.assignment_id = Assignment._max_id
+        self.id = Assignment._max_id
         doc = self._cast_to_document()
-        db.assignments.insert_one(doc)
-
+        try:
+            db.assignment.insert_one(doc)
+        except DuplicateKeyError:
+            logging.warning('Save failed: ID already exists.')
         return self
 
     @classmethod
@@ -70,5 +76,5 @@ class Assignment:
         if len(all_assignments) == 0:
             cls._max_id = 0
         else:
-            all_ids = [cast(int, a.assignment_id) for a in all_assignments]
+            all_ids = [cast(int, a.id) for a in all_assignments]
             cls._max_id = max(all_ids)

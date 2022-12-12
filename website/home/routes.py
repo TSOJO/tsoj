@@ -12,6 +12,6 @@ def home():
     return render_template('home.html')
 
 @home_bp.route('/problems/')
-async def problems():
-    problems = await Problem.find_all()
+def problems():
+    problems = Problem.find_all()
     return render_template('problems.html', problems=problems)

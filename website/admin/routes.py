@@ -1,6 +1,5 @@
 from flask import render_template, Blueprint, request, redirect, url_for, flash
 from typing import List
-import asyncio
 
 from website.models import Problem, Assignment
 from isolate_wrapper import IsolateSandbox, Verdict, Testcase
@@ -41,7 +40,7 @@ def create_problem():
                 raise NotImplementedError()
 
         problem = Problem(**problem_info, testcases=testcases)
-        asyncio.run(problem.save())
+        problem.save()
 
         flash('Problem created', 'success')
         # ? redirect to /problem/<id>/edit
@@ -61,5 +60,5 @@ def create_assignment():
         flash('Assignment created', 'success')
         # ? redirect to /assignments/ something something
         return redirect(url_for('admin_bp.admin'))
-    problems = asyncio.run(Problem.find_all())
+    problems = Problem.find_all()
     return render_template('create_assignment.html', problems=problems)

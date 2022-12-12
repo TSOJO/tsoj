@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 from pymongo.errors import DuplicateKeyError
+import logging
 
 from isolate_wrapper.custom_types import Testcase
 from website.db import db
@@ -9,14 +10,14 @@ from website.db import db
 
 class Problem:
     def __init__(self,
-                 problem_id: str,
+                 id: str,
                  name: str,
                  description: str,
                  time_limit: int,  # ms
                  memory_limit: int,  # KB
                  testcases: List[Testcase]):
         # Public properties.
-        self.problem_id = problem_id
+        self.id = id
         self.name = name
         self.description = description
         self.time_limit = time_limit
@@ -27,7 +28,7 @@ class Problem:
 
     @classmethod
     def _cast_from_document(cls, document: Any) -> Problem:
-        return Problem(problem_id=document['problem_id'],
+        return Problem(id=document['id'],
                        name=document['name'],
                        description=document['description'],
                        time_limit=document['time_limit'],
@@ -48,7 +49,7 @@ class Problem:
     @classmethod
     def find_one(cls, filter={}) -> Optional[Problem]:
         result = db.problems.find_one(filter=filter)
-        if result == None:
+        if result is None:
             return None
         return cls._cast_from_document(result)
 
@@ -60,15 +61,11 @@ class Problem:
     def save(self, replace=False) -> Problem:
         if not replace:
             try:
-                new = db.problems.insert_one(self._cast_to_document())
+                db.problems.insert_one(self._cast_to_document())
             except DuplicateKeyError:
-                print(
-                    'Warning: attempt to insert a document with the same _id. Use replace=True if you want to replace the document.')
+                logging.warning('Save failed: ID already exists. Use replace=True for replacement.')
         else:
-            db.problems.replace_one(self._cast_to_document(), upsert=True)
+            db.problems.replace_one(filter={'id': self.id},
+                                    replacement=self._cast_to_document(),
+                                    upsert=True)
         return self
-
-    # @classmethod
-    # def register() -> None:
-    # 	if not 'problems' in db.list_collection_names():
-    # 		db.create_collection('problems')
