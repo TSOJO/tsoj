@@ -1,5 +1,4 @@
-import asyncio
-from typing import *
+from typing import Dict, Optional, Any
 
 import website.models as models
 from isolate_wrapper import IsolateSandbox
@@ -9,13 +8,20 @@ from pymongo.errors import DuplicateKeyError
 import logging
 
 @celery.task(name='judge')
-def judge(user_code: str, problem_id: str):
+def judge(user_code: str, problem_id: str, username: str, assignment_id: Optional[int]=None):
     problem = models.Problem.find_one({'id': problem_id})
-    IsolateSandbox().judge(user_code, problem.testcases, problem.time_limit, problem.memory_limit)
+    sandbox = IsolateSandbox()
+    final_verdict, results = sandbox.judge(user_code, problem.testcases, problem.time_limit, problem.memory_limit)
+    new_submission = models.Submission(username,
+                                       final_verdict,
+                                       results,
+                                       problem,
+                                       assignment_id)
+    new_submission.save()  # ! Maybe this shouldn't go to celery if we want to request whether `judge` has finished execution.
     return 'done'
 
 @celery.task(name='insert')
-def add_to_db(collection_name : str, document : Dict[str, Any], replace: bool):
+def add_to_db(collection_name: str, document: Dict[str, Any], replace: bool):
     if not replace:
         try:
             db[collection_name].insert_one(document)

@@ -12,4 +12,4 @@ def fetch_problem(id):
     problem_obj = Problem.find_one({'id': id})
     if problem_obj is None:
         abort(404, description="Problem not found")
-    return jsonify(problem_obj._cast_to_document())
+    return jsonify(problem_obj.cast_to_document())

@@ -27,7 +27,7 @@ class Problem:
     """Database Wrapper Methods"""
 
     @classmethod
-    def _cast_from_document(cls, document: Any) -> Problem:
+    def cast_from_document(cls, document: Any) -> Problem:
         return Problem(id=document['id'],
                        name=document['name'],
                        description=document['description'],
@@ -35,7 +35,7 @@ class Problem:
                        memory_limit=document['memory_limit'],
                        testcases=[Testcase(**testcase) for testcase in document['testcases']])
 
-    def _cast_to_document(self) -> Dict[str, object]:
+    def cast_to_document(self) -> Dict[str, object]:
         return {
             '_id': self.id,
             'id': self.id,
@@ -51,13 +51,13 @@ class Problem:
         result = db.problems.find_one(filter=filter)
         if result is None:
             return None
-        return cls._cast_from_document(result)
+        return cls.cast_from_document(result)
 
     @classmethod
     def find_all(cls, filter={}) -> List[Problem]:
         results = db.problems.find(filter=filter)
-        return [cls._cast_from_document(result) for result in results]
+        return [cls.cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> Problem:
-        add_to_db.delay('problems', self._cast_to_document(), replace=replace)
+        add_to_db.delay('problems', self.cast_to_document(), replace=replace)
         return self

@@ -87,7 +87,7 @@ class User:
     """Database Wrapper Methods"""
 
     @classmethod
-    def _cast_from_document(cls, document: Any) -> User:
+    def cast_from_document(cls, document: Any) -> User:
         user_obj = User(
 			username=document['username'],
 			email=document['email'],
@@ -98,7 +98,7 @@ class User:
         user_obj._verification_code = document['verification_code']
         return user_obj
 
-    def _cast_to_document(self) -> Dict[str, Any]:
+    def cast_to_document(self) -> Dict[str, Any]:
         return {
             '_id': self.username,
             'username': self.username,
@@ -114,13 +114,13 @@ class User:
         doc = db.users.find_one(filter=filter)
         if doc is None:
             return None
-        return cls._cast_from_document(doc)
+        return cls.cast_from_document(doc)
 
     @classmethod
     def find_all(cls, filter: Mapping[str, Any]=None) -> List[User]:
         results = db.users.find(filter=filter)
-        return [cls._cast_from_document(result) for result in results]
+        return [cls.cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> User:
-        add_to_db.delay('users', self._cast_to_document(), replace)
+        add_to_db.delay('users', self.cast_to_document(), replace)
         return self

@@ -22,9 +22,13 @@ def problem_submit(id: str) -> str:
     # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
     # ? Maybe should look like:
     # ? Submit code --(POST)--> /submit (judge + add to DB) --(redirect with submission ID)--> /submission/<id>
+    # ! Harcoded
+    username = 'john.doe'
     
-    user_code = request.form['user_code']
-    judge.delay(user_code, id)
+    user_code = request.form.get('user_code')
+    # TODO: Assignment ID in problem page
+    assignment_id = request.form.get('assignment_id', default=None)
+    judge.delay(user_code, id, username, assignment_id)
     return redirect('/')
     # final_verdict, results = judge(user_code, testcases, 1, 1024*64)
     # return render_template('results.html',

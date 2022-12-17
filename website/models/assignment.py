@@ -31,14 +31,14 @@ class Assignment:
     """Database Wrapper Methods"""
 
     @classmethod
-    def _cast_from_document(cls, document: Any) -> Assignment:
+    def cast_from_document(cls, document: Any) -> Assignment:
         assignment_obj = Assignment(
             id=document['id'],
             problem_ids=document['problem_ids'],
         )
         return assignment_obj
 
-    def _cast_to_document(self) -> Dict[str, object]:
+    def cast_to_document(self) -> Dict[str, object]:
         return {
             '_id': self.id,
             'id': self.id,
@@ -50,18 +50,18 @@ class Assignment:
         result = db.assignments.find_one(filter=filter)
         if result is None:
             return None
-        return cls._cast_from_document(result)
+        return cls.cast_from_document(result)
 
     @classmethod
     def find_all(cls, filter: Optional[Mapping[str, Any]]=None) -> List[Assignment]:
         results = db.assignments.find(filter=filter)
-        return [cls._cast_from_document(result) for result in results]
+        return [cls.cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> Assignment:
         if not self.id:
             Assignment._max_id += 1
             self.id = Assignment._max_id
-        add_to_db.delay('assignments', self._cast_to_document(), replace)
+        add_to_db.delay('assignments', self.cast_to_document(), replace)
         return self
 
     @classmethod

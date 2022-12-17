@@ -22,16 +22,18 @@ class Submission:
 				 username: str,
 				 final_verdict: Verdict,
 				 results: List[Result],
-				 problem_id: str,
+				 problem: Problem,
 				 id: Optional[int]=None,
 				 assignment_id: Optional[int]=None,
 				 submission_time=datetime.now()):
 		# Public properties.
-		self.id :int
 		self.username = username
 		self.final_verdict = final_verdict
 		self.results = results
-		self.problem_id = problem_id
+		# Note here we embed `problem` into Submission, because we want to essentially
+		# `freeze` the problem instance in time, so any edits made to the problem will
+		# will not be reflected on the submission page if checked in the future.
+		self.problem = problem
 		self.id: Optional[int] = id
 		self.assignment_id = assignment_id
 		self.submission_time = submission_time
@@ -39,10 +41,6 @@ class Submission:
 	def fetch_user(self) -> User:
 		return cast(User,
 					User.find_one({'username': self.username}))
-
-	def fetch_problem(self) -> Problem:
-		return cast(Problem,
-					Problem.find_one({'id': self.problem_id}))
 
 	def fetch_assignment(self) -> Optional[Assignment]:
 		if self.assignment_id is None:
@@ -53,26 +51,26 @@ class Submission:
 	"""Database Wrapper Methods"""
 
 	@classmethod
-	def _cast_from_document(cls, document: Any) -> Submission:
+	def cast_from_document(cls, document: Any) -> Submission:
 		submission_obj = Submission(
 			id=document['id'],
 			username=document['username'],
-   			final_verdict=document['final_verdict'],
-			results=document['results'],
-			problem_id=document['problem_id'],
+   			final_verdict=Verdict.cast_from_document(document['verdict']),
+			results=[Result.cast_from_document(result) for result in document['results']],
+			problem=Problem.cast_from_document(document['problem']),
 			assignment_id=document['assignment_id'],
 			submission_time=document['submission_time']
 		)
 		return submission_obj
 
-	def _cast_to_document(self) -> Dict[str, object]:
+	def cast_to_document(self) -> Dict[str, object]:
 		return {
 			'_id': self.id,
 			'id': self.id,
 			'username': self.username,
-			'final_verdict': self.final_verdict,
-			'results': self.results,
-			'problem_id': self.problem_id,
+			'final_verdict': self.final_verdict.cast_to_document(),
+			'results': [result.cast_to_document() for result in self.results],
+			'problem': self.problem.cast_to_document(),
 			'assignment_id': self.assignment_id,
 			'submission_time': self.submission_time,
 		}
@@ -82,19 +80,19 @@ class Submission:
 		result = db.submissions.find_one(filter=filter)
 		if result is None:
 			return None
-		return cls._cast_from_document(result)
+		return cls.cast_from_document(result)
 
 	@classmethod
 	def find_all(cls, filter: Mapping[str, Any]=None) -> List[Submission]:
 		results = db.submissions.find(filter=filter)
-		return [cls._cast_from_document(result) for result in results]
+		return [cls.cast_from_document(result) for result in results]
 
 	def save(self, replace=False) -> Submission:
-		if not self._id:
+		if not self.id:
 			# Generate new incremented ID
 			Submission._max_id += 1
 			self.id = Submission._max_id
-		doc = self._cast_to_document()
+		doc = self.cast_to_document()
 		add_to_db.delay('submissions', doc, replace)
 		return self
 
