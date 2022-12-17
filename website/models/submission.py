@@ -55,7 +55,7 @@ class Submission:
 		submission_obj = Submission(
 			id=document['id'],
 			username=document['username'],
-   			final_verdict=Verdict.cast_from_document(document['verdict']),
+   			final_verdict=Verdict.cast_from_document(document['final_verdict']),
 			results=[Result.cast_from_document(result) for result in document['results']],
 			problem=Problem.cast_from_document(document['problem']),
 			assignment_id=document['assignment_id'],
