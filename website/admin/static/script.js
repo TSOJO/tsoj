@@ -11,8 +11,13 @@ function add_field() {
     h5_node.innerHTML = 'Testcase ' + testcases_count;
     let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
     input_node.name = 'input' + testcases_count;
+    input_node.id = 'input' + testcases_count;
     let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
     answer_node.name = 'answer' + testcases_count;
+    answer_node.id = 'answer' + testcases_count;
+    if (document.getElementById('auto-generate-answer-checkbox').checked == true) {
+        answer_node.readOnly = true;
+    }
     let testcase_container = document.getElementById('testcase-container');
     // input_node.setAttribute('required', '');
     // answer_node.setAttribute('required', '');
@@ -28,7 +33,7 @@ function remove_field(node) {
             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
             '</div>'
         ].join('');
-        const placeholder = document.getElementById('alert-placeholder');
+        const placeholder = document.getElementById('rem-alert-placeholder');
         placeholder.append(wrapper);
         return;
     }
@@ -42,10 +47,55 @@ function remove_field(node) {
         let h5_node = testcase_node.getElementsByTagName('h5')[0];
         h5_node.innerHTML = 'Testcase ' + (i + 1);
         let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
-        console.log(input_node);
+        // console.log(input_node);
         input_node.name = input_node.name.slice(0, -1) + (i + 1);
+        input_node.id = input_node.id.slice(0, -1) + (i + 1);
         let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
         answer_node.name = answer_node.name.slice(0, -1) + (i + 1);
+        answer_node.id = answer_node.id.slice(0, -1) + (i + 1);
+    }
+}
+
+function generate_answers() {
+    for (let i = 1; i <= testcases_count; i++) {
+        var payload = {
+            generatorCode: $('#generator-code').val(),
+            input: $('#input' + i).val(),
+            timeLimit: $('#time-limit').val(),
+            memoryLimit: $('#memory-limit').val()
+        };
+        
+        const placeholder = document.getElementById('gen-alert-placeholder');
+        fetch("/api/generate-answer",
+        {
+            method: "POST",
+            body: JSON.stringify(payload),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data['verdict'] == 'AC') {
+                    $('#answer' + i).val(data['answer']);
+                } else {
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = [
+                        '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
+                        '   <div class="flex-grow-1">Oops... ' + data['verdict'] + ' on Input ' + i + '</div>',
+                        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                        '</div>'
+                    ].join('');
+                    placeholder.append(wrapper);
+                }
+            })
+    }
+}
+
+function readonly_inputs(box) {
+    for (let i = 1; i <= testcases_count; i++) {
+        if (box.checked == true) {
+            document.getElementById('answer' + i).readOnly = true;
+        } else {
+            document.getElementById('answer' + i).readOnly = false;
+        }
     }
 }
 
@@ -149,8 +199,5 @@ window.onpageshow = function (event) {
                 $('#editor-group').hide();
             }
         });
-    } else if ($('div#create-assignment-page').length > 0) {
-        let add_problem_button = document.getElementById('add-problem-button');
-        add_problem_button.addEventListener('click', add_problem);
     }
 }

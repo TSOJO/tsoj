@@ -32,12 +32,12 @@ def create_problem():
             testcases.append(
                 Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}']))
 
-        if 'generator-checkbox' in request.form:
-            code = request.form['generator-code']
-            verdict: Verdict = IsolateSandbox().generate_answer(
-                code, testcases, problem_info['time_limit'], problem_info['memory_limit'])[0]
-            if not verdict.is_ac():
-                raise NotImplementedError()
+        # if 'generator-checkbox' in request.form:
+        #     code = request.form['generator-code']
+        #     verdict: Verdict = IsolateSandbox().generate_answers(
+        #         code, testcases, problem_info['time_limit'], problem_info['memory_limit'])[0]
+        #     if not verdict.is_ac():
+        #         raise NotImplementedError()
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save()

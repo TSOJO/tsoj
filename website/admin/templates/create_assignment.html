@@ -16,7 +16,7 @@
                 <option data-subtext="{{problem.id}}" value="{{problem.id}}">{{problem.name}}</option>
                 {% endfor %}
             </select>
-            <button type="button" class="btn btn-primary" id="add-problem-button">Add Problem</button>
+            <button type="button" class="btn btn-primary" id="add-problem-button" onclick="add_problem()">Add Problem</button>
         </div>
         <div class="border p-4 mb-3" id="problem-container"></div>
         <button type="submit" class="btn btn-primary">Submit</button>
