@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, abort
 from isolate_wrapper import IsolateSandbox, Testcase, Result, Verdict
 from typing import List, Tuple
 from website.celery_tasks import judge
@@ -13,6 +13,8 @@ problem_bp = Blueprint('problem_bp', __name__,
 @problem_bp.route('/<id>')
 def problem(id: str) -> str:
     problem = Problem.find_one({'id': id})
+    if problem is None:
+        abort(404, description="Problem not found")
     assignment_id = request.args.get('assignment_id')
     return render_template('problem.html', problem=problem, assignment_id=assignment_id)
 
