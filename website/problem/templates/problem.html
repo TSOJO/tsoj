@@ -12,6 +12,7 @@
             <textarea name="user_code"></textarea>
             <div id="editor"></div>
         </div>
+        <input type="hidden" name="assignment_id" value="{{assignment_id}}" />
         <div class="mb-3">
             {% if assignment_id %}
             This will submit as part of assignment {{assignment_id}}.

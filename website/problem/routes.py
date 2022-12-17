@@ -30,7 +30,7 @@ def problem_submit(id: str):
     user_code = request.form.get('user_code')
     # TODO: Assignment ID in problem page
     assignment_id = request.form.get('assignment_id', default=None)
-    judge.delay(user_code, id, username, assignment_id)
+    judge.delay(user_code=user_code, problem_id=id, username=username, assignment_id=assignment_id)
     return redirect(url_for('submission.submission'))
     # final_verdict, results = judge(user_code, testcases, 1, 1024*64)
     # return render_template('results.html',

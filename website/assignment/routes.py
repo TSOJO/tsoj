@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
+from website.models import Assignment
 
 assignment_bp = Blueprint('assignment_bp', __name__,
                           template_folder='templates',
@@ -7,19 +8,8 @@ assignment_bp = Blueprint('assignment_bp', __name__,
 @assignment_bp.route('/<int:id>')
 def assignment(id: int):
     # Hardcoded for now.
-    assignment_obj = {
-        'id': 1,
-        'problems': [
-            {
-                'id': 'A1',
-                'name': 'Sum',
-                'description': 'Given two numbers, print their sum.',
-            },
-            {
-                'id': 'A2',
-                'name': 'Difference',
-                'description': 'Given two numbers, print their difference.',
-            }
-        ]
-    }
-    return render_template('assignment.html', assignment=assignment_obj)
+    assignment = Assignment.find_one({'id': id})
+    if assignment is None:
+        abort(404, description='Assignment not found')
+    problems = assignment.fetch_problems()
+    return render_template('assignment.html', assignment=assignment, problems=problems)

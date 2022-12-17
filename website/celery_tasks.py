@@ -12,11 +12,11 @@ def judge(user_code: str, problem_id: str, username: str, assignment_id: Optiona
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()
     final_verdict, results = sandbox.judge(user_code, problem.testcases, problem.time_limit, problem.memory_limit)
-    new_submission = models.Submission(username,
-                                       final_verdict,
-                                       results,
-                                       problem,
-                                       assignment_id)
+    new_submission = models.Submission(username=username,
+                                       final_verdict=final_verdict,
+                                       results=results,
+                                       problem=problem,
+                                       assignment_id=assignment_id)
     new_submission.save()  # ! Maybe this shouldn't go to celery if we want to request whether `judge` has finished execution.
     return 'done'
 

@@ -6,7 +6,7 @@
 <div class="mb-3">
     <h1>Assignment {{assignment.id}}</h1>
 </div>
-{% for problem in assignment.problems %}
+{% for problem in problems %}
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">{{problem.id}}: {{problem.name}}</h5>
