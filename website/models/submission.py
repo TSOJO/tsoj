@@ -25,7 +25,7 @@ class Submission:
 				 problem: Problem,
 				 id: Optional[int]=None,
 				 assignment_id: Optional[int]=None,
-				 submission_time=datetime.now()):
+				 submission_time: datetime=datetime.utcnow()):
 		# Public properties.
 		self.username = username
 		self.final_verdict = final_verdict
@@ -59,7 +59,7 @@ class Submission:
 			results=[Result.cast_from_document(result) for result in document['results']],
 			problem=Problem.cast_from_document(document['problem']),
 			assignment_id=document['assignment_id'],
-			submission_time=document['submission_time']
+			submission_time=datetime.strptime(document['submission_time'], '%Y-%m-%dT%H:%M:%S.%f')
 		)
 		return submission_obj
 
@@ -72,7 +72,7 @@ class Submission:
 			'results': [result.cast_to_document() for result in self.results],
 			'problem': self.problem.cast_to_document(),
 			'assignment_id': self.assignment_id,
-			'submission_time': self.submission_time,
+			'submission_time': self.submission_time.strftime('%Y-%m-%dT%H:%M:%S.%f'),
 		}
 
 	@classmethod

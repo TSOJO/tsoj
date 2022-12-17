@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, url_for
 from isolate_wrapper import IsolateSandbox, Testcase, Result, Verdict
 from typing import List, Tuple
 from website.celery_tasks import judge
@@ -18,7 +18,7 @@ def problem(id: str) -> str:
 
 # Code submission.
 @problem_bp.route('/<id>/submit', methods=['GET', 'POST'])
-def problem_submit(id: str) -> str:
+def problem_submit(id: str):
     # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
     # ? Maybe should look like:
     # ? Submit code --(POST)--> /submit (judge + add to DB) --(redirect with submission ID)--> /submission/<id>
@@ -29,7 +29,7 @@ def problem_submit(id: str) -> str:
     # TODO: Assignment ID in problem page
     assignment_id = request.form.get('assignment_id', default=None)
     judge.delay(user_code, id, username, assignment_id)
-    return redirect('/')
+    return redirect(url_for('submission.submission'))
     # final_verdict, results = judge(user_code, testcases, 1, 1024*64)
     # return render_template('results.html',
     #                        problem=problem_info,
