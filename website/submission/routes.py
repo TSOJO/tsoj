@@ -10,7 +10,7 @@ def submission(id: int) -> str:
     submission: Submission = Submission(
         username='fuco1',
         final_verdict=Verdict.AC,
-        docs=[
+        results=[
             Result(Verdict.AC, 400, 64*1024),
             Result(Verdict.AC, 390, 64*1024),
         ],
