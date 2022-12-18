@@ -20,16 +20,22 @@ class Submission:
 
 	def __init__(self,
 				 username: str,
-				 final_verdict: Verdict,
-				 results: List[Result],
 				 problem: Problem,
+				 final_verdict: Optional[Verdict]=None,
+				 results: Optional[List[Result]]=None,
 				 id: Optional[int]=None,
 				 assignment_id: Optional[int]=None,
 				 submission_time: datetime=datetime.utcnow()):
 		# Public properties.
 		self.username = username
-		self.final_verdict = final_verdict
-		self.results = results
+		if final_verdict is None:
+			self.final_verdict = Verdict.WJ
+		else:
+			self.final_verdict = final_verdict
+		if results is None:
+			self.results = []
+		else:
+			self.results = results
 		# Note here we embed `problem` into Submission, because we want to essentially
 		# `freeze` the problem instance in time, so any edits made to the problem will
 		# will not be reflected on the submission page if checked in the future.
@@ -37,6 +43,24 @@ class Submission:
 		self.id: Optional[int] = id
 		self.assignment_id = assignment_id
 		self.submission_time = submission_time
+
+	def create_empty_results(self, num_results):
+		for _ in range(num_results):
+			self.results.append(
+				Result(verdict=Verdict.WJ,
+           			   time=-1,
+                       memory=-1))
+
+	def update_result(self, result_index, verdict, time, memory):
+		self.results[result_index] = Result(verdict=verdict,
+                                      		time=time,
+                                        	memory=memory)
+		self.save(replace=True)
+	
+	# TODO: Maybe make into setter
+	def update_final_verdict(self, final_verdict):
+		self.final_verdict = final_verdict
+		self.save(replace=True)
 
 	def fetch_user(self) -> User:
 		return cast(User,
