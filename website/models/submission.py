@@ -61,6 +61,13 @@ class Submission:
 	def update_final_verdict(self, final_verdict):
 		self.final_verdict = final_verdict
 		self.save(replace=True)
+  
+	def tests_completed(self):
+		count = 0
+		for result in self.results:
+			if result.verdict != Verdict.WJ:
+				count += 1
+		return count
 
 	def fetch_user(self) -> User:
 		return cast(User,

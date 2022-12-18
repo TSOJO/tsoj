@@ -25,7 +25,7 @@
         </tr>
         <tr>
             <th class="col">Final verdict</th>
-            <td class="text-center">
+            <td class="text-center" id="final-verdict">
                 {% if submission.final_verdict.is_ac() %}
                 <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
@@ -62,7 +62,7 @@
         {% for result in submission.results %}
         <tr>
             <th scope="row">{{loop.index}}</th>
-            <td>
+            <td id="verdict{{loop.index}}">
                 {% if result.verdict.is_ac() %}
                 <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
@@ -81,10 +81,18 @@
                 </span>
                 {% endif %}
             </td>
-            <td>{{result.time}}ms</td>
-            <td>{{result.memory}} KB</td>
+            <td id="time{{loop.index}}">{{result.time}}ms</td>
+            <td id="memory{{loop.index}}">{{result.memory}} KB</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
+<script>
+    // pass onto script.js
+    let submission_id = {{submission.id}};
+    let num_tests = {{submission.results|length}};
+    let tests_completed = {{submission.tests_completed()}};
+</script>
+
 {% endblock %}
