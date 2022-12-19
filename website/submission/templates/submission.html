@@ -97,8 +97,8 @@
                 </span>
                 {% endif %}
             </td>
-            <td id="time{{loop.index}}">{{result.time}}ms</td>
-            <td id="memory{{loop.index}}">{{result.memory}} KB</td>
+            <td id="time{{loop.index}}">{% if not result.verdict.is_wj() %}{{result.time}}ms{% endif %}</td>
+            <td id="memory{{loop.index}}">{% if not result.verdict.is_wj() %}{{result.memory}} KB{% endif %}</td>
         </tr>
         {% endfor %}
     </tbody>

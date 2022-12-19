@@ -55,8 +55,10 @@ function make_request() {
 function update_results(results) {
     for (let i = 0; i < results.length; i++) {
         document.getElementById('verdict' + (i+1)).innerHTML = verdict_to_html(results[i].verdict);
-        document.getElementById('time' + (i+1)).innerHTML = results[i].time + 'ms';
-        document.getElementById('memory' + (i+1)).innerHTML = results[i].memory + ' KB';
+        if (results[i].verdict.verdict != 'WJ') {
+            document.getElementById('time' + (i+1)).innerHTML = results[i].time + 'ms';
+            document.getElementById('memory' + (i+1)).innerHTML = results[i].memory + ' KB';
+        }
     }
 }
 
