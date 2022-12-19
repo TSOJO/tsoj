@@ -17,7 +17,7 @@ def get_id_and_judge(user_code: str, problem_id: str, username: str, assignment_
     judge.delay(user_code=user_code,
                 submission_dict=new_submission.cast_to_document(),
                 problem_dict=problem.cast_to_document())
-    return new_submission.save().id
+    return new_submission.save(wait=True).id
 
 
 @celery.task(name='judge')

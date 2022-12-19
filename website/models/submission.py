@@ -118,13 +118,16 @@ class Submission:
 		results = db.submissions.find(filter=filter)
 		return [cls.cast_from_document(result) for result in results]
 
-	def save(self, replace=False) -> Submission:
+	def save(self, replace=False, wait=False) -> Submission:
 		if not self.id:
 			# Generate new incremented ID
 			Submission._max_id += 1
 			self.id = Submission._max_id
 		doc = self.cast_to_document()
-		add_to_db.delay('submissions', doc, replace)
+		if wait:
+			add_to_db('submissions', doc, replace)
+		else:
+			add_to_db.delay('submissions', doc, replace)
 		return self
 
 	@classmethod

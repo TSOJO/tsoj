@@ -55,10 +55,18 @@ def grab_submission_change():
     except ValueError:
         abort(400, description="Invalid parameters")    
         
-    print(submission_id, tests_completed)
 
     # This will hold the request for x seconds, and will return whenever submission changes.
     submission_now = Submission.find_one({'id': submission_id})
+
+    if tests_completed == len(submission_now.results):
+        # Already done
+        return jsonify({
+                'finalVerdict': submission_now.final_verdict.cast_to_document(),
+                'testsCompleted': tests_completed,
+                'results': [r.cast_to_document() for r in submission_now.results]
+            })
+        
     if submission_now is None:
         abort(404, description='Submission not found')
     poll_rate = 0.5  # s
@@ -68,14 +76,15 @@ def grab_submission_change():
         now_completed = submission_now.tests_completed()
         if now_completed != tests_completed:
             return jsonify({
-                'finalVerdict': submission_now.final_verdict.value,
+                'finalVerdict': submission_now.final_verdict.cast_to_document(),
                 'testsCompleted': now_completed,
                 'results': [r.cast_to_document() for r in submission_now.results]
             })
         submission_now = Submission.find_one({'id': submission_id})
+        
     # Return it anyway...
     return jsonify({
-                'finalVerdict': submission_now.final_verdict.value,
+                'finalVerdict': submission_now.final_verdict.cast_to_document(),
                 'testsCompleted': now_completed,
                 'results': [r.cast_to_document() for r in submission_now.results]
             })

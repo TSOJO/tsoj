@@ -21,14 +21,10 @@ def problem(id: str) -> str:
 # Code submission.
 @problem_bp.route('/<id>/submit', methods=['GET', 'POST'])
 def problem_submit(id: str):
-    # TODO: After submission, the whole result should be stored into a database, and should redirect to /submission/<submission-id> instead.
-    # ? Maybe should look like:
-    # ? Submit code --(POST)--> /submit (judge + add to DB) --(redirect with submission ID)--> /submission/<id>
     # ! Harcoded
     username = 'john.doe'
     
     user_code = request.form.get('user_code')
-    # TODO: Assignment ID in problem page
     assignment_id = request.form.get('assignment_id')
     submission_id = get_id_and_judge(user_code=user_code, problem_id=id, username=username, assignment_id=assignment_id)
     return redirect(url_for('submission.submission', id=submission_id))
