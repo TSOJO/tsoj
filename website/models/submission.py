@@ -21,6 +21,7 @@ class Submission:
 	def __init__(self,
 				 username: str,
 				 problem: Problem,
+				 code: str,
 				 final_verdict: Optional[Verdict]=None,
 				 results: Optional[List[Result]]=None,
 				 id: Optional[int]=None,
@@ -28,6 +29,11 @@ class Submission:
 				 submission_time: datetime=datetime.utcnow()):
 		# Public properties.
 		self.username = username
+		# Note here we embed `problem` into Submission, because we want to essentially
+		# `freeze` the problem instance in time, so any edits made to the problem will
+		# will not be reflected on the submission page if checked in the future.
+		self.problem = problem
+		self.code = code
 		if final_verdict is None:
 			self.final_verdict = Verdict.WJ
 		else:
@@ -36,10 +42,6 @@ class Submission:
 			self.results = []
 		else:
 			self.results = results
-		# Note here we embed `problem` into Submission, because we want to essentially
-		# `freeze` the problem instance in time, so any edits made to the problem will
-		# will not be reflected on the submission page if checked in the future.
-		self.problem = problem
 		self.id: Optional[int] = id
 		self.assignment_id = assignment_id
 		self.submission_time = submission_time
@@ -86,9 +88,10 @@ class Submission:
 		submission_obj = Submission(
 			id=document['id'],
 			username=document['username'],
+			problem=Problem.cast_from_document(document['problem']),
+			code=document['code'],
    			final_verdict=Verdict.cast_from_document(document['final_verdict']),
 			results=[Result.cast_from_document(result) for result in document['results']],
-			problem=Problem.cast_from_document(document['problem']),
 			assignment_id=document['assignment_id'],
 			submission_time=datetime.strptime(document['submission_time'], '%Y-%m-%dT%H:%M:%S.%f')
 		)
@@ -99,9 +102,10 @@ class Submission:
 			'_id': self.id,
 			'id': self.id,
 			'username': self.username,
+			'problem': self.problem.cast_to_document(),
+			'code': self.code,
 			'final_verdict': self.final_verdict.cast_to_document(),
 			'results': [result.cast_to_document() for result in self.results],
-			'problem': self.problem.cast_to_document(),
 			'assignment_id': self.assignment_id,
 			'submission_time': self.submission_time.strftime('%Y-%m-%dT%H:%M:%S.%f'),
 		}

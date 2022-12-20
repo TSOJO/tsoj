@@ -12,6 +12,7 @@ def get_id_and_judge(user_code: str, problem_id: str, username: str, assignment_
     problem = models.Problem.find_one({'id': problem_id})
     new_submission = models.Submission(username=username,
                                        problem=problem,
+                                       code=user_code,
                                        assignment_id=assignment_id)
     new_submission.create_empty_results(len(problem.testcases))
     judge.delay(user_code=user_code,

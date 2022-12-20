@@ -46,8 +46,9 @@ function make_request() {
             if (data['testsCompleted'] == num_tests) {
                 document.getElementById('final-verdict').innerHTML = verdict_to_html(data['finalVerdict']);
             } else {
-                // Note API handles 'timeout'.
-                make_request();
+                // For problems with only fast testcases, give judge some time so we don't DDOS it
+                // (a request will be sent after every testcase has finished).
+                setTimeout(make_request, 500);
             }
         })
 }
@@ -64,7 +65,21 @@ function update_results(results) {
 
 // Use `onpageshow` instead of `$(document).ready()` so this runs even when user gets here by back button.
 window.onpageshow = function(event) {
+    // Initialise code editor.
+    let editor = ace.edit('editor');
+    ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/');
+    editor.setTheme("ace/theme/textmate");
+    editor.session.setMode("ace/mode/python");
+    editor.session.setUseWrapMode(true);
+    // Readonly
+    editor.setReadOnly(true);
+    // Disable cursor
+    editor.setOptions({readOnly: true, highlightActiveLine: false, highlightGutterLine: false});
+    editor.renderer.$cursorLayer.element.style.display = "none"
+
     if (tests_completed != num_tests) {
-        make_request()
+        // For problems with only fast testcases, give judge some time so we don't DDOS it
+        // (a request will be sent after every testcase has finished).
+        setTimeout(make_request, 500);
     }
 }
