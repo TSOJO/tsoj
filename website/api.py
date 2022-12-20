@@ -37,7 +37,7 @@ def generate_answer():
     answer, verdict = IsolateSandbox().generate_answer(code, input_, time_limit, memory_limit)
     return jsonify({
         'answer': answer,
-        'verdict': verdict.name,
+        'verdict': verdict.cast_to_document(),
     })
 
 @api_bp.route('/grab-submission-change/', methods=['POST'])
@@ -46,17 +46,17 @@ def grab_submission_change():
     submission_id = req_json.get('id')
     tests_completed = req_json.get('testsCompleted')
     
-    if any(param is None for param in (submission_id, tests_completed)):
-        abort(400, description="Invalid parameters")
+    # redundant, int(None) will raise TypeError
+    # if any(param is None for param in (submission_id, tests_completed)):
+    #     abort(400, description="Invalid parameters")
     
     try:
         submission_id = int(submission_id)
         tests_completed = int(tests_completed)
-    except ValueError:
-        abort(400, description="Invalid parameters")    
+    except (ValueError, TypeError):
+        abort(400, description="Invalid parameters")  
         
-
-    # This will hold the request for x seconds, and will return whenever submission changes.
+    # This will hold the request for {hold_for} seconds, and will return whenever submission changes.
     submission_now = Submission.find_one({'id': submission_id})
 
     if tests_completed == len(submission_now.results):
@@ -69,6 +69,7 @@ def grab_submission_change():
         
     if submission_now is None:
         abort(404, description='Submission not found')
+
     poll_rate = 0.5  # s
     hold_for = 5  # s
     for _ in range(int(hold_for // poll_rate)):

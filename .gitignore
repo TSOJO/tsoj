@@ -111,6 +111,7 @@ venv_win/
 ENV/
 env.bak/
 venv.bak/
+activate.sh
 
 # Spyder project settings
 .spyderproject

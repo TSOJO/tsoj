@@ -1,4 +1,5 @@
 function verdict_to_html(verdict) {
+    // An example for the verdict object here is {verdict: 'AC', verdict_long: 'Accepted'}
     switch (verdict.verdict) {
         case 'AC':
             return ['<span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">',
@@ -43,7 +44,7 @@ function make_request() {
             tests_completed = data['testsCompleted']
             console.log(data);
             update_results(data['results']);
-            if (data['testsCompleted'] == num_tests) {
+            if (tests_completed == num_tests) {
                 document.getElementById('final-verdict').innerHTML = verdict_to_html(data['finalVerdict']);
             } else {
                 // For problems with only fast testcases, give judge some time so we don't DDOS it

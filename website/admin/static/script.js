@@ -73,13 +73,13 @@ function generate_answers() {
         })
             .then(response => response.json())
             .then(data => {
-                if (data['verdict'] == 'AC') {
+                if (data['verdict'].verdict == 'AC') {
                     $('#answer' + i).val(data['answer']);
                 } else {
                     const wrapper = document.createElement('div');
                     wrapper.innerHTML = [
                         '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
-                        '   <div class="flex-grow-1">Oops... ' + data['verdict'] + ' on Input ' + i + '</div>',
+                        '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + '</div>',
                         '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
                         '</div>'
                     ].join('');

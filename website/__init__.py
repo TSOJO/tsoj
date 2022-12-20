@@ -49,7 +49,7 @@ def init_app() -> Flask:
     from .errors import page_not_found
     app.register_error_handler(404, page_not_found)
 
-    # debug_db()
+    debug_db()
 
     return app
 
@@ -67,6 +67,13 @@ def debug_db():
             'testcases': [
                 Testcase('2\n9\n', '11\n'),
                 Testcase('10\n20\n', '30\n'),
+                Testcase('100\n200\n', '300\n'),
+                Testcase('1000\n2000\n', '3000\n'),
+                Testcase('10000\n20000\n', '30000\n'),
+                Testcase('100000\n200000\n', '300000\n'),
+                Testcase('1000000\n2000000\n', '3000000\n'),
+                Testcase('10000000\n20000000\n', '30000000\n'),
+                Testcase('100000000\n200000000\n', '300000000\n'),
             ],
         },
         {
@@ -84,7 +91,7 @@ def debug_db():
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)
         with app.app_context():
-            problem.save()
+            problem.save(replace=True)
     
     assignment = Assignment()
     assignment.add_problems('A1', 'A2')
