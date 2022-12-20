@@ -26,14 +26,12 @@ def problem_submit(id: str):
 
     user_code = request.form.get('user_code')
     assignment_id = request.form.get('assignment_id')
-    problem = Problem.find_one({'id': id})
     new_submission = Submission(username=username,
-                                problem=problem,
+                                problem_id=id,
                                 code=user_code,
                                 assignment_id=assignment_id)
-    new_submission.create_empty_results(len(problem.testcases))
+    submission_id = new_submission.save(wait=True).id
     judge.delay(user_code=user_code,
                 submission_dict=new_submission.cast_to_document(),
-                problem_dict=problem.cast_to_document())
-    submission_id = new_submission.save(wait=True).id
+                problem_id=id,)
     return redirect(url_for('submission.submission', id=submission_id))

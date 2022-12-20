@@ -21,7 +21,7 @@ class Submission:
 
 	def __init__(self,
 				 username: str,
-				 problem: Problem,
+				 problem_id: int,
 				 code: str,
 				 final_verdict: Optional[Verdict]=None,
 				 results: Optional[List[Result]]=None,
@@ -30,10 +30,7 @@ class Submission:
 				 submission_time: datetime=datetime.utcnow()):
 		# Public properties.
 		self.username = username
-		# Note here we embed `problem` into Submission, because we want to essentially
-		# `freeze` the problem instance in time, so any edits made to the problem will
-		# will not be reflected on the submission page if checked in the future.
-		self.problem = problem
+		self.problem_id = problem_id
 		self.code = code
 		if final_verdict is None:
 			self.final_verdict = Verdict.WJ
@@ -58,7 +55,8 @@ class Submission:
 		self.results[result_index] = Result(verdict=verdict,
                                       		time=time,
                                         	memory=memory)
-		self.final_verdict = IsolateSandbox.decide_final_verdict(self.results)
+		self.final_verdict = IsolateSandbox.decide_final_verdict([r.verdict for r in self.results])
+		print(result_index, self.results, self.final_verdict)
 		self.save(replace=True)
 	
 	def tests_completed(self):
@@ -85,7 +83,7 @@ class Submission:
 		submission_obj = Submission(
 			id=document['id'],
 			username=document['username'],
-			problem=Problem.cast_from_document(document['problem']),
+			problem_id=document['problem_id'],
 			code=document['code'],
    			final_verdict=Verdict.cast_from_document(document['final_verdict']),
 			results=[Result.cast_from_document(result) for result in document['results']],
@@ -99,7 +97,7 @@ class Submission:
 			'_id': self.id,
 			'id': self.id,
 			'username': self.username,
-			'problem': self.problem.cast_to_document(),
+			'problem_id': self.problem_id,
 			'code': self.code,
 			'final_verdict': self.final_verdict.cast_to_document(),
 			'results': [result.cast_to_document() for result in self.results],

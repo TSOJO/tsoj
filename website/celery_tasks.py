@@ -7,24 +7,12 @@ from website.db import db
 from pymongo.errors import DuplicateKeyError
 import logging
 
-@celery.task(name='judge_wrapper')
-def get_id_and_judge(user_code: str, problem_id: str, username: str, assignment_id: Optional[int]=None):
-    problem = models.Problem.find_one({'id': problem_id})
-    new_submission = models.Submission(username=username,
-                                       problem=problem,
-                                       code=user_code,
-                                       assignment_id=assignment_id)
-    new_submission.create_empty_results(len(problem.testcases))
-    judge.delay(user_code=user_code,
-                submission_dict=new_submission.cast_to_document(),
-                problem_dict=problem.cast_to_document())
-    return new_submission.save(wait=True).id
-
 @celery.task(name='judge')
-def judge(user_code: str, submission_dict, problem_dict):  # ! Adding typings for e.g. models.Submission results in circular imports (????)
+def judge(user_code: str, submission_dict, problem_id: int):  # ! Adding typings for e.g. models.Submission results in circular imports (????)
     submission = models.Submission.cast_from_document(submission_dict)
-    problem = models.Problem.cast_from_document(problem_dict)
+    problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()
+    submission.create_empty_results(len(problem.testcases))
     for i, result in enumerate(sandbox.judge(user_code, problem.testcases, problem.time_limit, problem.memory_limit)):
         submission.update_result(i, result.verdict, result.time, result.memory)
     return 'done'

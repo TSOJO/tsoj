@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, abort, request
 from website.models import Problem, Submission
-from isolate_wrapper import IsolateSandbox
+from isolate_wrapper import IsolateSandbox, Verdict
 import json
 import time
 
@@ -57,35 +57,28 @@ def grab_submission_change():
         abort(400, description="Invalid parameters")  
         
     # This will hold the request for {hold_for} seconds, and will return whenever submission changes.
-    submission_now = Submission.find_one({'id': submission_id})
-
-    if tests_completed == len(submission_now.results):
-        # Already done
-        return jsonify({
-                'finalVerdict': submission_now.final_verdict.cast_to_document(),
-                'testsCompleted': tests_completed,
-                'results': [r.cast_to_document() for r in submission_now.results]
-            })
-        
-    if submission_now is None:
+    submission = Submission.find_one({'id': submission_id})
+    if submission is None:
         abort(404, description='Submission not found')
 
+    def submission_as_json():
+        return jsonify({
+                'finalVerdict': submission.final_verdict.cast_to_document(),
+                'testsCompleted': submission.tests_completed(),
+                'results': [r.cast_to_document() for r in submission.results],
+            })
+
+    if submission.final_verdict is not Verdict.WJ:
+        # Already done
+        return submission_as_json()
+        
     poll_rate = 0.5  # s
     hold_for = 5  # s
     for _ in range(int(hold_for // poll_rate)):
         time.sleep(poll_rate)
-        now_completed = submission_now.tests_completed()
-        if now_completed != tests_completed:
-            return jsonify({
-                'finalVerdict': submission_now.final_verdict.cast_to_document(),
-                'testsCompleted': now_completed,
-                'results': [r.cast_to_document() for r in submission_now.results]
-            })
-        submission_now = Submission.find_one({'id': submission_id})
+        if submission.tests_completed() != tests_completed:
+            return submission_as_json()
+        submission = Submission.find_one({'id': submission_id})
         
     # Return it anyway...
-    return jsonify({
-                'finalVerdict': submission_now.final_verdict.cast_to_document(),
-                'testsCompleted': now_completed,
-                'results': [r.cast_to_document() for r in submission_now.results]
-            })
+    return submission_as_json()

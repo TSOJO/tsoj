@@ -3,7 +3,7 @@
 {% block title %}Submission #{{submission.id}}{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Submission #{{submission.id}}</h1>
+<h1 class="mb-3">Submission #<a id="submission-id">{{submission.id}}</a></h1>
 <div class="mb-3">
     <h4>Source Code</h4>
     <div id="editor">{{submission.code}}</div>
@@ -15,7 +15,7 @@
         <tbody>
             <tr>
                 <th class="col">Problem</th>
-                <td class="text-center">{{submission.problem.id}}: {{submission.problem.name}}</td>
+                <td class="text-center">{{submission.problem_id}}</td>
             </tr>
             <tr>
                 <th class="col">Assignment ID</th>
@@ -31,6 +31,7 @@
             </tr>
             <tr>
                 <th class="col">Final verdict</th>
+                <a id="final-verdict-verdict" hidden>{{submission.final_verdict.name}}</a>
                 <td class="text-center" id="final-verdict">
                     {% if submission.final_verdict.is_ac() %}
                     <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
@@ -74,7 +75,7 @@
                 <th scope="col">Memory used</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="results-table-body">
             {% for result in submission.results %}
             <tr>
                 <th scope="row">{{loop.index}}</th>
@@ -112,13 +113,4 @@
         </tbody>
     </table>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // pass onto script.js
-    let submission_id = {{submission.id}};
-    let num_tests = {{submission.results|length}};
-    let tests_completed = {{submission.tests_completed()}};
-</script>
 {% endblock %}
