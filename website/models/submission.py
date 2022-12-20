@@ -6,6 +6,7 @@ from pymongo.errors import DuplicateKeyError
 import logging
 
 from isolate_wrapper.custom_types import Result, Verdict
+from isolate_wrapper import IsolateSandbox
 
 from website.celery_tasks import add_to_db
 from website.db import db
@@ -57,13 +58,9 @@ class Submission:
 		self.results[result_index] = Result(verdict=verdict,
                                       		time=time,
                                         	memory=memory)
+		self.final_verdict = IsolateSandbox.decide_final_verdict(self.results)
 		self.save(replace=True)
 	
-	# TODO: Maybe make into setter
-	def update_final_verdict(self, final_verdict, wait=False):
-		self.final_verdict = final_verdict
-		self.save(replace=True, wait=wait)
-  
 	def tests_completed(self):
 		count = 0
 		for result in self.results:

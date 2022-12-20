@@ -25,13 +25,8 @@ def judge(user_code: str, submission_dict, problem_dict):  # ! Adding typings fo
     submission = models.Submission.cast_from_document(submission_dict)
     problem = models.Problem.cast_from_document(problem_dict)
     sandbox = IsolateSandbox()
-    results = []
     for i, result in enumerate(sandbox.judge(user_code, problem.testcases, problem.time_limit, problem.memory_limit)):
         submission.update_result(i, result.verdict, result.time, result.memory)
-        results.append(result)
-    final_verdict = sandbox.decide_final_verdict([r.verdict for r in results])
-    # ! There's a bug where `final_verdict` is WJ even though all testcases are done. Waiting here seems to fix it. Not sure though.
-    submission.update_final_verdict(final_verdict, wait=True)
     return 'done'
 
 @celery.task(name='insert')

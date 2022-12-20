@@ -23,3 +23,7 @@
     </form>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{url_for('.static', filename='create_assignment.js')}}"></script>
+{% endblock %}

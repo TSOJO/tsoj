@@ -53,7 +53,7 @@
             <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;"></div>
             <input id="testcases-count" name="testcases-count" type="text" hidden> 
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox" onclick="readonly_inputs(this)">
+                <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
                 <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
             </div>
         
@@ -79,4 +79,8 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{url_for('.static', filename='create_problem.js')}}"></script>
 {% endblock %}

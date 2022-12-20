@@ -112,12 +112,13 @@
         </tbody>
     </table>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
     // pass onto script.js
     let submission_id = {{submission.id}};
     let num_tests = {{submission.results|length}};
     let tests_completed = {{submission.tests_completed()}};
 </script>
-
 {% endblock %}
