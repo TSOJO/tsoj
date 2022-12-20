@@ -6,6 +6,7 @@ window.onpageshow = function(event) {
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/python");
     editor.session.setUseWrapMode(true);
+    editor.setOptions({maxLines: 25, minLines: 25});
     let textarea = $('textarea[name="user_code"]').hide();
 
     // Reset submit button. Is there a better way to do this?

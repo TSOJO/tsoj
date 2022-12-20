@@ -92,8 +92,7 @@ window.onpageshow = function (event) {
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/python");
     editor.session.setUseWrapMode(true);
-    // Disable cursor
-    editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false });
+    editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, maxLines: Infinity});
     editor.renderer.$cursorLayer.element.style.display = "none"
     if (document.getElementById('final-verdict-verdict').innerHTML == 'WJ') {
         make_request();
