@@ -20,7 +20,6 @@ def get_id_and_judge(user_code: str, problem_id: str, username: str, assignment_
                 problem_dict=problem.cast_to_document())
     return new_submission.save(wait=True).id
 
-
 @celery.task(name='judge')
 def judge(user_code: str, submission_dict, problem_dict):  # ! Adding typings for e.g. models.Submission results in circular imports (????)
     submission = models.Submission.cast_from_document(submission_dict)
@@ -31,7 +30,8 @@ def judge(user_code: str, submission_dict, problem_dict):  # ! Adding typings fo
         submission.update_result(i, result.verdict, result.time, result.memory)
         results.append(result)
     final_verdict = sandbox.decide_final_verdict([r.verdict for r in results])
-    submission.update_final_verdict(final_verdict)
+    # ! There's a bug where `final_verdict` is WJ even though all testcases are done. Waiting here seems to fix it. Not sure though.
+    submission.update_final_verdict(final_verdict, wait=True)
     return 'done'
 
 @celery.task(name='insert')

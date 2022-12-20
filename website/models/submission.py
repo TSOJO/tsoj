@@ -60,9 +60,9 @@ class Submission:
 		self.save(replace=True)
 	
 	# TODO: Maybe make into setter
-	def update_final_verdict(self, final_verdict):
+	def update_final_verdict(self, final_verdict, wait=False):
 		self.final_verdict = final_verdict
-		self.save(replace=True)
+		self.save(replace=True, wait=wait)
   
 	def tests_completed(self):
 		count = 0
