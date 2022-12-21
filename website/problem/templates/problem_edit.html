@@ -5,23 +5,23 @@
 {% block content %}
 <div>
     <div class="mb-3">
-        <h1>Create Problem</h1>
+        <h1>Edit Problem</h1>
     </div>
     
     <form method="POST" class="needs-validation" novalidate>
         <div class="form-group mb-3">
             <label for="id" class="form-label">ID</label>
-            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" required>
+            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" value="{{problem.id}}" disabled>
         </div>
     
         <div class="form-group mb-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name" required>
+            <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name" value="{{problem.name}}" required>
         </div>
     
         <div class="form-group mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" name="description" id="description" rows="5" placeholder="Enter problem description" required></textarea>
+            <textarea class="form-control" name="description" id="description" rows="5" placeholder="Enter problem description" required>{{problem.description}}</textarea>
         </div>
     
         <label class="form-label">Testcases</label>
@@ -50,8 +50,32 @@
                 </div>
             </div>
             
-            <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;"></div>
-            <input id="testcases-count" name="testcases-count" type="text" hidden> 
+            <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;">
+                {% for testcase in problem.testcases %}
+                <div id="testcase-div" style="display: block" class="border p-4">
+                    <div class="container">
+                        <div class="d-flex justify-content-between">
+                            <div class="p2 mt-1">
+                                <h5 class="testcase-number">Testcase {{loop.index}}</h5>
+                            </div>
+                            <div class="p2">
+                                <button type="button" class="btn btn-danger"id="remove-button"  onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Input</label>
+                        <textarea class="form-control testcase-input" rows="3" id="input{{loop.index}}" name="input{{loop.index}}">{{testcase.input}}</textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Answer</label>
+                        <textarea class="form-control testcase-answer"rows="3" id="answer{{loop.index}}" name="answer{{loop.index}}">{{testcase.answer}}</textarea>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <input id="testcases-count" name="testcases-count" type="text" value="{{problem.testcases| length}}" hidden> 
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
                 <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
@@ -67,13 +91,13 @@
     
         <label for="time-limit" class="form-label">Time limit</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="time-limit" id="time-limit" value="1.0" required>
+            <input type="text" class="form-control" name="time-limit" id="time-limit" value="{{problem.time_limit / 1000}}" required>
             <span class="input-group-text">seconds (recommended: 1-10)</span>
         </div>
     
         <label for="memory-limit" class="form-label">Memory limit</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="128" required>
+            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="{{problem.memory_limit / 1024}}" required>
             <span class="input-group-text">MB (recommended: 64-512)</span>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
@@ -82,5 +106,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{{url_for('.static', filename='create_problem.js')}}"></script>
+<script type="text/javascript" src="{{url_for('.static', filename='problem_edit.js')}}"></script>
 {% endblock %}

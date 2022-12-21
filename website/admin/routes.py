@@ -40,11 +40,15 @@ def create_problem():
         #         raise NotImplementedError()
 
         problem = Problem(**problem_info, testcases=testcases)
+        existing_problem = Problem.find_one({'id': problem.id})
+        if existing_problem:
+            flash(f'Problem with the id {problem.id} already exists.', 'error')
+            return redirect(url_for('admin_bp.admin'))
         problem.save()
 
         flash('Problem created', 'success')
         # ? redirect to /problem/<id>/edit
-        return redirect(url_for('admin_bp.admin'))
+        return redirect(url_for('problem_bp.problem_edit', id=problem.id))
     return render_template('create_problem.html')
 
 

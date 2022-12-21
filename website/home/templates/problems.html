@@ -11,7 +11,16 @@
         <div class="card-body">
             <h5 class="card-title">{{problem.id}}: {{problem.name}}</h5>
             <p class="card-text text-truncate col-5">{{problem.description}}</p>
-            <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
+            <div class="container">
+                <div class="row">
+                    <div class="col-1">
+                        <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
+                    </div>
+                    <div class="col-1">
+                        <a href="{{ url_for('problem_bp.problem_edit', id=problem.id) }}" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endfor %}
