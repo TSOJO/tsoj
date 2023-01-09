@@ -17,9 +17,9 @@ class User(UserMixin):
 
     def __init__(self,
                  id: str,
-                 username: str,
-                 full_name: str,
                  email: str,
+                 username: str = '',
+                 full_name: str = '',
                  plaintext_password: str = '',
                  is_admin: bool = False):
         # Public properties
@@ -56,17 +56,19 @@ class User(UserMixin):
         problem_ids.sort()
         return problem_ids
 
-    def send_verification_email(self):
-        # if self._verification_code == '':
-        #     self._verification_code = secrets.token_urlsafe(16)
-        #     self.save()
+    def set_password_and_send_email(self):
+        password = secrets.token_urlsafe(16)
+        self.set_password(password)
 
         subject = 'Verify your email on TSOJ'
         body = (
-            f"Hi {self.id},\n"
-            "\n"
-            "Verify your email by clicking this link:\n"
-            f"{environ.get('BASE_URL')}/auth?code=abc\n"
+            f"Hi {self.id},\n\n"
+            "Someone has created a TSOJ account using this email. If it is not you, please ignore this email.\n\n"
+            f"Your login password is: {password}\n\n"
+            "You can change this password in the account settings page. We hope you have a great time in TSOJ.\n\n"
+            "Regards,\n"
+            "The TSOJ Organization\n"
+            "https://github.com/TSOJO/tsoj"
         )
 
         send_email.delay(subject, body, self.email)

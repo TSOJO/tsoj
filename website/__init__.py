@@ -116,8 +116,8 @@ def debug_db(app):
     with app.app_context():
         assignment.save()
 
-    admin = User(id='admin',username='admin',full_name='admin', email='admin@localhost', plaintext_password='admin', is_admin=True)
-    test_user = User(id='user',username='user',full_name='user', email='user@localhost', plaintext_password='user', is_admin=False)
+    admin = User(id='admin', email='admin@localhost', plaintext_password='admin', is_admin=True)
+    test_user = User(id='user', email='user@localhost', plaintext_password='user', is_admin=False)
     with app.app_context():
         admin.save()
         test_user.save()

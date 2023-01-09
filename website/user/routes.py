@@ -54,10 +54,10 @@ def register():
             return redirect(url_for('user_bp.register'))
         user = User(
             id=register_form.id.data,
-            email=register_form.email.data,
-            plaintext_password=register_form.password.data)
+            email=register_form.email.data)
+        user.set_password_and_send_email()
         user.save()
-        flash('Account created successfully.')
+        flash('Account created successfully. An email will be sent to you with your login password.')
     return render_template('register.html', form=register_form)
 
 @user_bp.route('/<id>/profile')
@@ -76,7 +76,7 @@ def profile(id: str):
 @user_bp.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'POST':
-        new_id = request.form.get('username')
+        new_username = request.form.get('username')
         if new_username:  # ! Doesn't work yet, have to wait for user_id
             current_user.username = new_username
             flash('Username changed successfully.')
