@@ -27,13 +27,13 @@ def problem(id: str) -> str:
 @problem_bp.route('/<id>/submit', methods=['POST'])
 @login_required
 def problem_submit(id: str):
-    username = current_user.username
+    user_id = current_user.id
 
     user_code = request.form.get('user_code')
     assignment_id = request.form.get('assignment_id')
     if assignment_id:
         assignment_id = int(assignment_id)
-    new_submission = Submission(username=username,
+    new_submission = Submission(user_id=user_id,
                                 problem_id=id,
                                 code=user_code,
                                 assignment_id=assignment_id)

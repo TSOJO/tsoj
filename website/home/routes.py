@@ -24,10 +24,10 @@ def problems():
 @home_bp.route('/submissions')
 def submissions():
     filter = {}
-    username = request.args.get('username')
+    user_id = request.args.get('id')
     problem_id = request.args.get('problem_id')
-    if username is not None:
-        filter['username'] = username
+    if user_id is not None:
+        filter['id'] = user_id
     if problem_id is not None:
         filter['problem_id'] = problem_id
     submissions = Submission.find_all(filter=filter)

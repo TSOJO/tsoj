@@ -21,7 +21,7 @@ login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
     from website.models import User
-    return User.find_one({'username': user_id})
+    return User.find_one({'id': user_id})
 
 
 def init_app() -> Flask:
@@ -116,8 +116,8 @@ def debug_db(app):
     with app.app_context():
         assignment.save()
 
-    admin = User(username='admin', email='admin@localhost', plaintext_password='admin', is_admin=True)
-    test_user = User(username='user', email='user@localhost', plaintext_password='user', is_admin=False)
+    admin = User(id='admin',username='admin',full_name='admin', email='admin@localhost', plaintext_password='admin', is_admin=True)
+    test_user = User(id='user',username='user',full_name='user', email='user@localhost', plaintext_password='user', is_admin=False)
     with app.app_context():
         admin.save()
         test_user.save()
@@ -125,5 +125,5 @@ def debug_db(app):
 def test(app):
     from website.models import Assignment, Submission, User, Problem
     with app.app_context():
-        user = User.find_one({'username': 'Justin'})
+        user = User.find_one({'id': 'Justin'})
         user.send_verification_email()

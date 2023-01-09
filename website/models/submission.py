@@ -20,7 +20,7 @@ class Submission:
 	_max_id: int = 0
 
 	def __init__(self,
-				 username: str,
+				 user_id: str,
 				 problem_id: int,
 				 code: str,
 				 final_verdict: Optional[Verdict]=None,
@@ -29,7 +29,7 @@ class Submission:
 				 assignment_id: Optional[int]=None,
 				 submission_time: datetime=datetime.utcnow()):
 		# Public properties.
-		self.username = username
+		self.user_id = user_id
 		self.problem_id = problem_id
 		self.code = code
 		if final_verdict is None:
@@ -68,7 +68,7 @@ class Submission:
 
 	def fetch_user(self) -> User:
 		return cast(User,
-					User.find_one({'username': self.username}))
+					User.find_one({'id': self.user_id}))
 
 	def fetch_assignment(self) -> Optional[Assignment]:
 		if self.assignment_id is None:
@@ -82,7 +82,7 @@ class Submission:
 	def cast_from_document(cls, document: Any) -> Submission:
 		submission_obj = Submission(
 			id=document['id'],
-			username=document['username'],
+			user_id=document['user_id'],
 			problem_id=document['problem_id'],
 			code=document['code'],
    			final_verdict=Verdict.cast_from_document(document['final_verdict']),
@@ -96,7 +96,7 @@ class Submission:
 		return {
 			'_id': self.id,
 			'id': self.id,
-			'username': self.username,
+			'user_id': self.user_id,
 			'problem_id': self.problem_id,
 			'code': self.code,
 			'final_verdict': self.final_verdict.cast_to_document(),

@@ -20,7 +20,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Submission ID</th>
-                            <th scope="col">Username</th>
+                            <th scope="col">User</th>
                             <th scope="col">Submission time (UTC)</th>
                             <th scope="col">Final verdict</th>
                             <th scope="col">View</th>
@@ -30,7 +30,7 @@
                         {% for submission in submissions_dict.get(problem.id) %}
                         <tr>
                             <th scope="row">{{submission.id}}</th>
-                            <td>{{submission.username}}</td>
+                            <td>{{submission.user_id}}</td>
                             <td>{{submission.submission_time.strftime('%H:%M:%S %d-%m-%Y')}}</td>
                             <td>
                                 {% if submission.final_verdict.is_ac() %}

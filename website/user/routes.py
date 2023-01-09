@@ -16,7 +16,7 @@ def login():
         if not login_form.validate():
             flash('Invalid form.', 'error')
             return redirect(url_for('user_bp.login'))
-        user = User.find_one({'username': login_form.username.data})
+        user = User.find_one({'id': login_form.id.data})
         print(user)
         if not user:
             flash('Usernmame does not exist.', 'error')
@@ -48,22 +48,21 @@ def register():
         if not register_form.validate():
             flash('Invalid form.', 'error')
             return redirect(url_for('user_bp.register'))
-        user = User.find_one({'username': register_form.username.data})
+        user = User.find_one({'id': register_form.id.data})
         if user:
             flash('Username already exists.', 'error')
             return redirect(url_for('user_bp.register'))
         user = User(
-            username=register_form.username.data,
+            id=register_form.id.data,
             email=register_form.email.data,
             plaintext_password=register_form.password.data)
         user.save()
         flash('Account created successfully.')
     return render_template('register.html', form=register_form)
 
-# ! Need POST?
-@user_bp.route('/<username>/profile', methods=['GET', 'POST'])
-def profile(username: str):
-    user = User.find_one({'username': username})
+@user_bp.route('/<id>/profile')
+def profile(id: str):
+    user = User.find_one({'id': id})
     if user is None:
         abort(404, description="User not found")
     problems = dict(map(lambda p: (p.id, False), Problem.find_all()))
@@ -77,7 +76,7 @@ def profile(username: str):
 @user_bp.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'POST':
-        new_username = request.form.get('username')
+        new_id = request.form.get('username')
         if new_username:  # ! Doesn't work yet, have to wait for user_id
             current_user.username = new_username
             flash('Username changed successfully.')
@@ -96,12 +95,12 @@ def settings():
 @user_bp.route('/admin_debug')
 def admin_debug():
     logout_user()
-    login_user(User.find_one({'username': 'admin'}))
+    login_user(User.find_one({'id': 'admin'}))
     return redirect(url_for('home_bp.home'))
 
 
 @user_bp.route('/user_debug')
 def user_debug():
     logout_user()
-    login_user(User.find_one({'username': 'user'}))
+    login_user(User.find_one({'id': 'user'}))
     return redirect(url_for('home_bp.home'))

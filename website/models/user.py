@@ -15,18 +15,27 @@ from . import submission as submission_file
 
 class User(UserMixin):
 
-    def __init__(self, username: str, email: str, plaintext_password: str = '', is_admin: bool = False):
+    def __init__(self,
+                 id: str,
+                 username: str,
+                 full_name: str,
+                 email: str,
+                 plaintext_password: str = '',
+                 is_admin: bool = False):
         # Public properties
+        self.id = id
         self.username = username
+        self.full_name = full_name
         self.email = email
         self.is_admin = is_admin
-        self.is_verified: bool = False  # ! Probably don't need if just send them their password
+        # ! Probably don't need if just send them their password
+        self.is_verified: bool = False
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)
 
     def get_id(self):
-        return self.username
+        return self.id
 
     def set_password(self, plaintext_password):
         self._hashed_password = generate_password_hash(plaintext_password)
@@ -35,7 +44,7 @@ class User(UserMixin):
         return check_password_hash(self._hashed_password, plaintext_password)
 
     def get_submissions(self) -> List[submission_file.Submission]:
-        submissions = submission_file.Submission.find_all({'username': f'{self.username}'})
+        submissions = submission_file.Submission.find_all({'id': f'{self.id}'})
         return submissions
 
     def get_solved_problem_ids(self) -> List[int]:
@@ -54,11 +63,11 @@ class User(UserMixin):
 
         subject = 'Verify your email on TSOJ'
         body = (
-		f"Hi {self.username},\n"
-        "\n"
-		"Verify your email by clicking this link:\n"
-		f"{environ.get('BASE_URL')}/auth?code=abc\n"
-		)
+            f"Hi {self.id},\n"
+            "\n"
+            "Verify your email by clicking this link:\n"
+            f"{environ.get('BASE_URL')}/auth?code=abc\n"
+        )
 
         send_email.delay(subject, body, self.email)
 
@@ -67,7 +76,7 @@ class User(UserMixin):
     @classmethod
     def cast_from_document(cls, document: Any) -> User:
         user_obj = User(
-            username=document['username'],
+            id=document['id'],
             email=document['email'],
             is_admin=document['is_admin']
         )
@@ -77,8 +86,8 @@ class User(UserMixin):
 
     def cast_to_document(self) -> Dict[str, Any]:
         return {
-            '_id': self.username,
-            'username': self.username,
+            '_id': self.id,
+            'id': self.id,
             'email': self.email,
             'hashed_password': self._hashed_password,
             'is_verified': self.is_verified,

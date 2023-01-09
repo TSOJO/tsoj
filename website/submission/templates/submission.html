@@ -22,8 +22,8 @@
                 <td class="text-center">{% if submission.assignment_id %}<a href="{{url_for('assignment_bp.assignment', id=submission.assignment_id)}}" class="text-decoration-none">{{submission.assignment_id}}</a>{% else %}N/A{% endif %}</td>
             </tr>
             <tr>
-                <th class="col">Username</th>
-                <td class="text-center"><a href="{{url_for('user_bp.profile', username=submission.username)}}" class="text-decoration-none">{{ submission.username }}</a></td>
+                <th class="col">User</th>
+                <td class="text-center"><a href="{{url_for('user_bp.profile', id=submission.user_id)}}" class="text-decoration-none">{{ submission.user_id }}</a></td>
             </tr>
             <tr>
                 <th class="col">Submission time (UTC)</th>
