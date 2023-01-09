@@ -44,8 +44,8 @@ See [.env configuration](#env-configuration) for a email address you can use wit
 
 	SECRET_KEY="dev"  # can be whatever
 	MONGO_URI=<connection-string> # Remember to put database name (tsoj) in the connection string, after the last `/`.
-	GMAIL_EMAIL=tsojauth@gmail.com
-	GMAIL_APP_PWD=pxezvdeozcdfslbr
+	GMAIL_EMAIL=youremail@domain
+	GMAIL_APP_PWD=some_password
 	BASE_URL = 'http://127.0.0.1:5000'
 	CELERY_BROKER_URL = 'redis://127.0.0.1:6379' # default is port 6379
 	CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
