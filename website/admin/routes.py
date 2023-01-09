@@ -1,7 +1,7 @@
-from flask import render_template, Blueprint, request, redirect, url_for, flash
+from flask import render_template, Blueprint, request, redirect, url_for, flash, abort
 from typing import List
 
-from website.models import Problem, Assignment
+from website.models import Problem, Assignment, Submission
 from isolate_wrapper import IsolateSandbox, Verdict, Testcase
 
 admin_bp = Blueprint('admin_bp', __name__,
@@ -66,3 +66,25 @@ def create_assignment():
         return redirect(url_for('admin_bp.admin'))
     problems = Problem.find_all()
     return render_template('create_assignment.html', problems=problems)
+
+@admin_bp.route('/assignments')
+def assignments():
+    all_assignments = Assignment.find_all(sort=True)
+    return render_template('assignments.html', assignments=all_assignments)
+
+@admin_bp.route('/assignment/<int:id>')  # /admin/assignment/id
+def assignment_results(id: int):
+    assignment = Assignment.find_one({'id': id})
+    if assignment is None:
+        abort(404, description='Assignment not found')
+    problems = assignment.fetch_problems()
+    
+    submissions = Submission.find_all({'assignment_id': id}, sort=True)
+    submissions_dict = {}  # {problem id: [list of submissions to that problem]}
+    for submission in submissions:
+        if submission.problem_id not in submissions_dict:
+            submissions_dict[submission.problem_id] = []
+        submissions_dict[submission.problem_id].append(submission)
+    print(submissions_dict)
+    
+    return render_template('assignment_results.html', assignment=assignment, problems=problems, submissions_dict=submissions_dict)

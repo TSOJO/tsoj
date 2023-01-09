@@ -31,6 +31,8 @@ def problem_submit(id: str):
 
     user_code = request.form.get('user_code')
     assignment_id = request.form.get('assignment_id')
+    if assignment_id:
+        assignment_id = int(assignment_id)
     new_submission = Submission(username=username,
                                 problem_id=id,
                                 code=user_code,
