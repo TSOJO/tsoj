@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, abort, flash
 from typing import List
+from flask_login import login_required, current_user
 
 from website.celery_tasks import judge
 from website.models import Problem, Submission
@@ -24,9 +25,9 @@ def problem(id: str) -> str:
 # Code submission.
 
 @problem_bp.route('/<id>/submit', methods=['POST'])
+@login_required
 def problem_submit(id: str):
-    # ! Harcoded
-    username = 'john.doe'
+    username = current_user.username
 
     user_code = request.form.get('user_code')
     assignment_id = request.form.get('assignment_id')

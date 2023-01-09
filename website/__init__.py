@@ -2,8 +2,8 @@ from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 from os import environ
 from flask import Flask
 from celery import Celery
-
-app: Flask = Flask(__name__)
+from flask_login import LoginManager
+from flask import current_app
 
 celery = Celery(__name__, broker=CELERY_BROKER_URL,
                 backend=CELERY_RESULT_BACKEND, include=['website.celery_tasks'])
@@ -11,16 +11,25 @@ celery = Celery(__name__, broker=CELERY_BROKER_URL,
 
 class ContextTask(celery.Task):
     def __call__(self, *args, **kwargs):
-        with app.app_context():
+        with current_app.app_context():
             return self.run(*args, **kwargs)
 
 
 celery.Task = ContextTask
 
+login_manager = LoginManager()
+@login_manager.user_loader
+def load_user(user_id):
+    from website.models import User
+    return User.find_one({'username': user_id})
 
 def init_app() -> Flask:
+    app: Flask = Flask(__name__)
     # Initial config.
     app.config.from_pyfile('../config.py')
+
+    login_manager.init_app(app)
+    login_manager.login_view = 'user_bp.login'
 
     from website.models import Assignment, Submission, User, Problem
     with app.app_context():
@@ -36,6 +45,7 @@ def init_app() -> Flask:
     from .assignment.routes import assignment_bp
     from .home.routes import home_bp
     from .api import api_bp
+    from .user.routes import user_bp
 
     # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem')
@@ -44,17 +54,18 @@ def init_app() -> Flask:
     app.register_blueprint(assignment_bp, url_prefix='/assignment')
     app.register_blueprint(home_bp, url_prefix='/')
     app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(user_bp, url_prefix='/user')
 
     # Register error handler.
     from .errors import page_not_found
     app.register_error_handler(404, page_not_found)
 
-    debug_db()
+    debug_db(app)
 
     return app
 
 
-def debug_db():
+def debug_db(app):
     from isolate_wrapper import Testcase
     from website.models import Assignment, Submission, User, Problem
     problems_list = [
@@ -98,6 +109,11 @@ def debug_db():
     with app.app_context():
         assignment.save()
 
+    admin = User(username='admin', email='admin@localhost', plaintext_password='admin', is_admin=True)
+    test_user = User(username='user', email='user@localhost', plaintext_password='user', is_admin=False)
+    with app.app_context():
+        admin.save()
+        test_user.save()
 
 def test():
     with app.app_context():

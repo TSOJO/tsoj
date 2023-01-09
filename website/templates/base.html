@@ -28,18 +28,38 @@
                 <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
+                            <a class="nav-link" href="{{url_for('home_bp.home')}}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <!-- TODO Change to url_for -->
-                            <a class="nav-link" href="/problems">Problems</a>
+                            <a class="nav-link" href="{{url_for('home_bp.problems')}}">Problems</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('home_bp.submissions')}}">Submissions</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
+                        <!-- ! debug -->
                         <li class="nav-item">
-                            <!-- TODO Change to url_for and verify admin user -->
-                            <a class="nav-link" href="/admin">Admin</a>
+                            <a class="nav-link" href="{{url_for('user_bp.user_debug')}}">Login user(debug)</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('user_bp.admin_debug')}}">Login admin(debug)</a>
+                        </li>
+
+                        {% if current_user.is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('admin_bp.admin')}}">Admin</a>
+                        </li>
+                        {% endif %}
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('user_bp.profile', id=current_user.username)}}">Hello, <b>{{current_user.username}}</b></a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('user_bp.login')}}">Login</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

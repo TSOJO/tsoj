@@ -6,9 +6,9 @@ import ssl
 from email.message import EmailMessage
 from os import environ
 from typing import *
-
 from bson import ObjectId
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_login import UserMixin
 
 from website.db import db
 from website.celery_tasks import add_to_db
@@ -16,19 +16,23 @@ from website.celery_tasks import add_to_db
 from . import submission as submission_file
 
 
-class User:
+class User(UserMixin):
 
-    def __init__(self, username: str, email: str, plaintext_password: str=''):
+    def __init__(self, username: str, email: str, plaintext_password: str = '', is_admin: bool = False):
         # Public properties
         self.username = username
         self.email = email
+        self.is_admin = is_admin
+        self.is_verified: bool = False
 
         # Private properties
-        self._is_verified: bool = False
         self._verification_code: str = ''
         self._hashed_password = generate_password_hash(plaintext_password)
         self._submission_ids: List[int] = []
         self._object_id: Optional[ObjectId] = None
+
+    def get_id(self):
+        return self.username
 
     def set_password(self, plaintext_password):
         self._hashed_password = generate_password_hash(plaintext_password)
@@ -40,7 +44,8 @@ class User:
         # TODO Optimize this with one query.
         submissions = []
         for submission_id in self._submission_ids:
-            submission = submission_file.Submission.find_one({'id': submission_id})
+            submission = submission_file.Submission.find_one(
+                {'id': submission_id})
             submissions.append(cast(submission_file.Submission, submission))
         return submissions
 
@@ -89,12 +94,13 @@ class User:
     @classmethod
     def cast_from_document(cls, document: Any) -> User:
         user_obj = User(
-			username=document['username'],
-			email=document['email'],
-		)
+            username=document['username'],
+            email=document['email'],
+            is_admin=document['is_admin']
+        )
         user_obj._hashed_password = document['hashed_password']
         user_obj._submission_ids = document['submission_ids']
-        user_obj._is_verified = document['is_verified']
+        user_obj.is_verified = document['is_verified']
         user_obj._verification_code = document['verification_code']
         return user_obj
 
@@ -105,8 +111,9 @@ class User:
             'email': self.email,
             'hashed_password': self._hashed_password,
             'submission_ids': self._submission_ids,
-            'is_verified': self._is_verified,
-            'verification_code': self._verification_code
+            'is_verified': self.is_verified,
+            'verification_code': self._verification_code,
+            'is_admin': self.is_admin
         }
 
     @classmethod
@@ -117,7 +124,7 @@ class User:
         return cls.cast_from_document(doc)
 
     @classmethod
-    def find_all(cls, filter: Mapping[str, Any]=None) -> List[User]:
+    def find_all(cls, filter: Mapping[str, Any] = None) -> List[User]:
         results = db.users.find(filter=filter)
         return [cls.cast_from_document(result) for result in results]
 

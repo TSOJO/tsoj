@@ -16,9 +16,11 @@
                     <div class="col-1">
                         <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
                     </div>
+                    {% if current_user.is_admin %}
                     <div class="col-1">
                         <a href="{{ url_for('problem_bp.problem_edit', id=problem.id) }}" class="btn btn-primary">Edit</a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

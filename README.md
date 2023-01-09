@@ -19,6 +19,7 @@ Open three terminals, each running the following:
 - `python wsgi.py`
 - `celery -A website.celery_worker.celery worker --loglevel=INFO`
 - `celery -A website.celery_worker.celery flower`
+- `sudo mongod --dbpath ~/data/tsoj ` (if using a local MongoDB)
 
 Visit website at `localhost:5000`
 
