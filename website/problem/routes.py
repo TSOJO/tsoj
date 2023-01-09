@@ -39,7 +39,7 @@ def problem_submit(id: str):
     judge.delay(user_code=user_code,
                 submission_dict=new_submission.cast_to_document(),
                 problem_id=id,)
-    return redirect(url_for('submission.submission', id=submission_id))
+    return redirect(url_for('submission_bp.submission', id=submission_id))
 
 @problem_bp.route('/<id>/edit', methods=['GET', 'POST'])
 def problem_edit(id: str):
