@@ -51,7 +51,7 @@
             </div>
             
             <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;"></div>
-            <input id="testcases-count" name="testcases-count" type="text" hidden> 
+            <input id="testcases-count" name="testcases-count" type="text" value="0" hidden> 
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
                 <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
@@ -82,5 +82,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{{url_for('.static', filename='create_problem.js')}}"></script>
+<script type="text/javascript" src="{{url_for('.static', filename='problem.js')}}"></script>
 {% endblock %}

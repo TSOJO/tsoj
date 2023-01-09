@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Create Problem{% endblock %}
+{% block title %}Edit problem{% endblock %}
 
 {% block content %}
 <div>
     <div class="mb-3">
-        <h1>Edit Problem</h1>
+        <h1>Edit problem</h1>
     </div>
     
     <form method="POST" class="needs-validation" novalidate>
         <div class="form-group mb-3">
             <label for="id" class="form-label">ID</label>
-            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" value="{{problem.id}}" disabled>
+            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" value="{{problem.id}}" readonly>
         </div>
     
         <div class="form-group mb-3">
@@ -51,8 +51,8 @@
             </div>
             
             <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;">
-                {% for testcase in problem.testcases %}
-                <div id="testcase-div" style="display: block" class="border p-4">
+                {%- for testcase in problem.testcases -%}
+                <div id="" style="display: block" class="border p-4">
                     <div class="container">
                         <div class="d-flex justify-content-between">
                             <div class="p2 mt-1">
@@ -72,7 +72,7 @@
                         <textarea class="form-control testcase-answer"rows="3" id="answer{{loop.index}}" name="answer{{loop.index}}">{{testcase.answer}}</textarea>
                     </div>
                 </div>
-                {% endfor %}
+                {%- endfor -%}
             </div>
 
             <input id="testcases-count" name="testcases-count" type="text" value="{{problem.testcases| length}}" hidden> 
@@ -106,5 +106,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="{{url_for('.static', filename='problem_edit.js')}}"></script>
+<script type="text/javascript" src="{{url_for('.static', filename='problem.js')}}"></script>
 {% endblock %}

@@ -55,8 +55,40 @@ def create_problem():
 
         flash('Problem created', 'success')
         # ? redirect to /problem/<id>/edit
-        return redirect(url_for('problem_bp.problem_edit', id=problem.id))
+        return redirect(url_for('admin_bp.edit_problem', id=problem.id))
     return render_template('create_problem.html')
+
+@admin_bp.route('/edit/problem/<id>', methods=['GET', 'POST'])
+def edit_problem(id: str):
+    if request.method == 'POST':
+        problem_info = {
+            'id': request.form['id'],
+            'name': request.form['name'],
+            'description': request.form['description'],
+            'time_limit': int(round(float(request.form['time-limit']) * 1000)),
+            'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
+        }
+        testcases: List[Testcase] = []
+
+        testcases_count = int(request.form['testcases-count'])
+        for i in range(testcases_count):
+            testcases.append(
+                Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}']))
+
+        # if 'generator-checkbox' in request.form:
+        #     code = request.form['generator-code']
+        #     verdict: Verdict = IsolateSandbox().generate_answers(
+        #         code, testcases, problem_info['time_limit'], problem_info['memory_limit'])[0]
+        #     if not verdict.is_ac():
+        #         raise NotImplementedError()
+
+        problem = Problem(**problem_info, testcases=testcases)
+        problem.save(replace=True)
+
+        flash('Problem saved', 'success')
+        return redirect(url_for('problem_bp.problem', id=problem.id))
+    problem = Problem.find_one({'id': id})
+    return render_template('edit_problem.html', problem=problem)
 
 
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])

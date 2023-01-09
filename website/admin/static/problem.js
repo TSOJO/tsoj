@@ -1,4 +1,4 @@
-let testcases_count = 0
+let testcases_count = $('#testcases-count').val();
 
 function add_field() {
     testcases_count++;
@@ -41,9 +41,12 @@ function remove_field(node) {
     let testcase_container = document.getElementById('testcase-container');
     testcase_container.removeChild(node);
     // reindex
+    console.log(testcase_container)
+    console.log(testcases_count)
     for (let i = 0; i < testcases_count; i++) {
         let testcase_node = testcase_container.childNodes[i];
-        let h5_node = testcase_node.getElementsByTagName('h5')[0];
+        console.log(testcase_node)
+        let h5_node = testcase_node.getElementsByClassName('testcase-number')[0];
         h5_node.innerHTML = 'Testcase ' + (i + 1);
         let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
         // console.log(input_node);
@@ -118,6 +121,7 @@ window.onpageshow = function (event) {
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/');
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/python");
+    editor.setOptions({ minLines: 10, maxLines: 20 });
     // editor.session.setUseWrapMode(true);
     
     editor.getSession().on('change', function () {
