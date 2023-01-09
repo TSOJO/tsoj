@@ -23,6 +23,7 @@ def load_user(user_id):
     from website.models import User
     return User.find_one({'username': user_id})
 
+
 def init_app() -> Flask:
     app: Flask = Flask(__name__)
     # Initial config.
@@ -62,6 +63,11 @@ def init_app() -> Flask:
     app.register_error_handler(404, page_not_found)
 
     debug_db(app)
+
+    @app.route('/send')
+    def send():
+        test(app)
+        return 'sent'
 
     return app
 
@@ -116,7 +122,8 @@ def debug_db(app):
         admin.save()
         test_user.save()
 
-def test():
+def test(app):
+    from website.models import Assignment, Submission, User, Problem
     with app.app_context():
-        user = User.find_one({'username': 'Eden'})
+        user = User.find_one({'username': 'Justin'})
         user.send_verification_email()

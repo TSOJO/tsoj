@@ -1,17 +1,13 @@
 from __future__ import annotations
 
 import secrets
-import smtplib
-import ssl
-from email.message import EmailMessage
 from os import environ
 from typing import *
-from bson import ObjectId
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 
 from website.db import db
-from website.celery_tasks import add_to_db
+from website.celery_tasks import add_to_db, send_email
 from isolate_wrapper.custom_types import Verdict
 
 from . import submission as submission_file
@@ -27,10 +23,7 @@ class User(UserMixin):
         self.is_verified: bool = False  # ! Probably don't need if just send them their password
 
         # Private properties
-        self._verification_code: str = ''  # ! Probably don't need if just send them their password
         self._hashed_password = generate_password_hash(plaintext_password)
-        # self._submission_ids: List[int] = []
-        # self._object_id: Optional[ObjectId] = None
 
     def get_id(self):
         return self.username
@@ -40,21 +33,6 @@ class User(UserMixin):
 
     def check_password(self, plaintext_password):
         return check_password_hash(self._hashed_password, plaintext_password)
-
-    # ? If you have to fetch it anyway, why not just query Submissions submitted by user directly?
-    # def fetch_submissions(self) -> List[submission_file.Submission]:
-    #     # TODO Optimize this with one query.
-    #     submissions = []
-    #     for submission_id in self._submission_ids:
-    #         submission = submission_file.Submission.find_one(
-    #             {'id': submission_id})
-    #         submissions.append(cast(submission_file.Submission, submission))
-    #     return submissions
-
-    # def add_submission(self, submission_id: int, save=True):
-    #     self._submission_ids.append(submission_id)
-    #     if save:
-    #         self.save()
 
     def get_submissions(self) -> List[submission_file.Submission]:
         submissions = submission_file.Submission.find_all({'username': f'{self.username}'})
@@ -68,41 +46,21 @@ class User(UserMixin):
         problem_ids = list(problem_ids)
         problem_ids.sort()
         return problem_ids
-        
-    def clear_verification_code(self):
-        self._verification_code = ''
 
     def send_verification_email(self):
-        print('called')
-        if self._verification_code == '':
-            self._verification_code = secrets.token_urlsafe(16)
-            self.save()
+        # if self._verification_code == '':
+        #     self._verification_code = secrets.token_urlsafe(16)
+        #     self.save()
 
-        sender = environ.get('GMAIL_EMAIL')
-        pwd = environ.get('GMAIL_APP_PWD')
-        print(self.email)
         subject = 'Verify your email on TSOJ'
-        body = f'''
-		Hi {self.username},
+        body = (
+		f"Hi {self.username},\n"
+        "\n"
+		"Verify your email by clicking this link:\n"
+		f"{environ.get('BASE_URL')}/auth?code=abc\n"
+		)
 
-		Verify your email by clicking this link:
-		{environ.get('BASE_URL')}/auth?code={self._verification_code}
-		'''
-
-        email = EmailMessage()
-        email['From'] = sender
-        email['To'] = self.email
-        email['Subject'] = subject
-        email.set_content(body)
-
-        context = ssl.create_default_context()
-
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.starttls(context=context)
-            server.login(sender, pwd)
-            print('logged in')
-            server.sendmail(sender, self.email, email.as_string())
-            print('sent')
+        send_email.delay(subject, body, self.email)
 
     """Database Wrapper Methods"""
 
@@ -114,9 +72,7 @@ class User(UserMixin):
             is_admin=document['is_admin']
         )
         user_obj._hashed_password = document['hashed_password']
-        # user_obj._submission_ids = document['submission_ids']
         user_obj.is_verified = document['is_verified']
-        user_obj._verification_code = document['verification_code']
         return user_obj
 
     def cast_to_document(self) -> Dict[str, Any]:
@@ -125,9 +81,7 @@ class User(UserMixin):
             'username': self.username,
             'email': self.email,
             'hashed_password': self._hashed_password,
-            # 'submission_ids': self._submission_ids,
             'is_verified': self.is_verified,
-            'verification_code': self._verification_code,
             'is_admin': self.is_admin
         }
 
