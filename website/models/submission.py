@@ -117,7 +117,7 @@ class Submission:
 		results = db.submissions.find(filter=filter)
 		submissions = [cls.cast_from_document(result) for result in results]
 		if sort:
-			submissions.sort(key=lambda s:s.id)
+			submissions.sort(key=lambda s:s.id, reverse=True)
 		return submissions
 
 	def save(self, replace=False, wait=False) -> Submission:

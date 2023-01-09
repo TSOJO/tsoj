@@ -59,7 +59,7 @@ def create_assignment():
         # Only has problems.
         problems = request.form.to_dict().values()
         new_assignment.add_problems(*problems)
-        new_assignment.save()
+        new_assignment.save(wait=True)
 
         flash('Assignment created', 'success')
         # ? redirect to /assignments/ something something

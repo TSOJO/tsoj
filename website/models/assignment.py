@@ -57,11 +57,15 @@ class Assignment:
         results = db.assignments.find(filter=filter)
         return [cls.cast_from_document(result) for result in results]
 
-    def save(self, replace=False) -> Assignment:
+    def save(self, replace=False, wait=False) -> Assignment:
         if not self.id:
             Assignment._max_id += 1
             self.id = Assignment._max_id
-        add_to_db.delay('assignments', self.cast_to_document(), replace)
+        doc = self.cast_to_document()
+        if wait:
+            add_to_db('assignments', doc, replace)
+        else:
+            add_to_db.delay('assignments', doc, replace)
         return self
 
     @classmethod
