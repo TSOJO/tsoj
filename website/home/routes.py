@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 
-from website.models import Problem, Submission
+from website.models import Problem, Submission, User
 
 home_bp = Blueprint('home_bp', __name__,
                     static_url_path='/home/static',  # Because url prefix is '/'
@@ -31,4 +31,5 @@ def submissions():
     if problem_id is not None:
         filter['problem_id'] = problem_id
     submissions = Submission.find_all(filter=filter)
-    return render_template('submissions.html', submissions=submissions)
+    usernames = dict(map(lambda u: (u.id, u.username), User.find_all()))
+    return render_template('submissions.html', submissions=submissions, usernames=usernames)
