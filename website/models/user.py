@@ -24,10 +24,10 @@ class User(UserMixin):
         self.username = username
         self.email = email
         self.is_admin = is_admin
-        self.is_verified: bool = False
+        self.is_verified: bool = False  # ! Probably don't need if just send them their password
 
         # Private properties
-        self._verification_code: str = ''
+        self._verification_code: str = ''  # ! Probably don't need if just send them their password
         self._hashed_password = generate_password_hash(plaintext_password)
         # self._submission_ids: List[int] = []
         # self._object_id: Optional[ObjectId] = None

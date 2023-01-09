@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Account settings{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <h1>Account settings</h1>
+</div>
+<div>
+    <div class="form-group mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="text" class="form-control" name="email" id="email" value="{{current_user.email}}" disabled>
+    </div>
+
+    <form method="POST" class="form-group mb-3 needs-validation border p-4" novalidate>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="Enter new username" value="{{current_user.username}}" required>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Change username</button>
+        </div>
+    </form>
+
+    <form method="POST" class="form-group mb-3 needs-validation border p-4" oninput="confirm_password.setCustomValidity(confirm_password.value != password.value ? 'Passwords don\'t match.' : '')" novalidate>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="mb-3">
+                <b>Warning: probably don't use a password you normally use here - I wouldn't trust Year 12s to store my password securely.</b>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter new password" required>
+                </div>
+                <div class="col">
+                    <input type="password" class="form-control" name="confirm_password" id="confirm_password" placeholder="Confirm password" required>
+                    <div class="invalid-feedback">
+                        Passwords don't match.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Change password</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

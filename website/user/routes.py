@@ -60,7 +60,7 @@ def register():
         flash('Account created successfully.')
     return render_template('register.html', form=register_form)
 
-
+# ! Need POST?
 @user_bp.route('/<username>/profile', methods=['GET', 'POST'])
 def profile(username: str):
     user = User.find_one({'username': username})
@@ -73,6 +73,22 @@ def profile(username: str):
     problems_grid = [problems[i:i + 12] for i in range(0, len(problems), 12)]
     print(problems)
     return render_template('profile.html', user=user, problems_grid=problems_grid)
+
+@user_bp.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        new_username = request.form.get('username')
+        if new_username:  # ! Doesn't work yet, have to wait for user_id
+            current_user.username = new_username
+            flash('Username changed successfully.')
+        
+        new_password = request.form.get('password')
+        if new_password:
+            current_user.set_password(new_password)
+            flash('Password changed successfully.')
+        current_user.save(replace=True)
+        
+    return render_template('settings.html',)
 
 # ! debug
 
