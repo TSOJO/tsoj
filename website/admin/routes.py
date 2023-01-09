@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, request, redirect, url_for, flash,
 from typing import List
 from flask_login import login_required, current_user
 
-from website.models import Problem, Assignment, Submission
+from website.models import Problem, Assignment, Submission, User
 from isolate_wrapper import IsolateSandbox, Verdict, Testcase
 
 admin_bp = Blueprint('admin_bp', __name__,
@@ -92,6 +92,6 @@ def assignment_results(id: int):
         if submission.problem_id not in submissions_dict:
             submissions_dict[submission.problem_id] = []
         submissions_dict[submission.problem_id].append(submission)
-    print(submissions_dict)
     
-    return render_template('assignment_results.html', assignment=assignment, problems=problems, submissions_dict=submissions_dict)
+    full_names = dict(map(lambda u: (u.id, u.full_name), User.find_all()))
+    return render_template('assignment_results.html', assignment=assignment, problems=problems, submissions_dict=submissions_dict, full_names=full_names)
