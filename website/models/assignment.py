@@ -11,12 +11,13 @@ class Assignment:
 
     _max_id: int = 0
 
-    def __init__(self, id: Optional[int]=None, problem_ids: Optional[List[str]]=None):
+    def __init__(self, creator, id: Optional[int]=None, problem_ids: Optional[List[str]]=None):
         if problem_ids is None:
             problem_ids = []
         # Public properties.
-        self.problem_ids: List[str] = problem_ids
         self.id: Optional[int] = id
+        self.problem_ids: List[str] = problem_ids
+        self.creator = creator
 
         # Private properties.
         # self._id: Optional[int] = None
@@ -35,6 +36,7 @@ class Assignment:
         assignment_obj = Assignment(
             id=document['id'],
             problem_ids=document['problem_ids'],
+            creator=document['creator']
         )
         return assignment_obj
 
@@ -42,7 +44,8 @@ class Assignment:
         return {
             '_id': self.id,
             'id': self.id,
-            'problem_ids': self.problem_ids
+            'problem_ids': self.problem_ids,
+            'creator': self.creator
         }
 
     @classmethod

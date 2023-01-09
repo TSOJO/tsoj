@@ -10,6 +10,7 @@
     <thead>
         <tr>
             <th scope="col">ID</th>
+            <th scope="col">Created by</th>
             <th scope="col">Problem IDs</th>
             <th scope="col">View results</th>
         </tr>
@@ -18,6 +19,7 @@
         {% for assignment in assignments %}
         <tr>
             <th scope="row">{{assignment.id}}</th>
+            <td>{{assignment.creator}}</td>
             <td>{{assignment.problem_ids|join(', ')}}</td>
             <td>
                 <a href="{{url_for('admin_bp.assignment_results', id=assignment.id)}}">

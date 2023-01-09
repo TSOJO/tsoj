@@ -30,7 +30,7 @@ class User(UserMixin):
         self._verification_code: str = ''
         self._hashed_password = generate_password_hash(plaintext_password)
         # self._submission_ids: List[int] = []
-        self._object_id: Optional[ObjectId] = None
+        # self._object_id: Optional[ObjectId] = None
 
     def get_id(self):
         return self.username

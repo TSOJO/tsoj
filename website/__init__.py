@@ -105,7 +105,7 @@ def debug_db(app):
         with app.app_context():
             problem.save(replace=True)
     
-    assignment = Assignment()
+    assignment = Assignment(creator='JER')
     assignment.add_problems('A1', 'A2')
     with app.app_context():
         assignment.save()

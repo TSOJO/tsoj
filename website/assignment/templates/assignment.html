@@ -5,6 +5,7 @@
 {% block content %}
 <div class="mb-3">
     <h1>Assignment {{assignment.id}}</h1>
+    Created by: {{assignment.creator}}
 </div>
 {% for problem in problems %}
     <div class="card mb-3">
