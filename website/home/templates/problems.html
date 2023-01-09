@@ -5,23 +5,18 @@
 {% block content %}
 <div class="mb-3">
     <h1>Problems</h1>
+    <a href="{{ url_for('admin_bp.create_problem') }}" class="btn btn-success">Create</a>
 </div>
 {% for problem in problems %}
     <div class="card mb-3">
         <div class="card-body">
             <h5 class="card-title">{{problem.id}}: {{problem.name}}</h5>
             <p class="card-text text-truncate col-5">{{problem.description}}</p>
-            <div class="container">
-                <div class="row">
-                    <div class="col-1">
-                        <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
-                    </div>
-                    {% if current_user.is_admin %}
-                    <div class="col-1">
-                        <a href="{{ url_for('problem_bp.problem_edit', id=problem.id) }}" class="btn btn-primary">Edit</a>
-                    </div>
-                    {% endif %}
-                </div>
+            <div class="btn-group">
+                <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('problem_bp.problem_edit', id=problem.id) }}" class="btn btn-primary">Edit</a>
+                {% endif %}
             </div>
         </div>
     </div>
