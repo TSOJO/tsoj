@@ -1,5 +1,6 @@
 from flask import render_template, Blueprint, request, redirect, url_for, flash, abort
 from typing import List
+from flask_login import login_required, current_user
 
 from website.models import Problem, Assignment, Submission
 from isolate_wrapper import IsolateSandbox, Verdict, Testcase
@@ -8,6 +9,12 @@ admin_bp = Blueprint('admin_bp', __name__,
                      template_folder='templates',
                      static_folder='static')
 
+
+@admin_bp.before_request
+@login_required
+def unauthorised():
+    if not current_user.is_admin:
+        abort(403)
 
 @admin_bp.route('/')
 def admin():

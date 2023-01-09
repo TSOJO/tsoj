@@ -57,7 +57,8 @@ def init_app() -> Flask:
     app.register_blueprint(user_bp, url_prefix='/user')
 
     # Register error handler.
-    from .errors import page_not_found
+    from .errors import page_not_found, unauthorised
+    app.register_error_handler(403, unauthorised)
     app.register_error_handler(404, page_not_found)
 
     debug_db(app)
