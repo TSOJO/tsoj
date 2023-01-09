@@ -59,7 +59,7 @@
                         {% endif %}
                         {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello, <b>{{current_user.id}}</b></a>
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello, <b>{{current_user.username}}</b></a>
                             <div class="dropdown-menu">
                                 <a href="{{url_for('user_bp.profile', id=current_user.id)}}" class="dropdown-item">Profile</a>
                                 <a href="{{url_for('user_bp.settings')}}" class="dropdown-item">Account settings</a>
