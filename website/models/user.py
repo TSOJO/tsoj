@@ -46,21 +46,18 @@ class User(UserMixin):
         problem_ids = list(problem_ids)
         problem_ids.sort()
         return problem_ids
-        
-    def clear_verification_code(self):
-        self._verification_code = ''
 
     def send_verification_email(self):
-        if self._verification_code == '':
-            self._verification_code = secrets.token_urlsafe(16)
-            self.save()
+        # if self._verification_code == '':
+        #     self._verification_code = secrets.token_urlsafe(16)
+        #     self.save()
 
         subject = 'Verify your email on TSOJ'
         body = (
 		f"Hi {self.username},\n"
         "\n"
 		"Verify your email by clicking this link:\n"
-		f"{environ.get('BASE_URL')}/auth?code={self._verification_code}\n"
+		f"{environ.get('BASE_URL')}/auth?code=abc\n"
 		)
 
         send_email.delay(subject, body, self.email)
