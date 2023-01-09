@@ -20,7 +20,7 @@
         {% for submission in submissions %}
         <tr>
             <td><a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">{{ submission.id }}</a></td>
-            <td><a href="{{url_for('user_bp.profile', id=submission.id)}}" class="text-decoration-none">{{ submission.id }}</a></td>
+            <td><a href="{{url_for('user_bp.profile', id=submission.id)}}" class="text-decoration-none">{{ submission.user_id }}</a></td>
             <td><a href="{{url_for('problem_bp.problem', id=submission.problem_id)}}" class="text-decoration-none">{{ submission.problem_id }}</a></td>
             <td>{{ submission.submission_time.strftime("%d/%m/%Y %H:%M:%S") }}</td>
             <td>
