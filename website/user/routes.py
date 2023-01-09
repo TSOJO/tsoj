@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, url_for, render_template, flash, request,
 from flask_login import login_user, logout_user, login_required, current_user
 
 from website.user.forms import LoginForm, RegisterForm
-from website.models import User
+from website.models import User, Problem
 from website.utils import is_safe_url
 
 user_bp = Blueprint('user_bp', __name__,
@@ -32,6 +32,7 @@ def login():
         return redirect(next_page or url_for('home_bp.home'))
     return render_template('login.html', form=login_form)
 
+
 @user_bp.route('/logout')
 @login_required
 def logout():
@@ -59,19 +60,29 @@ def register():
         flash('Account created successfully.')
     return render_template('register.html', form=register_form)
 
-@user_bp.route('/<id>/profile', methods=['GET', 'POST'])
-def profile(id: str):
-    user = User.find_one({'username': id})
+
+@user_bp.route('/<username>/profile', methods=['GET', 'POST'])
+def profile(username: str):
+    user = User.find_one({'username': username})
     if user is None:
         abort(404, description="User not found")
-    return render_template('profile.html', user=user)
+    problems = dict(map(lambda p: (p.id, False), Problem.find_all()))
+    for solved_problem_id in user.get_solved_problem_ids():
+        problems[solved_problem_id] = True
+    problems = list(problems.items())
+    problems_grid = [problems[i:i + 12] for i in range(0, len(problems), 12)]
+    print(problems)
+    return render_template('profile.html', user=user, problems_grid=problems_grid)
 
 # ! debug
+
+
 @user_bp.route('/admin_debug')
 def admin_debug():
     logout_user()
     login_user(User.find_one({'username': 'admin'}))
     return redirect(url_for('home_bp.home'))
+
 
 @user_bp.route('/user_debug')
 def user_debug():

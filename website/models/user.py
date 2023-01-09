@@ -12,6 +12,7 @@ from flask_login import UserMixin
 
 from website.db import db
 from website.celery_tasks import add_to_db
+from isolate_wrapper.custom_types import Verdict
 
 from . import submission as submission_file
 
@@ -28,7 +29,7 @@ class User(UserMixin):
         # Private properties
         self._verification_code: str = ''
         self._hashed_password = generate_password_hash(plaintext_password)
-        self._submission_ids: List[int] = []
+        # self._submission_ids: List[int] = []
         self._object_id: Optional[ObjectId] = None
 
     def get_id(self):
@@ -40,20 +41,34 @@ class User(UserMixin):
     def check_password(self, plaintext_password):
         return check_password_hash(self._hashed_password, plaintext_password)
 
-    def fetch_submissions(self) -> List[submission_file.Submission]:
-        # TODO Optimize this with one query.
-        submissions = []
-        for submission_id in self._submission_ids:
-            submission = submission_file.Submission.find_one(
-                {'id': submission_id})
-            submissions.append(cast(submission_file.Submission, submission))
+    # ? If you have to fetch it anyway, why not just query Submissions submitted by user directly?
+    # def fetch_submissions(self) -> List[submission_file.Submission]:
+    #     # TODO Optimize this with one query.
+    #     submissions = []
+    #     for submission_id in self._submission_ids:
+    #         submission = submission_file.Submission.find_one(
+    #             {'id': submission_id})
+    #         submissions.append(cast(submission_file.Submission, submission))
+    #     return submissions
+
+    # def add_submission(self, submission_id: int, save=True):
+    #     self._submission_ids.append(submission_id)
+    #     if save:
+    #         self.save()
+
+    def get_submissions(self) -> List[submission_file.Submission]:
+        submissions = submission_file.Submission.find_all({'username': f'{self.username}'})
         return submissions
 
-    def add_submission(self, submission_id: int, save=True):
-        self._submission_ids.append(submission_id)
-        if save:
-            self.save()
-
+    def get_solved_problem_ids(self) -> List[int]:
+        problem_ids = set()
+        for s in self.get_submissions():
+            if s.final_verdict == Verdict.AC:
+                problem_ids.add(s.problem_id)
+        problem_ids = list(problem_ids)
+        problem_ids.sort()
+        return problem_ids
+        
     def clear_verification_code(self):
         self._verification_code = ''
 
@@ -99,7 +114,7 @@ class User(UserMixin):
             is_admin=document['is_admin']
         )
         user_obj._hashed_password = document['hashed_password']
-        user_obj._submission_ids = document['submission_ids']
+        # user_obj._submission_ids = document['submission_ids']
         user_obj.is_verified = document['is_verified']
         user_obj._verification_code = document['verification_code']
         return user_obj
@@ -110,7 +125,7 @@ class User(UserMixin):
             'username': self.username,
             'email': self.email,
             'hashed_password': self._hashed_password,
-            'submission_ids': self._submission_ids,
+            # 'submission_ids': self._submission_ids,
             'is_verified': self.is_verified,
             'verification_code': self._verification_code,
             'is_admin': self.is_admin

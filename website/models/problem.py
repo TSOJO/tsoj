@@ -54,9 +54,12 @@ class Problem:
         return cls.cast_from_document(result)
 
     @classmethod
-    def find_all(cls, filter={}) -> List[Problem]:
+    def find_all(cls, filter={}, sort=True) -> List[Problem]:
         results = db.problems.find(filter=filter)
-        return [cls.cast_from_document(result) for result in results]
+        problems = [cls.cast_from_document(result) for result in results]
+        if sort:
+            problems.sort(key=lambda p: p.id)
+        return problems
 
     def save(self, replace=False) -> Problem:
         add_to_db.delay('problems', self.cast_to_document(), replace=replace)

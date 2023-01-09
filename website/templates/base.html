@@ -53,7 +53,7 @@
                         {% endif %}
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('user_bp.profile', id=current_user.username)}}">Hello, <b>{{current_user.username}}</b></a>
+                            <a class="nav-link" href="{{url_for('user_bp.profile', username=current_user.username)}}">Hello, <b>{{current_user.username}}</b></a>
                         </li>
                         {% else %}
                         <li class="nav-item">

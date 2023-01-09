@@ -12,7 +12,22 @@
         <p class="card-text">{{user.email}}</p>
     </div>
 </div>
-<!-- create button -->
+<hr>
+
+<div class="mb-3">
+    <h4>Solved Problems</h4>
+</div>
+<div class="container">
+    {% for problems_row in problems_grid %}
+    <div class="row">
+        {% for problem in problems_row %}
+        <div class="col-sm-1 border d-flex justify-content-center {% if problem[1] %} bg-success {% endif %}" style="height:50px;">
+            <a href="{{url_for('problem_bp.problem', id=problem[0])}}">{{problem[0]}}</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
 <div class="container">
     <div class="row">
         <div class="col-1">

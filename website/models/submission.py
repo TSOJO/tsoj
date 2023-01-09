@@ -113,9 +113,12 @@ class Submission:
 		return cls.cast_from_document(result)
 
 	@classmethod
-	def find_all(cls, filter: Mapping[str, Any]=None) -> List[Submission]:
+	def find_all(cls, filter: Mapping[str, Any]=None, sort=True) -> List[Submission]:
 		results = db.submissions.find(filter=filter)
-		return [cls.cast_from_document(result) for result in results]
+		submissions = [cls.cast_from_document(result) for result in results]
+		if sort:
+			submissions.sort(key=lambda s:s.id)
+		return submissions
 
 	def save(self, replace=False, wait=False) -> Submission:
 		if not self.id:
