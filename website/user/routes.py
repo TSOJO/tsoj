@@ -77,9 +77,14 @@ def profile(id: str):
 def settings():
     if request.method == 'POST':
         new_username = request.form.get('username')
-        if new_username:  # ! Doesn't work yet, have to wait for user_id
+        if new_username:
             current_user.username = new_username
             flash('Username changed successfully.')
+        
+        new_full_name = request.form.get('full_name')
+        if new_full_name:
+            current_user.full_name = new_full_name
+            flash('Full name changed successfully.')
         
         new_password = request.form.get('password')
         if new_password:
@@ -95,6 +100,7 @@ def settings():
 @user_bp.route('/admin_debug')
 def admin_debug():
     logout_user()
+    print(User.find_one({'id': 'admin'}))
     login_user(User.find_one({'id': 'admin'}))
     return redirect(url_for('home_bp.home'))
 

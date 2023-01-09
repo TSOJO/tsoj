@@ -17,8 +17,12 @@
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" name="username" id="username" placeholder="Enter new username" value="{{current_user.username}}" required>
         </div>
+        <div class="mb-3">
+            <label for="full_name" class="form-label">Full name</label>
+            <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Enter new full name" value="{{current_user.full_name}}" required>
+        </div>
         <div>
-            <button type="submit" class="btn btn-primary">Change username</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </div>
     </form>
 

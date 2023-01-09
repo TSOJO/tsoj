@@ -79,6 +79,8 @@ class User(UserMixin):
     def cast_from_document(cls, document: Any) -> User:
         user_obj = User(
             id=document['id'],
+            username=document['username'],
+            full_name=document['full_name'],
             email=document['email'],
             is_admin=document['is_admin']
         )
@@ -90,6 +92,8 @@ class User(UserMixin):
         return {
             '_id': self.id,
             'id': self.id,
+            'username': self.username,
+            'full_name': self.full_name,
             'email': self.email,
             'hashed_password': self._hashed_password,
             'is_verified': self.is_verified,
