@@ -44,7 +44,7 @@ class User(UserMixin):
         return check_password_hash(self._hashed_password, plaintext_password)
 
     def get_submissions(self) -> List[submission_file.Submission]:
-        submissions = submission_file.Submission.find_all({'id': f'{self.id}'})
+        submissions = submission_file.Submission.find_all({'user_id': f'{self.id}'})
         return submissions
 
     def get_solved_problem_ids(self) -> List[int]:

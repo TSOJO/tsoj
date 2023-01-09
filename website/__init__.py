@@ -116,11 +116,11 @@ def debug_db(app):
     with app.app_context():
         assignment.save()
 
-    admin = User(id='admin', email='admin@localhost', plaintext_password='admin', is_admin=True)
-    test_user = User(id='user', email='user@localhost', plaintext_password='user', is_admin=False)
+    admin = User(id='admin', username='admin_name', full_name='admin_full_name', email='admin@localhost', plaintext_password='admin', is_admin=True)
+    test_user = User(id='user', username='user_name', full_name='user_full_name', email='user@localhost', plaintext_password='user', is_admin=False)
     with app.app_context():
-        admin.save()
-        test_user.save()
+        admin.save(replace=True)
+        test_user.save(replace=True)
 
 def test(app):
     from website.models import Assignment, Submission, User, Problem
