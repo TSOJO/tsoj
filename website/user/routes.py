@@ -75,12 +75,16 @@ def profile(id: str):
 def settings():
     if request.method == 'POST':
         new_username = request.form.get('username')
-        if new_username:
-            current_user.username = new_username
-            flash('Username changed successfully.')
+        if new_username and new_username != current_user.username:
+            existing = User.find_all({'username': new_username})
+            if existing:
+                flash('Username already exists', 'error')
+            else:
+                current_user.username = new_username
+                flash('Username changed successfully.')
         
         new_full_name = request.form.get('full_name')
-        if new_full_name:
+        if new_full_name and new_full_name != current_user.full_name:
             current_user.full_name = new_full_name
             flash('Full name changed successfully.')
         
