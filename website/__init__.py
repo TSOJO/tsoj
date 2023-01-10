@@ -73,7 +73,7 @@ def init_app() -> Flask:
             'user_bp.admin_debug'  # ! DEBUG ONLY
         )
         if (not current_user.is_authenticated) and (request.endpoint not in allowed_endpoints):
-            return redirect(url_for(login_manager.login_view))
+            return login_manager.unauthorized()
     
     debug_db(app)
 
