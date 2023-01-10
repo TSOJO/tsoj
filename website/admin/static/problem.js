@@ -41,15 +41,11 @@ function remove_field(node) {
     let testcase_container = document.getElementById('testcase-container');
     testcase_container.removeChild(node);
     // reindex
-    console.log(testcase_container)
-    console.log(testcases_count)
     for (let i = 0; i < testcases_count; i++) {
         let testcase_node = testcase_container.childNodes[i];
-        console.log(testcase_node)
         let h5_node = testcase_node.getElementsByClassName('testcase-number')[0];
         h5_node.innerHTML = 'Testcase ' + (i + 1);
         let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
-        // console.log(input_node);
         input_node.name = input_node.name.slice(0, -1) + (i + 1);
         input_node.id = input_node.id.slice(0, -1) + (i + 1);
         let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];

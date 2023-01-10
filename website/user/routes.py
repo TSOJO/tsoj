@@ -68,7 +68,6 @@ def profile(id: str):
         problems[solved_problem_id] = True
     problems = list(problems.items())
     problems_grid = [problems[i:i + 12] for i in range(0, len(problems), 12)]
-    print(problems)
     return render_template('profile.html', user=user, problems_grid=problems_grid)
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
@@ -88,10 +87,14 @@ def settings():
             current_user.full_name = new_full_name
             flash('Full name changed successfully.')
         
-        new_password = request.form.get('password')
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
         if new_password:
-            current_user.set_password(new_password)
-            flash('Password changed successfully.')
+            if current_user.check_password(current_password):
+                current_user.set_password(new_password)
+                flash('Password changed successfully.')
+            else:
+                flash('Current password not correct.', 'error')
         current_user.save(replace=True)
         
     return render_template('settings.html',)

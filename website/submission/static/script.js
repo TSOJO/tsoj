@@ -45,7 +45,6 @@ function make_request() {
         .then(response => response.json())
         .then(data => {
             tests_completed = data['testsCompleted']
-            console.log(data);
             update_results(data['results']);
             if (data['finalVerdict'].verdict != "WJ") {
                 document.getElementById('final-verdict').innerHTML = verdict_to_html(data['finalVerdict']);
