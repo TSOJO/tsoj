@@ -57,7 +57,7 @@ class User(UserMixin):
         return problem_ids
 
     def set_password_and_send_email(self):
-        password = secrets.token_urlsafe(16)
+        password = secrets.token_urlsafe(8)
         self.set_password(password)
 
         subject = 'Your TSOJ password'
