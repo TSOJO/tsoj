@@ -94,7 +94,7 @@ def edit_problem(id: str):
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
-        new_assignment = Assignment()
+        new_assignment = Assignment(creator=current_user.username)
         # Only has problems.
         problems = request.form.to_dict().values()
         new_assignment.add_problems(*problems)

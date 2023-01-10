@@ -15,7 +15,7 @@
             <div class="btn-group">
                 <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
                 {% if current_user.is_admin %}
-                <a href="{{ url_for('problem_bp.problem_edit', id=problem.id) }}" class="btn btn-primary">Edit</a>
+                <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}" class="btn btn-primary">Edit</a>
                 {% endif %}
             </div>
         </div>
