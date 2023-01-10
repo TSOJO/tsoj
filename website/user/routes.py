@@ -58,7 +58,7 @@ def register():
         return redirect(url_for('user_bp.login'))
     return render_template('register.html')
 
-@user_bp.route('/<id>/profile')
+@user_bp.route('/profile/<id>')
 def profile(id: str):
     user = User.find_one({'id': id})
     if user is None:

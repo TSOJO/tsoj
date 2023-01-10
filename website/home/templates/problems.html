@@ -5,7 +5,9 @@
 {% block content %}
 <div class="mb-3">
     <h1>Problems</h1>
+    {% if current_user.is_admin %}
     <a href="{{ url_for('admin_bp.create_problem') }}" class="btn btn-success">Create</a>
+    {% endif %}
 </div>
 {% for problem in problems %}
     <div class="card mb-3">
