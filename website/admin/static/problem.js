@@ -14,6 +14,9 @@ function add_field() {
     let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
     answer_node.name = 'answer' + testcases_count;
     answer_node.id = 'answer' + testcases_count;
+    let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0];
+    sample_checkbox.name = 'sample' + testcases_count;
+    sample_checkbox.id = 'sample' + testcases_count;
     if (document.getElementById('auto-generate-answer-checkbox').checked == true) {
         answer_node.readOnly = true;
     }
@@ -51,6 +54,9 @@ function remove_field(node) {
         let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
         answer_node.name = answer_node.name.slice(0, -1) + (i + 1);
         answer_node.id = answer_node.id.slice(0, -1) + (i + 1);
+        let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0];
+        sample_checkbox.name = sample_checkbox.name.slice(0, -1) + (i + 1);
+        sample_checkbox.id = sample_checkbox.id.slice(0, -1) + (i + 1);
     }
 }
 

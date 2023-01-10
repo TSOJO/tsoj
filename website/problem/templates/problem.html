@@ -10,6 +10,32 @@
     {% endif %}
 </div>
 <p>{{problem.description}}</p>
+<hr>
+<h4>Sample Testcases</h4>
+{% for testcase in problem.testcases %}
+{% if testcase.batch_number == 0 %}
+<div class="container">
+    <div class="row">
+        <div class="form-group mb-3 col-sm-6">
+            <label class="form-label">Input</label>
+            <div class="card">
+                <div class="card-body consolas" style="padding: 10px; white-space: pre-line;">{{testcase.input}}</div>
+            </div>
+            <!-- <textarea class="form-control testcase-input sample-texts" disabled>{{testcase.input}}</textarea> -->
+        </div>
+        <div class="form-group mb-3 col-sm-6">
+            <label class="form-label">Answer</label>
+            <div class="card">
+                <div class="card-body consolas" style="padding: 10px; white-space: pre-line;">{{testcase.answer}}</div>
+            </div>
+            <!-- <textarea class="form-control testcase-answer sample-texts" disabled>{{testcase.answer}}</textarea> -->
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+<hr>
+<h4>Your code</h4>
 <div class="mb-3">
     <form method="POST" action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}" id="codeForm">
         <input type="hidden" name="problem_id" value="{{problem.id}}" />

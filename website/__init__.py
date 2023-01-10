@@ -92,8 +92,8 @@ def debug_db(app):
             'time_limit': 1000,
             'memory_limit': 1024 * 64,
             'testcases': [
-                Testcase('2\n9\n', '11\n'),
-                Testcase('10\n20\n', '30\n'),
+                Testcase('2\n9\n', '11\n', 0),
+                Testcase('10\n20\n', '30\n', 0),
                 Testcase('100\n200\n', '300\n'),
                 Testcase('1000\n2000\n', '3000\n'),
                 Testcase('10000\n20000\n', '30000\n'),
@@ -110,8 +110,8 @@ def debug_db(app):
             'time_limit': 1000,
             'memory_limit': 1024 * 64,
             'testcases': [
-                Testcase('2\n9\n', '-7\n'),
-                Testcase('10\n20\n', '-10\n'),
+                Testcase('2\n9\n', '-7\n', 0),
+                Testcase('10\n20\n', '-10\n', 0),
             ],
         }
     ]
