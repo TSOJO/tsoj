@@ -1,6 +1,6 @@
 from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 from os import environ
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request
 from celery import Celery
 from flask_login import LoginManager, current_user
 from flask import current_app
@@ -31,6 +31,7 @@ def init_app() -> Flask:
 
     login_manager.init_app(app)
     login_manager.login_view = 'user_bp.login'
+    login_manager.login_message_category = "error"
 
     from website.models import Assignment, Submission, User, Problem
     with app.app_context():
@@ -76,11 +77,6 @@ def init_app() -> Flask:
             return login_manager.unauthorized()
     
     debug_db(app)
-
-    @app.route('/send')
-    def send():
-        test(app)
-        return 'sent'
 
     return app
 
@@ -134,9 +130,3 @@ def debug_db(app):
     with app.app_context():
         admin.save(replace=True)
         test_user.save(replace=True)
-
-def test(app):
-    from website.models import Assignment, Submission, User, Problem
-    with app.app_context():
-        user = User.find_one({'id': 'Justin'})
-        user.send_verification_email()

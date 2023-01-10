@@ -7,23 +7,26 @@
     <div class="mb-3">
         <h1>Edit problem</h1>
     </div>
-    
+
     <form method="POST" class="needs-validation" novalidate>
         <div class="form-group mb-3">
             <label for="id" class="form-label">ID</label>
-            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" value="{{problem.id}}" readonly>
+            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID"
+                value="{{problem.id}}" readonly>
         </div>
-    
+
         <div class="form-group mb-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name" value="{{problem.name}}" required>
+            <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name"
+                value="{{problem.name}}" required>
         </div>
-    
+
         <div class="form-group mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" name="description" id="description" rows="5" placeholder="Enter problem description" required>{{problem.description}}</textarea>
+            <textarea class="form-control" name="description" id="description" rows="5"
+                placeholder="Enter problem description" required>{{problem.description}}</textarea>
         </div>
-    
+
         <label class="form-label">Testcases</label>
         <div class="border p-4 mb-3">
             <button type="button" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
@@ -36,20 +39,25 @@
                             <h5 class="testcase-number"></h5>
                         </div>
                         <div class="p2">
-                            <button type="button" class="btn btn-danger"id="remove-button"  onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
-                        </div> 
+                            <button type="button" class="btn btn-danger" id="remove-button"
+                                onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group mb-3">
-                    <label class="form-label">Input</label>
-                    <textarea class="form-control testcase-input" rows="3"></textarea>
-                </div>
-                <div class="form-group mb-3">
-                    <label class="form-label">Answer</label>
-                    <textarea class="form-control testcase-answer"rows="3"></textarea>
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group mb-3 col-sm-6">
+                            <label class="form-label">Input</label>
+                            <textarea class="form-control testcase-input" rows="3"></textarea>
+                        </div>
+                        <div class="form-group mb-3 col-sm-6">
+                            <label class="form-label">Answer</label>
+                            <textarea class="form-control testcase-answer" rows="3"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
+
             <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;">
                 {%- for testcase in problem.testcases -%}
                 <div id="" style="display: block" class="border p-4">
@@ -59,45 +67,52 @@
                                 <h5 class="testcase-number">Testcase {{loop.index}}</h5>
                             </div>
                             <div class="p2">
-                                <button type="button" class="btn btn-danger"id="remove-button"  onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
-                            </div> 
+                                <button type="button" class="btn btn-danger" id="remove-button"
+                                    onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Input</label>
-                        <textarea class="form-control testcase-input" rows="3" id="input{{loop.index}}" name="input{{loop.index}}">{{testcase.input}}</textarea>
+                        <textarea class="form-control testcase-input" rows="3" id="input{{loop.index}}"
+                            name="input{{loop.index}}">{{testcase.input}}</textarea>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Answer</label>
-                        <textarea class="form-control testcase-answer"rows="3" id="answer{{loop.index}}" name="answer{{loop.index}}">{{testcase.answer}}</textarea>
+                        <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index}}"
+                            name="answer{{loop.index}}">{{testcase.answer}}</textarea>
                     </div>
                 </div>
                 {%- endfor -%}
             </div>
 
-            <input id="testcases-count" name="testcases-count" type="text" value="{{problem.testcases| length}}" hidden> 
+            <input id="testcases-count" name="testcases-count" type="text" value="{{problem.testcases| length}}" hidden>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox" name="generator-checkbox">
+                <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
+                    name="generator-checkbox">
                 <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
             </div>
-        
+
             <div class="mt-3" id="editor-group" style="display:none">
                 <textarea name="generator-code" id="generator-code" hidden></textarea>
                 <div id="editor" class="mb-3"></div>
-                <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generate_answers()">Generate answers</button>
+                <button type="button" class="btn btn-primary" id="gen-answer-button"
+                    onclick="generate_answers()">Generate answers</button>
                 <div id="gen-alert-placeholder"></div>
             </div>
         </div>
-    
+
         <label for="time-limit" class="form-label">Time limit</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="time-limit" id="time-limit" value="{{problem.time_limit / 1000}}" required>
+            <input type="text" class="form-control" name="time-limit" id="time-limit"
+                value="{{problem.time_limit / 1000}}" required>
             <span class="input-group-text">seconds (recommended: 1-10)</span>
         </div>
-    
+
         <label for="memory-limit" class="form-label">Memory limit</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="{{problem.memory_limit / 1024}}" required>
+            <input type="text" class="form-control" name="memory-limit" id="memory-limit"
+                value="{{problem.memory_limit / 1024}}" required>
             <span class="input-group-text">MB (recommended: 64-512)</span>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
