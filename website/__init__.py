@@ -1,8 +1,8 @@
 from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 from os import environ
-from flask import Flask
+from flask import Flask, request, redirect, url_for
 from celery import Celery
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask import current_app
 
 celery = Celery(__name__, broker=CELERY_BROKER_URL,
@@ -62,6 +62,19 @@ def init_app() -> Flask:
     app.register_error_handler(403, unauthorised)
     app.register_error_handler(404, page_not_found)
 
+    @app.before_request
+    def restrict():
+        allowed_endpoints = (
+            login_manager.login_view,  # login page
+            'user_bp.register',
+            'user_bp.static',
+            'static',
+            'user_bp.user_debug',  # ! DEBUG ONLY
+            'user_bp.admin_debug'  # ! DEBUG ONLY
+        )
+        if (not current_user.is_authenticated) and (request.endpoint not in allowed_endpoints):
+            return redirect(url_for(login_manager.login_view))
+    
     debug_db(app)
 
     @app.route('/send')
