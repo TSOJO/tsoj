@@ -67,8 +67,7 @@ def profile(id: str):
     for solved_problem_id in user.get_solved_problem_ids():
         problems[solved_problem_id] = True
     problems = list(problems.items())
-    problems_grid = [problems[i:i + 12] for i in range(0, len(problems), 12)]
-    return render_template('profile.html', user=user, problems_grid=problems_grid)
+    return render_template('profile.html', user=user, problems=problems)
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
 def settings():
