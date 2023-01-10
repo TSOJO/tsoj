@@ -3,10 +3,15 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<form method="post" action="{{ url_for('user_bp.register') }}">
-    {{ form.csrf_token }}
-    <input type="text" name="email" placeholder="Email">
-    <p>Your login password will be emailed to you later.</p>
-    <input type="submit" value="Create Account">
+<div class="mb-3">
+    <h1>Register</h1>
+</div>
+<form method="POST" action="{{ url_for('user_bp.register') }}" class="needs-validation" novalidate>
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@tonbridge-school.org" required>
+        <label for="floatingInput">Email address</label>
+    </div>
+    <p>Your password will be emailed to you.</p>
+    <button type="submit" class="btn btn-primary mb-3">Register</button>
 </form>
 {% endblock %}

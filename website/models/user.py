@@ -25,7 +25,7 @@ class User(UserMixin):
         # Public properties
         self.email = email
         self.id = email.split('@')[0] if id == '' else id
-        self.username = username
+        self.username = self.id if id == '' else id
         self.full_name = full_name
         self.is_admin = is_admin
         # ! Probably don't need if just send them their password
@@ -60,7 +60,7 @@ class User(UserMixin):
         password = secrets.token_urlsafe(16)
         self.set_password(password)
 
-        subject = 'Verify your email on TSOJ'
+        subject = 'Your TSOJ password'
         body = (
             f"Hi {self.id},\n\n"
             "Someone has created a TSOJ account using this email. If it is not you, please ignore this email.\n\n"

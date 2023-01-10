@@ -3,11 +3,19 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<form method="post" action="{{ url_for('user_bp.login') }}">
-    {{ form.csrf_token }}
-    <input type="text" name="id" placeholder="ID">
-    <input type="password" name="password" placeholder="Password">
-    <input type="submit" value="Login">
+<div class="mb-3">
+    <h1>Login</h1>
+</div>
+<form method="POST" action="{{ url_for('user_bp.login') }}" class="needs-validation" novalidate>
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@tonbridge-school.org" required>
+        <label for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+        <label for="floatingPassword">Password</label>
+    </div>
+    <button type="submit" class="btn btn-primary mb-3">Login</button>
 </form>
-<p>No account? <a href="{{url_for('user_bp.register')}}">Register</a> instead.</p>
+<p>No account? <a href="{{url_for('user_bp.register')}}" class="text-decoration-none">Register</a> instead.</p>
 {% endblock %}
