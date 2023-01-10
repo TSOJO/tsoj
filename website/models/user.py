@@ -16,17 +16,17 @@ from . import submission as submission_file
 class User(UserMixin):
 
     def __init__(self,
-                 id: str,
                  email: str,
+                 id: str = '',
                  username: str = '',
                  full_name: str = '',
                  plaintext_password: str = '',
                  is_admin: bool = False):
         # Public properties
-        self.id = id
+        self.email = email
+        self.id = email.split('@')[0] if id == '' else id
         self.username = username
         self.full_name = full_name
-        self.email = email
         self.is_admin = is_admin
         # ! Probably don't need if just send them their password
         self.is_verified: bool = False

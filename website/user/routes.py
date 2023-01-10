@@ -48,13 +48,11 @@ def register():
         if not register_form.validate():
             flash('Invalid form.', 'error')
             return redirect(url_for('user_bp.register'))
-        user = User.find_one({'id': register_form.id.data})
+        user = User.find_one({'email': register_form.email.data})
         if user:
             flash('Username already exists.', 'error')
             return redirect(url_for('user_bp.register'))
-        user = User(
-            id=register_form.id.data,
-            email=register_form.email.data)
+        user = User(email=register_form.email.data)
         user.set_password_and_send_email()
         user.save()
         flash('Account created successfully. An email will be sent to you with your login password.')

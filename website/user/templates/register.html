@@ -5,7 +5,6 @@
 {% block content %}
 <form method="post" action="{{ url_for('user_bp.register') }}">
     {{ form.csrf_token }}
-    <input type="text" name="id" placeholder="ID">
     <input type="text" name="email" placeholder="Email">
     <p>Your login password will be emailed to you later.</p>
     <input type="submit" value="Create Account">
