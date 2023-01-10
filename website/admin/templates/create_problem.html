@@ -32,20 +32,16 @@
             <!-- dummy testcase -->
             <div id="testcase-div" style="display: none" class="border p-4">
                 <div class="container">
-                    <div class="d-flex justify-content-between">
-                        <div class="container mt-1" style="padding:0px">
-                            <div class="row">
-                                <div class="col col-sm-3">
-                                    <h5 class="testcase-number"></h5>
-                                </div>
-                                <div class="col col-sm-9">
-                                    <input class="form-check-input testcase-sample" type="checkbox" value="">
-                                    <label class="form-check-label">Sample case</label>
-                                </div>
-                            </div>
+                    <div class="d-flex">
+                        <div class="me-auto my-auto">
+                            <h5 class="testcase-number my-0"></h5>
                         </div>
-                        <div class="p2">
-                            <button type="button" class="btn btn-danger" id="remove-button"
+                        <div class="my-auto px-4">
+                            <input class="form-check-input testcase-sample" type="checkbox" value="">
+                            <label class="form-check-label">Sample case</label>
+                        </div>
+                        <div class="my-auto">
+                            <button type="button" class="btn btn-danger"
                                 onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
                         </div>
                     </div>
