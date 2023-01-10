@@ -3,7 +3,7 @@
 {% block title %}Problem {{problem.id}}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between">
+<div class="d-flex justify-content-between mb-1">
     <h1>Problem {{problem.id}}: {{problem.name}}</h1>
     {% if current_user.is_admin %}
     <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}" class="btn btn-primary align-self-center">Edit</a>
@@ -11,7 +11,7 @@
 </div>
 <p>{{problem.description}}</p>
 <hr>
-<h4>Sample Testcases</h4>
+<h4>Sample testcases</h4>
 {% for testcase in problem.testcases %}
 {% if testcase.batch_number == 0 %}
 <div class="container">
