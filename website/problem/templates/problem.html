@@ -3,7 +3,12 @@
 {% block title %}Problem {{problem.id}}{% endblock %}
 
 {% block content %}
-<h1>Problem {{problem.id}}: {{problem.name}}</h1>
+<div class="d-flex justify-content-between">
+    <h1>Problem {{problem.id}}: {{problem.name}}</h1>
+    {% if current_user.is_admin %}
+    <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}" class="btn btn-primary align-self-center">Edit</a>
+    {% endif %}
+</div>
 <p>{{problem.description}}</p>
 <div class="mb-3">
     <form method="POST" action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}" id="codeForm">

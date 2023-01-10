@@ -55,7 +55,7 @@ def create_problem():
 
         flash('Problem created', 'success')
         # ? redirect to /problem/<id>/edit
-        return redirect(url_for('admin_bp.edit_problem', id=problem.id))
+        return redirect(url_for('problem_bp.problem', id=problem.id))
     return render_template('create_problem.html')
 
 @admin_bp.route('/edit/problem/<id>', methods=['GET', 'POST'])
