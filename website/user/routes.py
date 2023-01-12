@@ -104,7 +104,6 @@ def settings():
 @user_bp.route('/admin_debug')
 def admin_debug():
     logout_user()
-    print(User.find_one({'id': 'admin'}))
     login_user(User.find_one({'id': 'admin'}))
     return redirect(url_for('home_bp.home'))
 

@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 
 from website.models import Problem, Assignment, Submission, User
 from isolate_wrapper import IsolateSandbox, Verdict, Testcase
+from website.celery_tasks import judge
 
 admin_bp = Blueprint('admin_bp', __name__,
                      template_folder='templates',
@@ -24,7 +25,6 @@ def admin():
 @admin_bp.route('/create/problem', methods=['GET', 'POST'])
 def create_problem():
     if request.method == 'POST':
-        # print(request.form)
         problem_info = {
             'id': request.form['id'],
             'name': request.form['name'],
@@ -114,3 +114,23 @@ def assignment_results(id: int):
     
     full_names = dict(map(lambda u: (u.id, u.full_name), User.find_all()))
     return render_template('assignment_results.html', assignment=assignment, problems=problems, submissions_dict=submissions_dict, full_names=full_names)
+
+@admin_bp.route('/rejudge/problem/<id>')
+def rejudge_problem(id: str):
+    problem = Problem.find_one({'id': id})
+    if problem is None:
+        abort(404, description="Problem not found.")
+    submissions = Submission.find_all({'problem_id': id})
+    for submission in submissions:
+        judge.delay(submission.code, submission.cast_to_document(), id)
+    flash(f'Rejudging all submissions with problem ID {id}...')
+    return redirect(url_for('home_bp.submissions', problem_id=id))
+
+@admin_bp.route('/rejudge/submission/<int:id>')
+def rejudge_submission(id: int):
+    submission = Submission.find_one({'id': id})
+    if submission is None:
+        abort(404, description="Submission not found")
+    judge.delay(submission.code, submission.cast_to_document(), submission.problem_id)
+    flash('Rejudging...')
+    return redirect(url_for('submission_bp.submission', id=id))

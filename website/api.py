@@ -12,7 +12,6 @@ def resource_not_found(e):
 
 @api_bp.route('/db/<collection>/<id>')
 def fetch_db(collection: str, id):
-    print(collection, id)
     obj = None
     if collection == 'problem':
         obj = Problem.find_one({'id': id})
@@ -22,7 +21,6 @@ def fetch_db(collection: str, id):
         obj = Assignment.find_one({'id': id})
     if collection == 'submission':
         obj = Submission.find_one({'id': id})
-    print(obj)
     if obj is None:
         return jsonify(None)
     return jsonify(obj.cast_to_document())

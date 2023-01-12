@@ -3,10 +3,16 @@
 {% block title %}Submission #{{submission.id}}{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Submission #<a id="submission-id">{{submission.id}}</a></h1>
+<div class="d-flex justify-content-between mb-1">
+    <h1>Submission #<a id="submission-id">{{submission.id}}</h1>
+    {% if current_user.is_admin %}
+        <a href="{{ url_for('admin_bp.rejudge_submission', id=submission.id) }}"
+            class="btn btn-primary align-self-center">Rejudge</a>
+    {% endif %}
+</div>
 <div class="mb-3">
     <h4>Source Code</h4>
-    <div id="editor">{% if show_code %}{{submission.code}}{% else %}# Source code hidden: you have not solved this problem yet!{% endif %}</div>
+    <div id="editor">{% if show_code %}{{submission.code}}{% else %}# Source code hidden: you have not solved this problem yet :3{% endif %}</div>
 </div>
 <hr>
 <div class="mb-3">

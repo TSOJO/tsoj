@@ -28,8 +28,6 @@ class User(UserMixin):
         self.username = self.id if username == '' else username
         self.full_name = full_name
         self.is_admin = is_admin
-        # ! Probably don't need if just send them their password
-        self.is_verified: bool = False
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)
@@ -85,7 +83,6 @@ class User(UserMixin):
             is_admin=document['is_admin']
         )
         user_obj._hashed_password = document['hashed_password']
-        user_obj.is_verified = document['is_verified']
         return user_obj
 
     def cast_to_document(self) -> Dict[str, Any]:
@@ -96,7 +93,6 @@ class User(UserMixin):
             'full_name': self.full_name,
             'email': self.email,
             'hashed_password': self._hashed_password,
-            'is_verified': self.is_verified,
             'is_admin': self.is_admin
         }
 

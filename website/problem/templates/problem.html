@@ -6,7 +6,12 @@
 <div class="d-flex justify-content-between mb-1">
     <h1>Problem {{problem.id}}: {{problem.name}}</h1>
     {% if current_user.is_admin %}
-    <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}" class="btn btn-primary align-self-center">Edit</a>
+    <div class="btn-group">
+        <a href="{{ url_for('admin_bp.rejudge_problem', id=problem.id) }}"
+            class="btn btn-primary align-self-center">Rejudge</a>
+        <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}"
+            class="btn btn-primary align-self-center">Edit</a>
+    </div>
     {% endif %}
 </div>
 <p>{{problem.description}}</p>

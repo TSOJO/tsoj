@@ -45,6 +45,7 @@ class Submission:
 		self.submission_time = submission_time
 
 	def create_empty_results(self, num_results):
+		self.results = []
 		for _ in range(num_results):
 			self.results.append(
 				Result(verdict=Verdict.WJ,
@@ -56,7 +57,6 @@ class Submission:
                                       		time=time,
                                         	memory=memory)
 		self.final_verdict = IsolateSandbox.decide_final_verdict([r.verdict for r in self.results])
-		print(result_index, self.results, self.final_verdict)
 		self.save(replace=True)
 	
 	def tests_completed(self):
