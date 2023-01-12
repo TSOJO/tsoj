@@ -113,11 +113,11 @@ id_field.addEventListener('blur', (event) => {
         .then(response => response.json())
         .then(data => {
             if(data != null) {
-                id_field.setCustomValidity(true);
-                id_invalid_feedback.innerText = "A problem with that ID already exists.";
+                id_field.setCustomValidity('A problem with that ID already exists.');
+                id_invalid_feedback.innerText = 'A problem with that ID already exists.';
             } else {
-                id_field.setCustomValidity(false);
-                id_invalid_feedback.innerText = "This field is required.";
+                id_field.setCustomValidity('');
+                id_invalid_feedback.innerText = 'This field is required.';
             }
         })
 })
@@ -130,8 +130,8 @@ window.onpageshow = function (event) {
     // Initialise code editor.
     let editor = ace.edit('editor');
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/');
-    editor.setTheme("ace/theme/textmate");
-    editor.session.setMode("ace/mode/python");
+    editor.setTheme('ace/theme/textmate');
+    editor.session.setMode('ace/mode/python');
     editor.setOptions({ minLines: 10, maxLines: 20 });
     // editor.session.setUseWrapMode(true);
 
