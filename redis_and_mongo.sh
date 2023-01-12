@@ -1,2 +1,2 @@
-sudo service redis-server start
+sudo service redis-server start 
 sudo mongod --dbpath ~/data/db

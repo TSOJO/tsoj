@@ -13,3 +13,7 @@
 .verdict-svg, .code-submit {
     margin-right: 5px;
 } */
+
+.testcase-input, .testcase-answer {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+}

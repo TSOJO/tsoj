@@ -12,19 +12,25 @@
         <div class="form-group mb-3">
             <label for="id" class="form-label">ID</label>
             <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID"
-                value="{{problem.id}}" readonly>
+                value="{{problem.id}}" readonly disabled>
         </div>
 
         <div class="form-group mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name"
                 value="{{problem.name}}" required>
+            <div class="invalid-feedback">
+                This field is required.
+            </div>
         </div>
 
         <div class="form-group mb-3">
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control" name="description" id="description" rows="5"
                 placeholder="Enter problem description" required>{{problem.description}}</textarea>
+            <div class="invalid-feedback">
+                This field is required.
+            </div>
         </div>
 
         <label class="form-label">Testcases</label>
@@ -71,7 +77,8 @@
                                 <h5 class="testcase-number my-0">Testcase {{loop.index}}</h5>
                             </div>
                             <div class="my-auto px-4">
-                                <input class="form-check-input testcase-sample" type="checkbox"  {% if testcase.batch_number == 0 %} checked {% endif %}>
+                                <input class="form-check-input testcase-sample" type="checkbox" {% if
+                                    testcase.batch_number==0 %} checked {% endif %}>
                                 <label class="form-check-label">Sample case</label>
                             </div>
                             <div class="my-auto">
@@ -116,16 +123,20 @@
 
         <label for="time-limit" class="form-label">Time limit</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="time-limit" id="time-limit"
-                value="{{problem.time_limit / 1000}}" required>
+            <input type="text" class="form-control" name="time-limit" id="time-limit" value="1.0" required>
             <span class="input-group-text">seconds (recommended: 1-10)</span>
+            <div class="invalid-feedback">
+                This field is required.
+            </div>
         </div>
 
         <label for="memory-limit" class="form-label">Memory limit</label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="memory-limit" id="memory-limit"
-                value="{{problem.memory_limit / 1024}}" required>
+            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="128" required>
             <span class="input-group-text">MB (recommended: 64-512)</span>
+            <div class="invalid-feedback">
+                This field is required.
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>

@@ -22,7 +22,7 @@ function add_problem() {
         '</div>'
     ].join('');
     container.append(wrapper);
-    fetch('/api/problem/' + selected_problem_id)
+    fetch('/api/db/problem/' + selected_problem_id)
         .then(response => response.json())
         .then(data => {
             document.getElementById(this_id).remove();

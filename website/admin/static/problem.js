@@ -96,22 +96,33 @@ function generate_answers() {
 // Form validation. (https://getbootstrap.com/docs/5.2/forms/validation/)
 (() => {
     'use strict'
-    
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    const forms = document.querySelectorAll('.needs-validation')
-    
-    // Loop over them and prevent submission
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
 
-            form.classList.add('was-validated')
-        }, false)
-    })
+    const form = document.querySelector('.needs-validation')
+    form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+    }, false)
 })()
+
+const id_field = document.getElementById('id');
+const id_invalid_feedback = document.getElementById('id-invalid-feedback')
+id_field.addEventListener('blur', (event) => {
+    fetch('/api/db/problem/' + id_field.value)
+        .then(response => response.json())
+        .then(data => {
+            if(data != null) {
+                id_field.setCustomValidity(true);
+                id_invalid_feedback.innerText = "A problem with that ID already exists.";
+            } else {
+                id_field.setCustomValidity(false);
+                id_invalid_feedback.innerText = "This field is required.";
+            }
+        })
+})
 
 window.onpageshow = function (event) {
     if (testcases_count == 0) {
@@ -125,11 +136,11 @@ window.onpageshow = function (event) {
     editor.session.setMode("ace/mode/python");
     editor.setOptions({ minLines: 10, maxLines: 20 });
     // editor.session.setUseWrapMode(true);
-    
+
     editor.getSession().on('change', function () {
         $('textarea[name="generator-code"]').val(editor.getValue());
     });
-    
+
     // Checkbox on changed
     $('input[name="generator-checkbox"]').change(function () {
         if (this.checked) {

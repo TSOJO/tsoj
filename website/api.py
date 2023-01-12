@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, abort, request
-from website.models import Problem, Submission
+from website.models import Problem, Submission, User, Assignment
 from isolate_wrapper import IsolateSandbox, Verdict
 import json
 import time
@@ -10,12 +10,30 @@ api_bp = Blueprint('api_bp', __name__)
 def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
-@api_bp.route('/problem/<id>')
-def fetch_problem(id):
-    problem_obj = Problem.find_one({'id': id})
-    if problem_obj is None:
-        abort(404, description="Problem not found")
-    return jsonify(problem_obj.cast_to_document())
+@api_bp.route('/db/<collection>/<id>')
+def fetch_db(collection: str, id):
+    print(collection, id)
+    obj = None
+    if collection == 'problem':
+        obj = Problem.find_one({'id': id})
+    if collection == 'user':
+        obj = User.find_one({'id': id})
+    if collection == 'assignment':
+        obj = Assignment.find_one({'id': id})
+    if collection == 'submission':
+        obj = Submission.find_one({'id': id})
+    print(obj)
+    if obj is None:
+        return jsonify(None)
+    return jsonify(obj.cast_to_document())
+            
+
+# @api_bp.route('/problem/<id>')
+# def fetch_problem(id):
+#     problem_obj = Problem.find_one({'id': id})
+#     if problem_obj is None:
+#         abort(404, description="Problem not found")
+#     return jsonify(problem_obj.cast_to_document())
 
 @api_bp.route('/generate-answer', methods=['POST'])
 def generate_answer():

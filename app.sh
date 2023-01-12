@@ -1,2 +1,2 @@
-. ./venv/bin/activate
+. ./venv/bin/activate 
 python wsgi.py

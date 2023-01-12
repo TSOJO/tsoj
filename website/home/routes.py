@@ -12,10 +12,8 @@ home_bp = Blueprint('home_bp', __name__,
 def home():
     return render_template('home.html')
 
-# require trailing slash for some reason
 
-
-@home_bp.route('/problems/')
+@home_bp.route('/problems/') # ? require trailing slash for some reason
 def problems():
     problems = Problem.find_all()
     return render_template('problems.html', problems=problems)
