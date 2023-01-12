@@ -55,7 +55,7 @@ def create_problem():
 def edit_problem(id: str):
     if request.method == 'POST':
         problem_info = {
-            'id': request.form['id'],
+            'id': id,
             'name': request.form['name'],
             'description': request.form['description'],
             'time_limit': int(round(float(request.form['time-limit']) * 1000)),
@@ -65,8 +65,9 @@ def edit_problem(id: str):
 
         testcases_count = int(request.form['testcases-count'])
         for i in range(testcases_count):
+            sample = f'sample{i+1}' in request.form
             testcases.append(
-                Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}']))
+                Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}'], 0 if sample else 1))
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(replace=True)

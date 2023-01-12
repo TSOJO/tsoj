@@ -21,8 +21,6 @@ function add_field() {
         answer_node.readOnly = true;
     }
     let testcase_container = document.getElementById('testcase-container');
-    // input_node.setAttribute('required', '');
-    // answer_node.setAttribute('required', '');
     testcase_container.appendChild(testcase_node);
 }
 

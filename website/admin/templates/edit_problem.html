@@ -78,7 +78,8 @@
                             </div>
                             <div class="my-auto px-4">
                                 <input class="form-check-input testcase-sample" type="checkbox" {% if
-                                    testcase.batch_number==0 %} checked {% endif %}>
+                                    testcase.batch_number==0 %} checked {% endif %} id="sample{{loop.index}}"
+                                    name="sample{{loop.index}}">
                                 <label class="form-check-label">Sample case</label>
                             </div>
                             <div class="my-auto">
