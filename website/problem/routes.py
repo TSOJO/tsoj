@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, abort, flash
 from typing import List
-from flask_login import login_required, current_user
+from flask_login import current_user
 
 from website.celery_tasks import judge
 from website.models import Problem, Submission
@@ -11,9 +11,6 @@ problem_bp = Blueprint('problem_bp', __name__,
                        template_folder='templates',
                        static_folder='static')
 
-# Load problem main screen.
-
-
 @problem_bp.route('/<id>')
 def problem(id: str) -> str:
     problem = Problem.find_one({'id': id})
@@ -22,10 +19,7 @@ def problem(id: str) -> str:
     assignment_id = request.args.get('assignment_id')
     return render_template('problem.html', problem=problem, assignment_id=assignment_id)
 
-# Code submission.
-
 @problem_bp.route('/<id>/submit', methods=['POST'])
-@login_required
 def problem_submit(id: str):
     user_id = current_user.id
 

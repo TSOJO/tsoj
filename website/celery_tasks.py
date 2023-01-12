@@ -12,7 +12,7 @@ from email.message import EmailMessage
 from os import environ
 
 @celery.task(name='judge')
-def judge(user_code: str, submission_dict, problem_id: int):  # ! Adding typings for e.g. models.Submission results in circular imports (????)
+def judge(user_code: str, submission_dict, problem_id: int):
     submission = models.Submission.cast_from_document(submission_dict)
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()

@@ -25,7 +25,7 @@ class User(UserMixin):
         # Public properties
         self.email = email
         self.id = email.split('@')[0] if id == '' else id
-        self.username = self.id if id == '' else id
+        self.username = self.id if username == '' else username
         self.full_name = full_name
         self.is_admin = is_admin
         # ! Probably don't need if just send them their password
