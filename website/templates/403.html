@@ -3,5 +3,7 @@
 {% block title %}403{% endblock %}
 
 {% block content %}
-<h1 align="center">Unauthorised</h1>
+<h1>403 Unauthorised</h1>
+<p>{{description}}</p>
+<a href="{{url_for('home_bp.home')}}">Go back to home</a>
 {% endblock %}
