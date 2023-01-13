@@ -25,12 +25,19 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">Description (Supported by Markdown and MathJax)</label>
             <textarea class="form-control" name="description" id="description" rows="5"
                 placeholder="Enter problem description" required>{{problem.description}}</textarea>
             <div class="invalid-feedback">
                 This field is required.
             </div>
+        </div>
+
+        <p>Description Preview</p>
+        <div class="card mb-3">
+            <md-block id="description-md">
+                {{problem.description}}
+            </md-block>
         </div>
 
         <label class="form-label">Testcases</label>

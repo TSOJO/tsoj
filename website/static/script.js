@@ -1,0 +1,1 @@
+setInterval("MathJax.typeset()", 100);

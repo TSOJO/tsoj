@@ -122,11 +122,12 @@ id_field.addEventListener('blur', (event) => {
         })
 })
 
+
 window.onpageshow = function (event) {
     if (testcases_count == 0) {
         add_field()
     }
-
+    
     // Initialise code editor.
     let editor = ace.edit('editor');
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/');
@@ -159,3 +160,8 @@ window.onpageshow = function (event) {
         }
     });
 }
+
+$('#description').on('input', function (e) {
+    $('#description-math').html(e.target.value);
+    $('#description-md')[0].mdContent = $('#description').val();
+})
