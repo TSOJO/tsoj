@@ -3,24 +3,35 @@
 {% block title %}Problems{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between mb-3">
+<div class="d-flex justify-content-between">
     <h1>Problems</h1>
     {% if current_user.is_admin %}
     <a href="{{ url_for('admin_bp.create_problem') }}" class="btn btn-success align-self-center">Create</a>
     {% endif %}
 </div>
-{% for problem in problems %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">{{problem.id}}: {{problem.name}}</h5>
-            <p class="card-text text-truncate col-5">{{problem.description}}</p>
-            <div class="btn-group">
-                <a href="{{ url_for('problem_bp.problem', id=problem.id) }}" class="btn btn-primary">View</a>
-                {% if current_user.is_admin %}
-                <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}" class="btn btn-primary">Edit</a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-{% endfor %}
+<table class="table table-striped table-bordered"
+       data-toggle="table"
+       data-search="true"
+       data-show-columns="true"
+       data-pagination="true"
+       data-pagination-loop="false">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for problem in problems %}
+        <tr>
+            <td>
+                <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.id}}</a>
+            </td>
+            <td>
+                <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.name}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
