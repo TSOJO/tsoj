@@ -1,27 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Create Problem{% endblock %}
+{% block title %}Create assignment{% endblock %}
 
 {% block content %}
-<div id="create-assignment-page">
-    <div class="mb-3">
-        <h1>Create Assignment</h1>
-    </div>
-    
-    <form method="POST" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <p>Problems</p>
-            <select class="selectpicker form-control" id="problem-selector" data-live-search="true" data-width="fit" data-show-subtext="true">
-                {% for problem in problems %}
-                <option data-subtext="{{problem.id}}" value="{{problem.id}}">{{problem.name}}</option>
-                {% endfor %}
-            </select>
-            <button type="button" class="btn btn-primary" id="add-problem-button" onclick="add_problem()">Add Problem</button>
-        </div>
-        <div class="border p-4 mb-3" id="problem-container"></div>
-        <button type="submit" class="btn btn-primary">Create</button>
-    </form>
+<div class="mb-3">
+    <h1>Create assignment</h1>
 </div>
+<p>Currently selected: <span id="selected_ids"></span></p>
+<form method="POST" id="form">
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+<table 
+       id="table"
+       class="table table-striped table-bordered"
+       data-toggle="table"
+       data-search="true"
+       data-pagination="true"
+       data-pagination-loop="false"
+       data-click-to-select="true"
+       data-maintain-meta-data="true">
+    <thead>
+        <tr>
+            <th data-field="state" data-checkbox="true"></th>
+            <th data-field="id">ID</th>
+            <th data-field="name">Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for problem in problems %}
+        <tr>
+            <td></td>
+            <td>
+                {{problem.id}}
+            </td>
+            <td>
+                <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.name}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 {% block scripts %}

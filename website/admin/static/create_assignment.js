@@ -1,52 +1,29 @@
-let problems_count = 0
+var $table = $('#table')
+var $button = $('#button')
 
-function add_problem() {
-    problems_count++;
-    let this_id = 'problem' + problems_count;
-    var selected_problem_id = $('#problem-selector').val();
-    const container = document.getElementById('problem-container');
-    const wrapper = document.createElement('div');
-    wrapper.setAttribute('id', this_id);
-    wrapper.innerHTML = [
-        '<div class="card mb-3" aria-hidden="true">',
-        '   <div class="card-body">',
-        '       <h5 class="card-title placeholder-glow">',
-        '           <span class="placeholder col-3"></span>',
-        '       </h5>',
-        '       <p class="card-text placeholder-glow">',
-        '           <span class="placeholder col-7"></span>',
-        '       </p>',
-        '       <a href="#" tabindex="-1" class="btn btn-primary disabled placeholder col-1"></a>',
-        '       <button type="button" class="btn btn-danger disabled placeholder col-1"></button>',
-        '   </div>',
-        '</div>'
-    ].join('');
-    container.append(wrapper);
-    fetch('/api/db/problem/' + selected_problem_id)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById(this_id).remove();
-            const wrapper_new = document.createElement('div');
-            wrapper_new.setAttribute('id', this_id);
-            wrapper_new.innerHTML = [
-                '<div class="card mb-3" aria-hidden="true">',
-                '   <div class="card-body">',
-                '       <h5 class="card-title">',
-                '           ' + data['id'] + ': ' + data['name'],
-                '       </h5>',
-                '       <p class="card-text">',
-                '           ' + data['description'],
-                '       </p>',
-                '       <a href="/problem/' + data['id'] + '" class="btn btn-primary">View</a>',
-                '       <button type="button" class="btn btn-danger" onclick="remove_problem(\'' + this_id + '\')">Remove</button>',
-                '   </div>',
-                '</div>',
-                '<input type="hidden" name="' + this_id + '" value="' + data['id'] + '" />'
-            ].join('');
-            container.append(wrapper_new);
-        })
+function update_selected() {
+	ids = []
+	for (row of $table.bootstrapTable('getSelections')) {
+		ids.push(row['id'])
+	}
+	$('#selected_ids').text(ids.join(', '))
+	return ids
 }
 
-function remove_problem(id) {
-    document.getElementById(id).remove();
-}
+$('#form').submit( function(e) {
+	ids = update_selected().join(',')
+	if (ids == '') {
+		alert('No problems selected!');
+		return false;
+	}
+	input = $('<input />')
+		.attr('type', 'hidden')
+		.attr('name', 'selected_ids')
+		.attr('value', ids);
+	input.appendTo('#form');
+	return true;
+});
+
+$('#table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', function (e, row, element) {
+	update_selected();
+})

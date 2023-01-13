@@ -41,10 +41,10 @@ def create_problem():
                 Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}'], 0 if sample else 1))
 
         problem = Problem(**problem_info, testcases=testcases)
-        existing_problem = Problem.find_one({'id': problem.id})
-        if existing_problem:
-            flash(f'Problem with the id {problem.id} already exist.', 'error')
-            return redirect(url_for('admin_bp.admin'))
+        # existing_problem = Problem.find_one({'id': problem.id})
+        # if existing_problem:
+        #     flash(f'Problem with the id {problem.id} already exist.', 'error')
+        #     return redirect(url_for('admin_bp.admin'))
         problem.save()
 
         flash('Problem created', 'success')
@@ -81,15 +81,14 @@ def edit_problem(id: str):
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
+        print(request.form.get('selected_ids').split(','))
         new_assignment = Assignment(creator=current_user.username)
-        # Only has problems.
-        problems = request.form.to_dict().values()
-        new_assignment.add_problems(*problems)
+        problem_ids = request.form.get('selected_ids').split(',')
+        new_assignment.add_problems(*problem_ids)
         new_assignment.save(wait=True)
 
         flash('Assignment created', 'success')
-        # ? redirect to /assignments/ something something
-        return redirect(url_for('admin_bp.admin'))
+        return redirect(url_for('assignment_bp.assignment', id=new_assignment.id))
     problems = Problem.find_all()
     return render_template('create_assignment.html', problems=problems)
 
