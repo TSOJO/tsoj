@@ -9,11 +9,12 @@ from flask_login import UserMixin
 from website.db import db
 from website.celery_tasks import add_to_db, send_email
 from isolate_wrapper.custom_types import Verdict
+from website.models.db_model import DBModel
 
 from . import submission as submission_file
 
 
-class User(UserMixin):
+class User(UserMixin, DBModel):
 
     def __init__(self,
                  email: str,
@@ -21,6 +22,7 @@ class User(UserMixin):
                  username: str = '',
                  full_name: str = '',
                  plaintext_password: str = '',
+                 user_group_ids: List[int] = [],
                  is_admin: bool = False):
         # Public properties
         self.email = email
@@ -28,6 +30,7 @@ class User(UserMixin):
         self.username = self.id if username == '' else username
         self.full_name = full_name
         self.is_admin = is_admin
+        self.user_group_ids = user_group_ids
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)
@@ -41,13 +44,13 @@ class User(UserMixin):
     def check_password(self, plaintext_password):
         return check_password_hash(self._hashed_password, plaintext_password)
 
-    def get_submissions(self) -> List[submission_file.Submission]:
+    def fetch_submissions(self) -> List[submission_file.Submission]:
         submissions = submission_file.Submission.find_all({'user_id': f'{self.id}'})
         return submissions
 
     def get_solved_problem_ids(self) -> List[int]:
         problem_ids = set()
-        for s in self.get_submissions():
+        for s in self.fetch_submissions():
             if s.final_verdict == Verdict.AC:
                 problem_ids.add(s.problem_id)
         problem_ids = list(problem_ids)
@@ -80,6 +83,7 @@ class User(UserMixin):
             username=document['username'],
             full_name=document['full_name'],
             email=document['email'],
+            user_group_ids=document['user_group_ids'],
             is_admin=document['is_admin']
         )
         user_obj._hashed_password = document['hashed_password']
@@ -93,6 +97,7 @@ class User(UserMixin):
             'full_name': self.full_name,
             'email': self.email,
             'hashed_password': self._hashed_password,
+            'user_group_ids': self.user_group_ids,
             'is_admin': self.is_admin
         }
 

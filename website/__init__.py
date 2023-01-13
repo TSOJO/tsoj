@@ -83,7 +83,7 @@ def init_app() -> Flask:
 
 def debug_db(app):
     from isolate_wrapper import Testcase
-    from website.models import Assignment, Submission, User, Problem
+    from website.models import Assignment, Submission, User, Problem, UserGroup
     problems_list = [
         {
             'id': 'A1',
@@ -130,3 +130,5 @@ def debug_db(app):
     with app.app_context():
         admin.save(replace=True)
         test_user.save(replace=True)
+    
+    user_group = UserGroup(name='4A1', user_ids=['admin', 'user'])

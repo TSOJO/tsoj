@@ -11,8 +11,8 @@ from isolate_wrapper import IsolateSandbox
 from website.celery_tasks import add_to_db
 from website.db import db
 from .assignment import Assignment
-from .problem import Problem
 from .user import User
+from website.models.db_model import DBModel
 
 
 class Submission:

@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
-from pymongo.errors import DuplicateKeyError
-import logging
 
 from isolate_wrapper.custom_types import Testcase
 from website.db import db
 from website.celery_tasks import add_to_db
+from website.models.db_model import DBModel
 
-class Problem:
+class Problem(DBModel):
     def __init__(self,
                  id: str,
                  name: str,

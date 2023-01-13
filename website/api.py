@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, abort, request
-from website.models import Problem, Submission, User, Assignment
+from website.models import Problem, Submission, User, Assignment, DBModel
 from isolate_wrapper import IsolateSandbox, Verdict
 import json
 import time
@@ -12,7 +12,7 @@ def resource_not_found(e):
 
 @api_bp.route('/db/<collection>/<id>')
 def fetch_db(collection: str, id):
-    obj = None
+    obj: DBModel = None
     if collection == 'problem':
         obj = Problem.find_one({'id': id})
     if collection == 'user':

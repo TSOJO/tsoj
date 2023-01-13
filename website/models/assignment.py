@@ -5,22 +5,25 @@ from typing import Any, Mapping, Dict, List, Optional, cast
 from website.db import db
 from website.models.problem import Problem
 from website.celery_tasks import add_to_db
+from website.models.db_model import DBModel
 
 
-class Assignment:
+class Assignment(DBModel):
 
     _max_id: int = 0
 
-    def __init__(self, creator, id: Optional[int]=None, problem_ids: Optional[List[str]]=None):
+    def __init__(self,
+                 creator: str,
+                 id: Optional[int] = None,
+                 user_group_ids : List[int] = [],
+                 problem_ids: Optional[List[str]] = None):
         if problem_ids is None:
             problem_ids = []
         # Public properties.
         self.id: Optional[int] = id
         self.problem_ids: List[str] = problem_ids
+        self.user_group_ids = user_group_ids
         self.creator = creator
-
-        # Private properties.
-        # self._id: Optional[int] = None
 
     def add_problems(self, *problem_ids):
         self.problem_ids.extend(problem_ids)
@@ -36,7 +39,8 @@ class Assignment:
         assignment_obj = Assignment(
             id=document['id'],
             problem_ids=document['problem_ids'],
-            creator=document['creator']
+            creator=document['creator'],
+            user_group_ids=document['user_group_ids']
         )
         return assignment_obj
 
@@ -45,7 +49,8 @@ class Assignment:
             '_id': self.id,
             'id': self.id,
             'problem_ids': self.problem_ids,
-            'creator': self.creator
+            'creator': self.creator,
+            'user_group_ids': self.user_group_ids,
         }
 
     @classmethod
@@ -56,11 +61,11 @@ class Assignment:
         return cls.cast_from_document(result)
 
     @classmethod
-    def find_all(cls, filter: Optional[Mapping[str, Any]]=None, sort=False) -> List[Assignment]:
+    def find_all(cls, filter: Optional[Mapping[str, Any]] = None, sort=False) -> List[Assignment]:
         results = db.assignments.find(filter=filter)
         assignments = [cls.cast_from_document(result) for result in results]
         if sort:
-            assignments.sort(key=lambda s:s.id, reverse=True)
+            assignments.sort(key=lambda s: s.id, reverse=True)
         return assignments
 
     def save(self, replace=False, wait=False) -> Assignment:
