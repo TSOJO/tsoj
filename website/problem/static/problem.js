@@ -25,3 +25,8 @@ window.onpageshow = function(event) {
         $('#codeForm').submit();
     });
 }
+
+function copy_text(element) {
+    const text = element.innerText;
+    navigator.clipboard.writeText(text);
+}

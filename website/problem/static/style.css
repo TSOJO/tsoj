@@ -13,6 +13,9 @@ td, th {
     margin-right: 5px;
 }
 
-.consolas {
+.in-out-text {
+    padding: 7px;
+    white-space: pre-line;
+    cursor: pointer;
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
