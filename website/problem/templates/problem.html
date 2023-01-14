@@ -25,14 +25,14 @@
             <div class="form-group mb-3 col-sm-6">
                 <label class="form-label">Input</label>
                 <div class="card">
-                    <div class="card-body in-out-text" onclick="copy_text(this)">{{testcase.input}}</div>
+                    <div class="card-body in-out-text" onclick="copy_text(this)" data-bs-toggle="tooltip" data-bs-trigger="manual" title="Copied!">{{testcase.input}}</div>
                 </div>
                 <small>Click to copy.</small>
             </div>
             <div class="form-group mb-3 col-sm-6">
                 <label class="form-label">Answer</label>
                 <div class="card">
-                    <div class="card-body in-out-text" onclick="copy_text(this)">{{testcase.answer}}</div>
+                    <div class="card-body in-out-text" onclick="copy_text(this)" data-bs-toggle="tooltip" data-bs-trigger="manual" title="Copied!">{{testcase.answer}}</div>
                 </div>
                 <small>Click to copy.</small>
             </div>

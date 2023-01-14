@@ -9,6 +9,12 @@ window.onpageshow = function(event) {
     editor.setOptions({maxLines: 25, minLines: 25});
     let textarea = $('textarea[name="user_code"]').hide();
 
+    // Initialise tooltips.
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    $('[data-bs-toggle="tooltip"]').on('mouseleave', function () {
+        $(this).tooltip('hide');
+      });
+
     // Reset submit button. Is there a better way to do this?
     $('#submitButton').prop('disabled', false);
     $('#submitButton').html('Submit');
@@ -29,4 +35,6 @@ window.onpageshow = function(event) {
 function copy_text(element) {
     const text = element.innerText;
     navigator.clipboard.writeText(text);
+    const tooltip = bootstrap.Tooltip.getInstance(element);
+    tooltip.show();
 }
