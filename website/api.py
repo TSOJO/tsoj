@@ -26,13 +26,6 @@ def fetch_db(collection: str, id):
     return jsonify(obj.cast_to_document())
             
 
-# @api_bp.route('/problem/<id>')
-# def fetch_problem(id):
-#     problem_obj = Problem.find_one({'id': id})
-#     if problem_obj is None:
-#         abort(404, description="Problem not found")
-#     return jsonify(problem_obj.cast_to_document())
-
 @api_bp.route('/generate-answer', methods=['POST'])
 def generate_answer():
     req_json = json.loads(request.data)
@@ -42,13 +35,13 @@ def generate_answer():
     memory_limit = req_json.get('memoryLimit')
 
     if any(param is None for param in (code, input_, time_limit, memory_limit)):
-        abort(400, description="Invalid parameters")
+        abort(400, description='Invalid parameters')
 
     try:
         time_limit = int(float(time_limit) * 1000)
         memory_limit = int(float(memory_limit) * 1024)
     except ValueError:
-        abort(400, description="Invalid parameters")
+        abort(400, description='Invalid parameters')
     
     answer, verdict = IsolateSandbox().generate_answer(code, input_, time_limit, memory_limit)
     return jsonify({
@@ -61,10 +54,6 @@ def grab_submission_change():
     req_json = json.loads(request.data)
     submission_id = req_json.get('id')
     tests_completed = req_json.get('testsCompleted')
-    
-    # redundant, int(None) will raise TypeError
-    # if any(param is None for param in (submission_id, tests_completed)):
-    #     abort(400, description="Invalid parameters")
     
     try:
         submission_id = int(submission_id)

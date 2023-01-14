@@ -150,12 +150,12 @@ window.onpageshow = function (event) {
         for (let i = 1; i <= testcases_count; i++) {
             if (this.checked == true) {
                 document.getElementById('answer' + i).value = 'Press "Generate answers" to generate answers.';
-                document.getElementById('answer' + i).disabled = true;
+                document.getElementById('answer' + i).readOnly = true;
             } else {
                 if (document.getElementById('answer' + i).value == 'Press "Generate answers" to generate answers.') {
                     document.getElementById('answer' + i).value = '';
                 }
-                document.getElementById('answer' + i).disabled = false;
+                document.getElementById('answer' + i).readOnly = false;
             }
         }
     });

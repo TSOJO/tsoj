@@ -15,7 +15,7 @@ admin_bp = Blueprint('admin_bp', __name__,
 @login_required
 def unauthorised():
     if not current_user.is_admin:
-        abort(403)
+        abort(403, description='Admin account required to access this page')
 
 @admin_bp.route('/')
 def admin():
