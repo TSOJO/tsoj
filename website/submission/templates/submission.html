@@ -7,7 +7,7 @@
     <h1>Submission #<a id="submission-id">{{submission.id}}</h1>
     {% if current_user.is_admin %}
         <a href="{{ url_for('admin_bp.rejudge_submission', id=submission.id) }}"
-            class="btn btn-primary align-self-center">Rejudge</a>
+            class="btn btn-secondary align-self-center">Rejudge</a>
     {% endif %}
 </div>
 <div class="mb-3">
