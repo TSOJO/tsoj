@@ -15,18 +15,18 @@
        data-pagination="true"
        data-pagination-loop="false">
     <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
+        <tr class="d-flex">
+            <th class="col-1">ID</th>
+            <th class="flex-grow-1">Name</th>
         </tr>
     </thead>
     <tbody>
         {% for problem in problems %}
-        <tr>
-            <td>
+        <tr class="d-flex">
+            <td class="col-1">
                 <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.id}}</a>
             </td>
-            <td>
+            <td class="flex-grow-1">
                 <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.name}}</a>
             </td>
         </tr>

@@ -60,6 +60,10 @@ class Problem(DBModel):
             problems.sort(key=lambda p: p.id)
         return problems
 
-    def save(self, replace=False) -> Problem:
-        add_to_db.delay('problems', self.cast_to_document(), replace=replace)
+    def save(self, replace=False, wait=False) -> Problem:
+        doc = self.cast_to_document()
+        if wait:
+            add_to_db('problems', doc, replace=replace)
+        else:
+            add_to_db.delay('problems', doc, replace=replace)
         return self

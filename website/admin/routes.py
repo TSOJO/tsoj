@@ -41,11 +41,7 @@ def create_problem():
                 Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}'], 0 if sample else 1))
 
         problem = Problem(**problem_info, testcases=testcases)
-        # existing_problem = Problem.find_one({'id': problem.id})
-        # if existing_problem:
-        #     flash(f'Problem with the id {problem.id} already exist.', 'error')
-        #     return redirect(url_for('admin_bp.admin'))
-        problem.save()
+        problem.save(wait=True)
 
         flash('Problem created', 'success')
         return redirect(url_for('problem_bp.problem', id=problem.id))
