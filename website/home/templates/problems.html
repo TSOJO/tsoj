@@ -22,6 +22,7 @@
     </thead>
     <tbody>
         {% for problem in problems %}
+        {% if current_user.is_admin or problem.is_public %}
         <tr class="d-flex">
             <td class="col-1">
                 <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.id}}</a>
@@ -30,6 +31,7 @@
                 <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.name}}</a>
             </td>
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>

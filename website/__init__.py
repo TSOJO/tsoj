@@ -44,7 +44,6 @@ def init_app() -> Flask:
     from .problem.routes import problem_bp
     from .submission.routes import submission_bp
     from .admin.routes import admin_bp
-    from .assignment.routes import assignment_bp
     from .home.routes import home_bp
     from .api import api_bp
     from .user.routes import user_bp
@@ -53,7 +52,6 @@ def init_app() -> Flask:
     app.register_blueprint(problem_bp, url_prefix='/problem')
     app.register_blueprint(submission_bp, url_prefix='/submission')
     app.register_blueprint(admin_bp, url_prefix='/admin')
-    app.register_blueprint(assignment_bp, url_prefix='/assignment')
     app.register_blueprint(home_bp, url_prefix='/')
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(user_bp, url_prefix='/user')
@@ -102,6 +100,7 @@ def debug_db(app):
                 Testcase('10000000\n20000000\n', '30000000\n'),
                 Testcase('100000000\n200000000\n', '300000000\n'),
             ],
+            'is_public': True,
         },
         {
             'id': 'A2',
@@ -113,22 +112,26 @@ def debug_db(app):
                 Testcase('2\n9\n', '-7\n', 0),
                 Testcase('10\n20\n', '-10\n', 0),
             ],
+            'is_public': True,
         }
     ]
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)
         with app.app_context():
             problem.save(replace=True)
+
+    user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
+    with app.app_context():
+        user_group.save(replace=True)
     
-    assignment = Assignment(creator='JER')
+    assignment = Assignment(id=1, creator='JER', user_group_ids=[1])
     assignment.add_problems('A1', 'A2')
     with app.app_context():
-        assignment.save()
+        assignment.save(replace=True)
 
-    admin = User(id='admin', username='admin_name', full_name='admin_full_name', email='admin@localhost', plaintext_password='admin', is_admin=True)
-    test_user = User(id='user', username='user_name', full_name='user_full_name', email='user@localhost', plaintext_password='user', is_admin=False)
+    admin = User(id='admin', username='admin_name', full_name='admin_full_name', email='admin@localhost', plaintext_password='admin', user_group_ids=[1], is_admin=True)
+    test_user = User(id='user', username='user_name', full_name='user_full_name', email='user@localhost', plaintext_password='user', user_group_ids=[1], is_admin=False)
     with app.app_context():
         admin.save(replace=True)
         test_user.save(replace=True)
     
-    user_group = UserGroup(name='4A1', user_ids=['admin', 'user'])

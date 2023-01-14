@@ -16,6 +16,11 @@
     </div>
 
     <div class="form-group mb-3">
+        <input class="form-check-input is-public-checkbox" type="checkbox" name="is-public">
+        <label class="form-check-label" for="is-public">Public</label>
+    </div>
+
+    <div class="form-group mb-3">
         <label for="name" class="form-label">Name</label>
         <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name" required>
         <div class="invalid-feedback">
@@ -25,7 +30,7 @@
     <div class="row mb-3">
         <div class="col-lg-6">
             <div class="form-group">
-                <label for="description" class="form-label">Description (Supports Markdown and MathJax)</label>
+                <label for="description" class="form-label">Description (Supported by Markdown and MathJax)</label>
                 <textarea class="form-control" name="description" id="description" rows="10"
                     placeholder="Enter problem description" style="white-space: pre-line;" required>
 Enter description
@@ -37,8 +42,7 @@ Enter input format
 Enter output format
 
 ##### Constraints
-Enter input constraints
-                </textarea>
+Enter input constraints</textarea> <!-- end the textarea here, or else will show newline in textarea -->
                 <div class="invalid-feedback">
                     This field is required.
                 </div>

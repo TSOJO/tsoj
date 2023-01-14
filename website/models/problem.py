@@ -7,6 +7,7 @@ from website.db import db
 from website.celery_tasks import add_to_db
 from website.models.db_model import DBModel
 
+
 class Problem(DBModel):
     def __init__(self,
                  id: str,
@@ -14,7 +15,8 @@ class Problem(DBModel):
                  description: str,
                  time_limit: int,  # ms
                  memory_limit: int,  # KB
-                 testcases: List[Testcase]):
+                 testcases: List[Testcase],
+                 is_public: bool = False):
         # Public properties.
         self.id = id
         self.name = name
@@ -22,6 +24,7 @@ class Problem(DBModel):
         self.time_limit = time_limit
         self.memory_limit = memory_limit
         self.testcases = testcases
+        self.is_public = is_public
 
     """Database Wrapper Methods"""
 
@@ -32,7 +35,10 @@ class Problem(DBModel):
                        description=document['description'],
                        time_limit=document['time_limit'],
                        memory_limit=document['memory_limit'],
-                       testcases=[Testcase(**testcase) for testcase in document['testcases']])
+                       testcases=[Testcase(**testcase)
+                                  for testcase in document['testcases']],
+                       is_public=document['is_public']
+                       )
 
     def cast_to_document(self) -> Dict[str, object]:
         return {
@@ -42,7 +48,8 @@ class Problem(DBModel):
             'description': self.description,
             'time_limit': self.time_limit,
             'memory_limit': self.memory_limit,
-            'testcases': [testcase.__dict__ for testcase in self.testcases]
+            'testcases': [testcase.__dict__ for testcase in self.testcases],
+            'is_public': self.is_public,
         }
 
     @classmethod

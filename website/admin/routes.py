@@ -2,8 +2,8 @@ from flask import render_template, Blueprint, request, redirect, url_for, flash,
 from typing import List
 from flask_login import login_required, current_user
 
-from website.models import Problem, Assignment, Submission, User
-from isolate_wrapper import IsolateSandbox, Verdict, Testcase
+from website.models import Problem, Assignment, Submission, User, UserGroup
+from isolate_wrapper import Testcase
 from website.celery_tasks import judge
 
 admin_bp = Blueprint('admin_bp', __name__,
@@ -31,6 +31,7 @@ def create_problem():
             'description': request.form['description'],
             'time_limit': int(round(float(request.form['time-limit']) * 1000)),
             'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
+            'is_public': 'is_public' in request.form,
         }
         testcases: List[Testcase] = []
 
@@ -56,6 +57,7 @@ def edit_problem(id: str):
             'description': request.form['description'],
             'time_limit': int(round(float(request.form['time-limit']) * 1000)),
             'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
+            'is_public': 'is_public' in request.form,
         }
         testcases: List[Testcase] = []
 
@@ -99,16 +101,12 @@ def assignment_results(id: int):
     if assignment is None:
         abort(404, description='Assignment not found')
     problems = assignment.fetch_problems()
-    
-    submissions = Submission.find_all({'assignment_id': id}, sort=True)
-    submissions_dict = {}  # {problem id: [list of submissions to that problem]}
-    for submission in submissions:
-        if submission.problem_id not in submissions_dict:
-            submissions_dict[submission.problem_id] = []
-        submissions_dict[submission.problem_id].append(submission)
-    
-    full_names = dict(map(lambda u: (u.id, u.full_name), User.find_all()))
-    return render_template('assignment_results.html', assignment=assignment, problems=problems, submissions_dict=submissions_dict, full_names=full_names)
+    user_groups = [UserGroup.find_one({'id': u_g_id}) for u_g_id in assignment.user_group_ids]
+    users = dict((user.id, user) for user in User.find_all())
+    solved_submissions = {}
+    for user_id, user in users.items():
+        solved_submissions[user_id] = [user.get_solved_submission(p_id) for p_id in assignment.problem_ids]
+    return render_template('assignment_results.html', assignment=assignment, problems=problems, solved_submissions=solved_submissions, user_groups=user_groups, users=users)
 
 @admin_bp.route('/rejudge/problem/<id>')
 def rejudge_problem(id: str):

@@ -10,8 +10,9 @@ from website.db import db
 from website.celery_tasks import add_to_db, send_email
 from isolate_wrapper.custom_types import Verdict
 from website.models.db_model import DBModel
+from website.models import submission as submission
+from website.models import assignment as assignment
 
-from . import submission as submission_file
 
 
 class User(UserMixin, DBModel):
@@ -44,9 +45,15 @@ class User(UserMixin, DBModel):
     def check_password(self, plaintext_password):
         return check_password_hash(self._hashed_password, plaintext_password)
 
-    def fetch_submissions(self) -> List[submission_file.Submission]:
-        submissions = submission_file.Submission.find_all({'user_id': f'{self.id}'})
+    def fetch_submissions(self) -> List[submission.Submission]:
+        submissions = submission.Submission.find_all(
+            {'user_id': f'{self.id}'})
         return submissions
+
+    def fetch_assignments(self) -> List[assignment.Assignment]:
+        assignments = assignment.Assignment.find_all(
+            {'user_group_ids': {'$in': self.user_group_ids}})
+        return assignments
 
     def get_solved_problem_ids(self) -> List[int]:
         problem_ids = set()
@@ -56,6 +63,11 @@ class User(UserMixin, DBModel):
         problem_ids = list(problem_ids)
         problem_ids.sort()
         return problem_ids
+
+    def get_solved_submission(self, problem_id: int) -> Optional[submission.Submission]:
+        submission = submission.Submission.find_one(
+            {'problem_id': problem_id, 'final_verdict.verdict': 'AC', 'user_id': self.id})
+        return submission
 
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)

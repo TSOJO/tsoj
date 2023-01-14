@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request
+from flask_login import current_user
+from typing import *
 
-from website.models import Problem, Submission, User
+from website.models import Problem, Submission, User, Assignment
 
 home_bp = Blueprint('home_bp', __name__,
                     static_url_path='/home/static',  # Because url prefix is '/'
@@ -10,10 +12,14 @@ home_bp = Blueprint('home_bp', __name__,
 
 @home_bp.route('/')
 def home():
-    return render_template('home.html')
+    assignments: List[Assignment] = current_user.fetch_assignments()
+    problems = {}
+    for assignment in assignments:
+        problems[assignment.id] = assignment.fetch_problems()
+    return render_template('home.html', assignments=assignments, problems=problems)
 
 
-@home_bp.route('/problems/') # ? require trailing slash for some reason
+@home_bp.route('/problems/')  # ? require trailing slash for some reason
 def problems():
     problems = Problem.find_all()
     return render_template('problems.html', problems=problems)

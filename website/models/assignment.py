@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Mapping, Dict, List, Optional, cast
+from datetime import datetime
 
 from website.db import db
 from website.models.problem import Problem
@@ -14,9 +15,11 @@ class Assignment(DBModel):
 
     def __init__(self,
                  creator: str,
+                 user_group_ids : List[int],
                  id: Optional[int] = None,
-                 user_group_ids : List[int] = [],
-                 problem_ids: Optional[List[str]] = None):
+                 problem_ids: Optional[List[str]] = None,
+                 archived: bool = False,
+                 set_time: datetime = datetime.utcnow()):
         if problem_ids is None:
             problem_ids = []
         # Public properties.
@@ -24,13 +27,14 @@ class Assignment(DBModel):
         self.problem_ids: List[str] = problem_ids
         self.user_group_ids = user_group_ids
         self.creator = creator
+        self.archived = archived
+        self.set_time = set_time
 
     def add_problems(self, *problem_ids):
         self.problem_ids.extend(problem_ids)
 
     def fetch_problems(self):
-        # TODO optimize this with only one query
-        return [Problem.find_one({'id': p}) for p in self.problem_ids]
+        return Problem.find_all({'id': {'$in': self.problem_ids}})
 
     """Database Wrapper Methods"""
 
@@ -40,7 +44,9 @@ class Assignment(DBModel):
             id=document['id'],
             problem_ids=document['problem_ids'],
             creator=document['creator'],
-            user_group_ids=document['user_group_ids']
+            user_group_ids=document['user_group_ids'],
+            archived=document['archived'],
+            set_time=datetime.strptime(document['set_time'], '%Y-%m-%dT%H:%M:%S.%f'),
         )
         return assignment_obj
 
@@ -51,6 +57,8 @@ class Assignment(DBModel):
             'problem_ids': self.problem_ids,
             'creator': self.creator,
             'user_group_ids': self.user_group_ids,
+            'archived': self.archived,
+            'set_time': self.set_time.strftime('%Y-%m-%dT%H:%M:%S.%f'),
         }
 
     @classmethod

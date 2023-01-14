@@ -41,7 +41,6 @@ class Submission:
 		else:
 			self.results = results
 		self.id: Optional[int] = id
-		self.assignment_id = assignment_id
 		self.submission_time = submission_time
 
 	def create_empty_results(self, num_results):
@@ -87,7 +86,6 @@ class Submission:
 			code=document['code'],
    			final_verdict=Verdict.cast_from_document(document['final_verdict']),
 			results=[Result.cast_from_document(result) for result in document['results']],
-			assignment_id=document['assignment_id'],
 			submission_time=datetime.strptime(document['submission_time'], '%Y-%m-%dT%H:%M:%S.%f')
 		)
 		return submission_obj
@@ -101,13 +99,12 @@ class Submission:
 			'code': self.code,
 			'final_verdict': self.final_verdict.cast_to_document(),
 			'results': [result.cast_to_document() for result in self.results],
-			'assignment_id': self.assignment_id,
 			'submission_time': self.submission_time.strftime('%Y-%m-%dT%H:%M:%S.%f'),
 		}
 
 	@classmethod
 	def find_one(cls, filter: Mapping[str, Any]) -> Optional[Submission]:
-		result = db.submissions.find_one(filter=filter)
+		result = db.submissions.find_one(filter=filter, sort=[('id', -1)])
 		if result is None:
 			return None
 		return cls.cast_from_document(result)

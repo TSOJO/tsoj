@@ -6,10 +6,35 @@
 <h1>Home</h1>
 <p> Welcome to TSOJ! </p>
 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Press me!</a>
-<div class="my-3 d-flex col-3">
-    <div class="col-xs">
-        <input type="number" class="form-control" id="assignment-id" placeholder="Assignment ID">
+
+<h4>Your assignments</h4>
+{% for assignment in assignments %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Assignment set on {{assignment.set_time.strftime("%d/%m/%y")}} by {{assignment.creator}}</h5>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for problem in problems[assignment.id] %}
+                <tr>
+                    <td>
+                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
+                            class="text-decoration-none">{{problem.id}}</a>
+                    </td>
+                    <td>
+                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
+                            class="text-decoration-none">{{problem.name}}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <button type="button" class="btn btn-primary p2" onclick="go_assignment()">Go</button>
 </div>
+{% endfor %}
 {% endblock %}

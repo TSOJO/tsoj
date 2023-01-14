@@ -27,6 +27,7 @@ class UserGroup(DBModel):
     def cast_from_document(cls, document: Any) -> UserGroup:
         user_group_obj = UserGroup(
             id=document['id'],
+            name=document['name'],
             user_ids=document['user_ids']
         )
         return user_group_obj
@@ -35,6 +36,7 @@ class UserGroup(DBModel):
         return {
             '_id': self.id,
             'id': self.id,
+            'name': self.name,
             'user_ids': self.user_ids,
         }
 

@@ -34,7 +34,6 @@ def login():
 
 
 @user_bp.route('/logout')
-@login_required
 def logout():
     logout_user()
     flash('Logged out successfully.')
