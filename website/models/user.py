@@ -46,14 +46,12 @@ class User(UserMixin, DBModel):
         return check_password_hash(self._hashed_password, plaintext_password)
 
     def fetch_submissions(self) -> List[submission.Submission]:
-        submissions = submission.Submission.find_all(
+        return submission.Submission.find_all(
             {'user_id': f'{self.id}'})
-        return submissions
 
     def fetch_assignments(self) -> List[assignment.Assignment]:
-        assignments = assignment.Assignment.find_all(
+        return assignment.Assignment.find_all(
             {'user_group_ids': {'$in': self.user_group_ids}})
-        return assignments
 
     def get_solved_problem_ids(self) -> List[int]:
         problem_ids = set()
@@ -65,9 +63,8 @@ class User(UserMixin, DBModel):
         return problem_ids
 
     def get_solved_submission(self, problem_id: int) -> Optional[submission.Submission]:
-        submission = submission.Submission.find_one(
+        return submission.Submission.find_one(
             {'problem_id': problem_id, 'final_verdict.verdict': 'AC', 'user_id': self.id})
-        return submission
 
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)
