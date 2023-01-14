@@ -140,6 +140,8 @@ window.onpageshow = function (event) {
         $('textarea[name="generator-code"]').val(editor.getValue());
     });
 
+    $('#description-md')[0].mdContent = $('#description').val();
+
     // Checkbox on changed
     $('input[name="generator-checkbox"]').change(function () {
         if (this.checked) {
@@ -162,6 +164,5 @@ window.onpageshow = function (event) {
 }
 
 $('#description').on('input', function (e) {
-    $('#description-math').html(e.target.value);
     $('#description-md')[0].mdContent = $('#description').val();
 })
