@@ -13,14 +13,14 @@
         <tr>
             <th>Users \ Problems</th>
             {% for problem in problems %}
-            <td><a href="{{url_for('problem_bp.problem', id=problem.id)}}">{{problem.id}}</a></th>
+            <td><a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.id}}</a></th>
             {% endfor %}
         </tr>
     </thead>
     <tbody>
         {% for user_id in user_group.user_ids %}
         <tr>
-            <td><a href="{{url_for('user_bp.profile', id=user_id)}}">{{users[user_id].full_name}}</a></th>
+            <td><a href="{{url_for('user_bp.profile', id=user_id)}}" class="text-decoration-none">{{users[user_id].full_name}}</a></th>
             {% for submission in solved_submissions[user_id] %}
             <td>
                 {% if submission %}
@@ -43,7 +43,7 @@
         {% endfor %}
     </tbody>
 </table>
-<small>Tap on the green ticks to view submission.</small>
+<small>Click on ticks/crosses to see submission details.</small>
 {% endfor %}
 
 {% endblock %}
