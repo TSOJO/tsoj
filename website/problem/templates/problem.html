@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between mb-1">
-    <h1>Problem {{problem.id}}: {{problem.name}}</h1>
+    <h1>{{problem.id}}: {{problem.name}}</h1>
     {% if current_user.is_admin %}
     <div class="btn-group">
         <a href="{{ url_for('admin_bp.rejudge_problem', id=problem.id) }}"
