@@ -23,11 +23,11 @@
                 {% for problem in problems[assignment.id] %}
                 <tr>
                     <td>
-                        <a href="{{url_for('problem_bp.problem', id=problem.id, assignment_id=assignment.id)}}"
+                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
                             class="text-decoration-none">{{problem.id}}</a>
                     </td>
                     <td>
-                        <a href="{{url_for('problem_bp.problem', id=problem.id, assignment_id=assignment.id)}}"
+                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
                             class="text-decoration-none">{{problem.name}}</a>
                     </td>
                 </tr>
