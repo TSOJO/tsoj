@@ -79,7 +79,6 @@ def edit_problem(id: str):
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
-        print(request.form.get('selected_ids').split(','))
         new_assignment = Assignment(creator=current_user.username)
         problem_ids = request.form.get('selected_ids').split(',')
         new_assignment.add_problems(*problem_ids)
@@ -93,7 +92,8 @@ def create_assignment():
 @admin_bp.route('/assignments')
 def assignments():
     all_assignments = Assignment.find_all(sort=True)
-    return render_template('assignments.html', assignments=all_assignments)
+    user_group_names = {group.id: group.name for group in UserGroup.find_all()}
+    return render_template('assignments.html', assignments=all_assignments, user_group_names=user_group_names)
 
 @admin_bp.route('/assignment/<int:id>')  # /admin/assignment/id
 def assignment_results(id: int):
@@ -102,7 +102,7 @@ def assignment_results(id: int):
         abort(404, description='Assignment not found')
     problems = assignment.fetch_problems()
     user_groups = [UserGroup.find_one({'id': u_g_id}) for u_g_id in assignment.user_group_ids]
-    users = dict((user.id, user) for user in User.find_all())
+    users = {user.id: user for user in User.find_all()}
     solved_submissions = {}
     for user_id, user in users.items():
         solved_submissions[user_id] = [user.get_solved_submission(p_id) for p_id in assignment.problem_ids]
