@@ -171,15 +171,11 @@ def user_groups():
 @admin_bp.route('/create/user_group', methods=['GET', 'POST'])
 def create_user_group():
     if request.method == 'POST':
-        user_ids = []
-        users = User.find_all()
-        for user in users:
-            if f'is-in-group{user.id}' in request.form:
-                user_ids.append(user.id)
+        user_ids = request.form.get('selected_user_ids').split(',')
         user_group = UserGroup(name=request.form['name'],
                                user_ids=user_ids)
         user_group.save(wait=True)
-        flash('User group created', 'success')
+        flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     users = User.find_all()
     return render_template('create_user_group.html', users=users)
@@ -197,7 +193,7 @@ def edit_user_group(id: int):
                                name=request.form['name'],
                                user_ids=user_ids)
         user_group.save(replace=True)
-        flash('User group saved', 'success')
+        flash('Group saved', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     user_group = UserGroup.find_one({'id': id})
     users = User.find_all()
@@ -208,7 +204,7 @@ def delete_user_group(id: int):
     user_group = UserGroup.find_one({'id': id})
     raise NotImplementedError
     user_group.delete(wait=True)
-    flash('User group deleted', 'success')
+    flash('Group deleted', 'success')
     return redirect(url_for('admin_bp.user_groups'))
 
 

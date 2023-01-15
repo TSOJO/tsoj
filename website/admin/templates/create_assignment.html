@@ -7,7 +7,7 @@
     <h1>Create assignment</h1>
 </div>
 <p>Currently selected problems: <span id="selected-problem-ids"></span></p>
-<p>Currently selected user groups: <span id="selected-user-group-ids"></span></p>
+<p>Currently selected groups: <span id="selected-user-group-ids"></span></p>
 <form method="POST" id="form">
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
@@ -22,9 +22,9 @@
        data-maintain-meta-data="true">
     <thead>
         <tr>
-            <th data-field="state" data-checkbox="true"></th>
-            <th data-field="id">ID</th>
-            <th data-field="name">Name</th>
+            <th data-field="state" data-checkbox="true" scope="col"></th>
+            <th data-field="id" scope="col">ID</th>
+            <th data-field="name" scope="col">Name</th>
         </tr>
     </thead>
     <tbody>
@@ -52,9 +52,9 @@
        data-maintain-meta-data="true">
     <thead>
         <tr>
-            <th data-field="state" data-checkbox="true"></th>
-            <th data-field="id">ID</th>
-            <th data-field="name">Name</th>
+            <th data-field="state" data-checkbox="true" scope="col"></th>
+            <th data-field="id" scope="col">ID</th>
+            <th data-field="name" scope="col">Name</th>
         </tr>
     </thead>
     <tbody>
