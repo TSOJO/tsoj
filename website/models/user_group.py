@@ -12,10 +12,15 @@ class UserGroup(DBModel):
 
     _max_id: int = 0
 
-    def __init__(self, name: str, id: int = None, user_ids: List[int] = []) -> None:
+    def __init__(
+        self, name: str, id: int = None, user_ids: Optional[List[int]] = None
+    ) -> None:
         self.name = name
         self.id = id
-        self.user_ids = user_ids
+        if user_ids is None:
+            self.user_ids = []
+        else:
+            self.user_ids = user_ids
 
     def fetch_users(self):
         return User.find_all({'id': {'$in': self.user_ids}})

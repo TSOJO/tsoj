@@ -17,15 +17,21 @@ class Assignment(DBModel):
         self,
         creator: str,
         id: Optional[int] = None,
-        problem_ids: List[str] = [],
-        user_group_ids: List[int] = [],
+        problem_ids: List[str] = None,
+        user_group_ids: List[int] = None,
         archived: bool = False,
         set_time: datetime = datetime.utcnow(),
     ):
         # Public properties.
         self.id: Optional[int] = id
-        self.problem_ids: List[str] = problem_ids
-        self.user_group_ids = user_group_ids
+        if problem_ids is None:
+            self.problem_ids = []
+        else:
+            self.problem_ids = problem_ids
+        if user_group_ids is None:
+            self.user_group_ids = []
+        else:
+            self.user_group_ids = user_group_ids
         self.creator = creator
         self.archived = archived
         self.set_time = set_time

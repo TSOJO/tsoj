@@ -22,7 +22,7 @@ class User(UserMixin, DBModel):
         username: str = '',
         full_name: str = '',
         plaintext_password: str = '',
-        user_group_ids: List[int] = [],
+        user_group_ids: Optional[List[int]] = None,
         is_admin: bool = False,
     ):
         # Public properties
@@ -30,8 +30,11 @@ class User(UserMixin, DBModel):
         self.id = email.split('@')[0] if id == '' else id
         self.username = self.id if username == '' else username
         self.full_name = full_name
+        if user_group_ids is None:
+            self.user_group_ids = []
+        else:
+            self.user_group_ids = user_group_ids
         self.is_admin = is_admin
-        self.user_group_ids = user_group_ids
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)

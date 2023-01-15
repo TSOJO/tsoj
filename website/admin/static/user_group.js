@@ -12,7 +12,7 @@
     }, false)
 })()
 
-function update_selected(table) {
+function get_selected(table) {
 	ids = []
 	for (row of table.bootstrapTable('getSelections')) {
 		console.log(row)
@@ -22,16 +22,19 @@ function update_selected(table) {
 }
 
 $('#form').submit( function(e) {
-	let user_ids = update_selected($('#user-group-table')).join(',');
-	input = $('<input />')
-		.attr('type', 'hidden')
-		.attr('name', 'selected_user_ids')
-		.attr('value', user_ids);
+	let user_ids = get_selected($('#user-group-table')).join(',');
+	if (user_ids != '') {
+		input = $('<input />')
+			.attr('type', 'hidden')
+			.attr('name', 'selected_user_ids')
+			.attr('value', user_ids);
+		input.appendTo('#form');
+	}
 	
-	input.appendTo('#form');
 	return true;
 });
 
-$('#table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', function (e, row, element) {
-	update_selected($('#table'), $('#selected-problem-ids'));
-})
+// ! Form submission is buggy if user uses 'back' button to go back to the form, so uncheck all.
+window.onpageshow = function(e) {
+	$('#user-group-table').bootstrapTable('uncheckAll')
+};

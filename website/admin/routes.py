@@ -103,7 +103,6 @@ def create_assignment():
             creator=current_user.username, user_group_ids=user_group_ids
         )
         problem_ids = request.form.get('selected_problem_ids').split(',')
-        print(problem_ids)
         new_assignment.add_problems(*problem_ids)
         new_assignment.save(wait=True)
 
@@ -200,8 +199,11 @@ def user_groups():
 @admin_bp.route('/create/user_group', methods=['GET', 'POST'])
 def create_user_group():
     if request.method == 'POST':
-        user_ids = request.form.get('selected_user_ids').split(',')
-        user_group = UserGroup(name=request.form['name'], user_ids=user_ids)
+        user_ids_raw = request.form.get('selected_user_ids')
+        user_group = UserGroup(name=request.form['name'])
+        if user_ids_raw:
+            user_ids = user_ids_raw.split(',')
+            user_group.user_ids = user_ids
         user_group.save(wait=True)
         flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))

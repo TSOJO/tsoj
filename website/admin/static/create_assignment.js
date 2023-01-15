@@ -1,15 +1,17 @@
-function update_selected(table, selected_ids) {
-	ids = []
+function update_selected(table, target, key) {
+	selected_keys = []
+	selected_ids = []
 	for (row of table.bootstrapTable('getSelections')) {
-		ids.push(row['id'])
+		selected_keys.push(row[key])
+		selected_ids.push(row['id'])
 	}
-	selected_ids.text(ids.join(', '))
-	return ids
+	target.text(selected_keys.join(', '))
+	return selected_ids
 }
 
 $('#form').submit( function(e) {
-	let problem_ids = update_selected($('#table'), $('#selected-problem-ids')).join(',')
-	let user_group_ids = update_selected($('#user-group-table'), $('#selected-user-group-ids')).join(',')
+	let problem_ids = update_selected($('#table'), $('#selected-problem-ids'), 'id').join(',')
+	let user_group_ids = update_selected($('#user-group-table'), $('#selected-user-group-names'), 'name').join(',')
 	if (problem_ids == '') {
 		alert('No problems selected!');
 		return false;
@@ -29,10 +31,15 @@ $('#form').submit( function(e) {
 });
 
 $('#table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', function (e, row, element) {
-	update_selected($('#table'), $('#selected-problem-ids'));
+	update_selected($('#table'), $('#selected-problem-ids'), 'id');
 })
 
 $('#user-group-table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', function (e, row, element) {
-	update_selected($('#user-group-table'), $('#selected-user-group-ids'));
+	update_selected($('#user-group-table'), $('#selected-user-group-names'), 'name');
 })
 
+// ! Form submission is buggy if user uses 'back' button to go back to the form, so uncheck all.
+window.onpageshow = function(e) {
+    $('#table').bootstrapTable('uncheckAll')
+	$('#user-group-table').bootstrapTable('uncheckAll')
+};
