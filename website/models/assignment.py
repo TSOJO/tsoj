@@ -15,13 +15,11 @@ class Assignment(DBModel):
 
     def __init__(self,
                  creator: str,
-                 user_group_ids : List[int],
                  id: Optional[int] = None,
-                 problem_ids: Optional[List[str]] = None,
+                 problem_ids: List[str] = [],
+                 user_group_ids : List[int] = [],
                  archived: bool = False,
                  set_time: datetime = datetime.utcnow()):
-        if problem_ids is None:
-            problem_ids = []
         # Public properties.
         self.id: Optional[int] = id
         self.problem_ids: List[str] = problem_ids

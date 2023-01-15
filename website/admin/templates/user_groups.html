@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}User Groups{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between">
+    <h1>User Groups</h1>
+    <a href="{{url_for('admin_bp.create_user_group')}}" class="btn btn-success align-self-center">Create</a>
+</div>
+{% for user_group in user_groups %}
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h4 class="card-title">{{user_group.name}}</h4>
+            <a href="{{url_for('admin_bp.edit_user_group', id=user_group.id)}}" class="btn btn-primary align-self-center">Edit</a>
+        </div>
+        <h5>Users</h5>
+        {% for user_id in user_group.user_ids %}
+        <a href="{{url_for('user_bp.profile', id=user_id)}}">{{users[user_id].full_name}}</a>
+        {%- if not loop.last -%}, {%- endif -%}
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

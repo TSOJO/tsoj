@@ -33,10 +33,11 @@ def init_app() -> Flask:
     login_manager.login_view = 'user_bp.login'
     login_manager.login_message_category = "error"
 
-    from website.models import Assignment, Submission, User, Problem
+    from website.models import Assignment, Submission, User, Problem, UserGroup
     with app.app_context():
         Submission.init()
         Assignment.init()
+        UserGroup.init()
 
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.

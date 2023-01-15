@@ -3,8 +3,15 @@
 {% block title %}Results: Assignment {{assignment.id}}{% endblock %}
 
 {% block content %}
-<div class="mb-3">
+<div class="d-flex justify-content-between">
     <h1>Results: Assignment {{assignment.id}}</h1>
+    <!-- btn-group -->
+    <div class="btn-group">
+        <a href="{{url_for('admin_bp.edit_assignment', id=assignment.id)}}"
+            class="btn btn-success align-self-center">Edit</a>
+        <a href="{{url_for('admin_bp.delete_assignment', id=assignment.id)}}"
+            class="btn btn-danger align-self-center">Delete</a>
+    </div>
 </div>
 {% for user_group in user_groups %}
 <h4>{{user_group.name}}</h4>
@@ -13,15 +20,17 @@
         <tr>
             <th>Users \ Problems</th>
             {% for problem in problems %}
-            <td><a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.id}}</a></th>
-            {% endfor %}
+            <td><a href="{{url_for('problem_bp.problem', id=problem.id)}}"
+                    class="text-decoration-none">{{problem.id}}</a></th>
+                {% endfor %}
         </tr>
     </thead>
     <tbody>
         {% for user_id in user_group.user_ids %}
         <tr>
-            <td><a href="{{url_for('user_bp.profile', id=user_id)}}" class="text-decoration-none">{{users[user_id].full_name}}</a></th>
-            {% for submission in solved_submissions[user_id] %}
+            <td><a href="{{url_for('user_bp.profile', id=user_id)}}"
+                    class="text-decoration-none">{{users[user_id].full_name}}</a></th>
+                {% for submission in solved_submissions[user_id] %}
             <td>
                 {% if submission %}
                 <a href="{{url_for('submission_bp.submission', id=submission.id)}}">

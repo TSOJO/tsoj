@@ -11,6 +11,8 @@
             class="btn btn-secondary align-self-center">Rejudge</a>
         <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}"
             class="btn btn-primary align-self-center">Edit</a>
+        <a href="{{ url_for('admin_bp.delete_problem', id=problem.id) }}"
+            class="btn btn-danger align-self-center">Delete</a>
     </div>
     {% endif %}
 </div>
