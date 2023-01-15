@@ -18,11 +18,6 @@ def unauthorised():
         abort(403, description='Admin account required to access this page')
 
 
-@admin_bp.route('/')
-def admin():
-    return render_template('admin.html')
-
-
 @admin_bp.route('/create/problem', methods=['GET', 'POST'])
 def create_problem():
     if request.method == 'POST':
