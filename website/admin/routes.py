@@ -20,6 +20,7 @@ def unauthorised():
 
 # Problem
 
+
 @admin_bp.route('/create/problem', methods=['GET', 'POST'])
 def create_problem():
     if request.method == 'POST':
@@ -78,7 +79,7 @@ def edit_problem(id: str):
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(replace=True)
-        
+
         if 'rejudge' in request.form:
             rejudge_problem(problem.id)
         flash('Problem saved', 'success')
@@ -98,6 +99,7 @@ def delete_problem(id: str):
 
 # Assignment
 
+
 @admin_bp.route('/assignments')
 def assignments():
     all_assignments = Assignment.find_all(sort=True)
@@ -107,8 +109,8 @@ def assignments():
         assignments=all_assignments,
         user_group_names=user_group_names,
     )
-    
-    
+
+
 @admin_bp.route('/assignment/<int:id>')  # /admin/assignment/id
 def assignment_results(id: int):
     assignment = Assignment.find_one({'id': id})
@@ -135,7 +137,7 @@ def assignment_results(id: int):
         users=user_dict,
     )
 
-    
+
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
@@ -145,7 +147,7 @@ def create_assignment():
             for u_g_id in request.form.get('selected_user_group_ids').split(',')
         ]
         problem_ids = request.form.get('selected_problem_ids').split(',')
-        
+
         new_assignment = Assignment(
             creator=current_user.username, user_group_ids=user_group_ids
         )
@@ -177,6 +179,7 @@ def delete_assignment(id: int):
 
 # Rejudge
 
+
 def rejudge_problem(id: str):
     problem = Problem.find_one({'id': id})
     if problem is None:
@@ -184,7 +187,8 @@ def rejudge_problem(id: str):
     submissions = Submission.find_all({'problem_id': id})
     for submission in submissions:
         judge.delay(submission.code, submission.cast_to_document(), id)
-    flash(f'Rejudging all submissions with problem ID {id}...')
+    flash(f'Rejudging all submissions to problem {id}...')
+
 
 # @admin_bp.route('/rejudge/problem/<id>')
 # def rejudge_problem(id: str):
@@ -209,6 +213,7 @@ def rejudge_submission(id: int):
 
 
 # User group
+
 
 @admin_bp.route('/user_groups')
 def user_groups():

@@ -111,9 +111,7 @@ class Submission:
         return cls.cast_from_document(result)
 
     @classmethod
-    def find_all(
-        cls, filter: Mapping[str, Any] = None, sort=False
-    ) -> List[Submission]:
+    def find_all(cls, filter: Mapping[str, Any] = None, sort=False) -> List[Submission]:
         results = db.submissions.find(filter=filter)
         submissions = [cls.cast_from_document(result) for result in results]
         if sort:

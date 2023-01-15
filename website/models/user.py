@@ -77,7 +77,7 @@ class User(UserMixin, DBModel):
         )
         if ac_submission:
             return ac_submission
-        
+
         # ! Possible bug if find_one doesn't find the most recent one.
 
         return submission.Submission.find_one(
