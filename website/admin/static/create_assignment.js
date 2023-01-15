@@ -12,10 +12,16 @@ function update_selected(table, target, key) {
 $('#form').submit( function(e) {
 	let problem_ids = update_selected($('#table'), $('#selected-problem-ids'), 'id').join(',')
 	let user_group_ids = update_selected($('#user-group-table'), $('#selected-user-group-names'), 'name').join(',')
+
 	if (problem_ids == '') {
 		alert('No problems selected!');
 		return false;
 	}
+	if (user_group_ids == '') {
+		alert('No groups selected!');
+		return false;
+	}
+
 	input = $('<input />')
 		.attr('type', 'hidden')
 		.attr('name', 'selected_problem_ids')

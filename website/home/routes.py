@@ -15,7 +15,7 @@ home_bp = Blueprint(
 
 @home_bp.route('/')
 def home():
-    assignments: List[Assignment] = current_user.fetch_assignments()
+    assignments: List[Assignment] = current_user.fetch_assignments(sort=True)
     problems = {}
     for assignment in assignments:
         problems[assignment.id] = assignment.fetch_problems()
@@ -37,7 +37,7 @@ def submissions():
         filter['id'] = user_id
     if problem_id is not None:
         filter['problem_id'] = problem_id
-    submissions = Submission.find_all(filter=filter)
+    submissions = Submission.find_all(filter=filter, sort=True)
     usernames = dict(map(lambda u: (u.id, u.username), User.find_all()))
     return render_template(
         'submissions.html', submissions=submissions, usernames=usernames

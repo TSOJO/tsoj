@@ -95,14 +95,16 @@ def delete_problem(id: str):
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
+        # JS guarantees there is at least one user group and one problem selected.
         user_group_ids = [
             int(u_g_id)
             for u_g_id in request.form.get('selected_user_group_ids').split(',')
         ]
+        problem_ids = request.form.get('selected_problem_ids').split(',')
+        
         new_assignment = Assignment(
             creator=current_user.username, user_group_ids=user_group_ids
         )
-        problem_ids = request.form.get('selected_problem_ids').split(',')
         new_assignment.add_problems(*problem_ids)
         new_assignment.save(wait=True)
 

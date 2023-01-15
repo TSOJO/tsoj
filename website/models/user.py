@@ -49,11 +49,12 @@ class User(UserMixin, DBModel):
         return check_password_hash(self._hashed_password, plaintext_password)
 
     def fetch_submissions(self) -> List[submission.Submission]:
-        return submission.Submission.find_all({'user_id': f'{self.id}'})
+        return submission.Submission.find_all({'user_id': f'{self.id}'}, sort=True)
 
-    def fetch_assignments(self) -> List[assignment.Assignment]:
+    def fetch_assignments(self, sort=False) -> List[assignment.Assignment]:
         return assignment.Assignment.find_all(
-            {'user_group_ids': {'$in': self.user_group_ids}}
+            {'user_group_ids': {'$in': self.user_group_ids}},
+            sort=sort,
         )
 
     def get_solved_problem_ids(self) -> List[int]:
@@ -76,6 +77,8 @@ class User(UserMixin, DBModel):
         )
         if ac_submission:
             return ac_submission
+        
+        # ! Possible bug if find_one doesn't find the most recent one.
 
         return submission.Submission.find_one(
             {'problem_id': problem_id, 'user_id': self.id}
