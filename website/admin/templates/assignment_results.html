@@ -3,56 +3,66 @@
 {% block title %}Results: Assignment {{assignment.id}}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between">
+<div class="d-flex justify-content-between mb-3">
     <h1>Results: Assignment {{assignment.id}}</h1>
     <!-- btn-group -->
     <div class="btn-group">
         <a href="{{url_for('admin_bp.edit_assignment', id=assignment.id)}}"
-            class="btn btn-success align-self-center">Edit</a>
+            class="btn btn-secondary align-self-center">Edit</a>
         <a href="{{url_for('admin_bp.delete_assignment', id=assignment.id)}}"
             class="btn btn-danger align-self-center">Delete</a>
     </div>
 </div>
 {% for user_group in user_groups %}
-<h4>{{user_group.name}}</h4>
-<table class="table table-striped table-bordered">
-    <thead>
-        <tr>
-            <th>Users \ Problems</th>
-            {% for problem in problems %}
-            <td><a href="{{url_for('problem_bp.problem', id=problem.id)}}"
-                    class="text-decoration-none">{{problem.id}}</a></th>
-                {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for user_id in user_group.user_ids %}
-        <tr>
-            <td><a href="{{url_for('user_bp.profile', id=user_id)}}"
-                    class="text-decoration-none">{{users[user_id].full_name}}</a></th>
-                {% for submission in solved_submissions[user_id] %}
-            <td>
-                {% if submission %}
-                <a href="{{url_for('submission_bp.submission', id=submission.id)}}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#198754"
-                        class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+<div class="mb-3">
+    <h4>{{user_group.name}}</h4>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Users \ Problems</th>
+                {% for problem in problems %}
+                <td><a href="{{url_for('problem_bp.problem', id=problem.id)}}"
+                        class="text-decoration-none">{{problem.id}}</a></th>
+                    {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_id in user_group.user_ids %}
+            <tr>
+                <td><a href="{{url_for('user_bp.profile', id=user_id)}}"
+                        class="text-decoration-none">{{users[user_id].full_name}}</a></th>
+                    {% for submission in attempts[user_id] %}
+                <td>
+                    {% if submission %}
+                    <a href="{{url_for('submission_bp.submission', id=submission.id)}}">
+                        {% if submission.final_verdict.is_ac() %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#198754"
+                            class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                        </svg>
+                        {% else %}
+                        <!-- ! Note this also includes WJ, which is an edge case -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#DC3545"
+                            class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                        </svg>
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6C757D"
+                        class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z" />
                     </svg>
-                </a>
-                {% else %}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#6C757D"
-                    class="bi bi-dash-circle-fill" viewBox="0 0 16 16">
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z" />
-                </svg>
-                {% endif %}
-            </td>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<small>Click on ticks/crosses to see submission details.</small>
+        </tbody>
+    </table>
+    <small>Click on ticks/crosses to see submission details.</small>
+</div>
 {% endfor %}
 
 {% endblock %}

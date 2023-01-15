@@ -101,6 +101,11 @@ def create_assignment():
     return render_template('create_assignment.html', problems=problems, user_groups=user_groups)
 
 
+@admin_bp.route("/edit/assignment/<int:id>")
+def edit_assignment(id: int):
+    ...
+
+
 @admin_bp.route('/delete/assignment/<int:id>')
 def delete_assignment(id: int):
     assignment = Assignment.find_one({'id': id})
@@ -125,12 +130,15 @@ def assignment_results(id: int):
     problems = assignment.fetch_problems()
     user_groups = [UserGroup.find_one({'id': u_g_id})
                    for u_g_id in assignment.user_group_ids]
-    users = {user.id: user for user in User.find_all()}
-    solved_submissions = {}
-    for user_id, user in users.items():
-        solved_submissions[user_id] = [user.get_solved_submission(
-            p_id) for p_id in assignment.problem_ids]
-    return render_template('assignment_results.html', assignment=assignment, problems=problems, solved_submissions=solved_submissions, user_groups=user_groups, users=users)
+    user_dict = {}
+    for user_group in user_groups:
+        for user_id in user_group.user_ids:
+            user_dict[user_id] = User.find_one({'id': user_id})
+    
+    attempts = {}
+    for user_id, user in user_dict.items():
+        attempts[user_id] = [user.get_attempt(p_id) for p_id in assignment.problem_ids]
+    return render_template('assignment_results.html', assignment=assignment, problems=problems, attempts=attempts, user_groups=user_groups, users=user_dict)
 
 
 @admin_bp.route('/rejudge/problem/<id>')

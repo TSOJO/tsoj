@@ -62,9 +62,14 @@ class User(UserMixin, DBModel):
         problem_ids.sort()
         return problem_ids
 
-    def get_solved_submission(self, problem_id: int) -> Optional[submission.Submission]:
+    def get_attempt(self, problem_id: int) -> Optional[submission.Submission]:
+        # Return AC submission if there is one, otherwise return any (if any) attempt.
+        ac_submission = submission.Submission.find_one({'problem_id': problem_id, 'final_verdict.verdict': 'AC', 'user_id': self.id})
+        if ac_submission:
+            return ac_submission
+        
         return submission.Submission.find_one(
-            {'problem_id': problem_id, 'final_verdict.verdict': 'AC', 'user_id': self.id})
+            {'problem_id': problem_id, 'user_id': self.id})
 
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)
