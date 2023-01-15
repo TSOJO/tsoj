@@ -24,13 +24,9 @@ def problem_submit(id: str):
     user_id = current_user.id
 
     user_code = request.form.get('user_code')
-    assignment_id = request.form.get('assignment_id')
-    if assignment_id:
-        assignment_id = int(assignment_id)
     new_submission = Submission(user_id=user_id,
                                 problem_id=id,
-                                code=user_code,
-                                assignment_id=assignment_id)
+                                code=user_code)
     submission_id = new_submission.save(wait=True).id
     judge.delay(user_code=user_code,
                 submission_dict=new_submission.cast_to_document(),

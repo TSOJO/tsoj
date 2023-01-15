@@ -52,12 +52,6 @@
                     <textarea name="user_code"></textarea>
                     <div id="editor"></div>
                 </div>
-                {% if assignment_id %}
-                <input type="hidden" name="assignment_id" value="{{assignment_id}}" />
-                <div class="mb-3">
-                    This will submit as part of assignment {{assignment_id}}.
-                </div>
-                {% endif %}
                 <button type="submit" class="btn btn-primary mb-3" id="submitButton"></button>
             </form>
         </div>
