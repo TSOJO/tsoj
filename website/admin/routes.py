@@ -78,7 +78,9 @@ def edit_problem(id: str):
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(replace=True)
-
+        
+        if 'rejudge' in request.form:
+            rejudge_problem(problem.id)
         flash('Problem saved', 'success')
         return redirect(url_for('problem_bp.problem', id=problem.id))
     problem = Problem.find_one({'id': id})
@@ -175,16 +177,25 @@ def delete_assignment(id: int):
 
 # Rejudge
 
-@admin_bp.route('/rejudge/problem/<id>')
 def rejudge_problem(id: str):
     problem = Problem.find_one({'id': id})
     if problem is None:
-        abort(404, description="Problem not found.")
+        return  # ! hmmm
     submissions = Submission.find_all({'problem_id': id})
     for submission in submissions:
         judge.delay(submission.code, submission.cast_to_document(), id)
     flash(f'Rejudging all submissions with problem ID {id}...')
-    return redirect(url_for('home_bp.submissions', problem_id=id))
+
+# @admin_bp.route('/rejudge/problem/<id>')
+# def rejudge_problem(id: str):
+#     problem = Problem.find_one({'id': id})
+#     if problem is None:
+#         abort(404, description="Problem not found.")
+#     submissions = Submission.find_all({'problem_id': id})
+#     for submission in submissions:
+#         judge.delay(submission.code, submission.cast_to_document(), id)
+#     flash(f'Rejudging all submissions with problem ID {id}...')
+#     return redirect(url_for('home_bp.submissions', problem_id=id))
 
 
 @admin_bp.route('/rejudge/submission/<int:id>')

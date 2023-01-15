@@ -5,9 +5,8 @@
 {% block content %}
 <h1>Home</h1>
 <p> Welcome to TSOJ! </p>
-<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Press me!</a>
 
-<h4>Your assignments</h4>
+<h4 class="mb-3">Your assignments</h4>
 {% for assignment in assignments %}
 <div class="card mb-3">
     <div class="card-body">
@@ -23,12 +22,14 @@
                 {% for problem in problems[assignment.id] %}
                 <tr>
                     <td>
-                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
-                            class="text-decoration-none">{{problem.id}}</a>
+                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">
+                            {{problem.id}}
+                        </a>
                     </td>
                     <td>
-                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
-                            class="text-decoration-none">{{problem.name}}</a>
+                        <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">
+                            {{problem.name}}
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
