@@ -4,10 +4,13 @@ from typing import *
 
 from website.models import Problem, Submission, User, Assignment
 
-home_bp = Blueprint('home_bp', __name__,
-                    static_url_path='/home/static',  # Because url prefix is '/'
-                    template_folder='templates',
-                    static_folder='static')
+home_bp = Blueprint(
+    'home_bp',
+    __name__,
+    static_url_path='/home/static',  # Because url prefix is '/'
+    template_folder='templates',
+    static_folder='static',
+)
 
 
 @home_bp.route('/')
@@ -36,4 +39,6 @@ def submissions():
         filter['problem_id'] = problem_id
     submissions = Submission.find_all(filter=filter)
     usernames = dict(map(lambda u: (u.id, u.username), User.find_all()))
-    return render_template('submissions.html', submissions=submissions, usernames=usernames)
+    return render_template(
+        'submissions.html', submissions=submissions, usernames=usernames
+    )

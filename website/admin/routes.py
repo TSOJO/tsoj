@@ -6,9 +6,9 @@ from website.models import Problem, Assignment, Submission, User, UserGroup
 from isolate_wrapper import Testcase
 from website.celery_tasks import judge
 
-admin_bp = Blueprint('admin_bp', __name__,
-                     template_folder='templates',
-                     static_folder='static')
+admin_bp = Blueprint(
+    'admin_bp', __name__, template_folder='templates', static_folder='static'
+)
 
 
 @admin_bp.before_request
@@ -35,7 +35,12 @@ def create_problem():
         for i in range(testcases_count):
             sample = f'sample{i+1}' in request.form
             testcases.append(
-                Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}'], 0 if sample else 1))
+                Testcase(
+                    request.form[f'input{i+1}'],
+                    request.form[f'answer{i+1}'],
+                    0 if sample else 1,
+                )
+            )
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(wait=True)
@@ -62,7 +67,12 @@ def edit_problem(id: str):
         for i in range(testcases_count):
             sample = f'sample{i+1}' in request.form
             testcases.append(
-                Testcase(request.form[f'input{i+1}'], request.form[f'answer{i+1}'], 0 if sample else 1))
+                Testcase(
+                    request.form[f'input{i+1}'],
+                    request.form[f'answer{i+1}'],
+                    0 if sample else 1,
+                )
+            )
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(replace=True)
@@ -85,10 +95,13 @@ def delete_problem(id: str):
 @admin_bp.route('/create/assignment', methods=['GET', 'POST'])
 def create_assignment():
     if request.method == 'POST':
-        user_group_ids = [int(u_g_id) for u_g_id in request.form.get(
-            'selected_user_group_ids').split(',')]
+        user_group_ids = [
+            int(u_g_id)
+            for u_g_id in request.form.get('selected_user_group_ids').split(',')
+        ]
         new_assignment = Assignment(
-            creator=current_user.username, user_group_ids=user_group_ids)
+            creator=current_user.username, user_group_ids=user_group_ids
+        )
         problem_ids = request.form.get('selected_problem_ids').split(',')
         print(problem_ids)
         new_assignment.add_problems(*problem_ids)
@@ -98,7 +111,9 @@ def create_assignment():
         return redirect(url_for('admin_bp.assignments'))
     problems = Problem.find_all()
     user_groups = UserGroup.find_all()
-    return render_template('create_assignment.html', problems=problems, user_groups=user_groups)
+    return render_template(
+        'create_assignment.html', problems=problems, user_groups=user_groups
+    )
 
 
 @admin_bp.route("/edit/assignment/<int:id>")
@@ -119,7 +134,11 @@ def delete_assignment(id: int):
 def assignments():
     all_assignments = Assignment.find_all(sort=True)
     user_group_names = {group.id: group.name for group in UserGroup.find_all()}
-    return render_template('assignments.html', assignments=all_assignments, user_group_names=user_group_names)
+    return render_template(
+        'assignments.html',
+        assignments=all_assignments,
+        user_group_names=user_group_names,
+    )
 
 
 @admin_bp.route('/assignment/<int:id>')  # /admin/assignment/id
@@ -128,17 +147,25 @@ def assignment_results(id: int):
     if assignment is None:
         abort(404, description='Assignment not found')
     problems = assignment.fetch_problems()
-    user_groups = [UserGroup.find_one({'id': u_g_id})
-                   for u_g_id in assignment.user_group_ids]
+    user_groups = [
+        UserGroup.find_one({'id': u_g_id}) for u_g_id in assignment.user_group_ids
+    ]
     user_dict = {}
     for user_group in user_groups:
         for user_id in user_group.user_ids:
             user_dict[user_id] = User.find_one({'id': user_id})
-    
+
     attempts = {}
     for user_id, user in user_dict.items():
         attempts[user_id] = [user.get_attempt(p_id) for p_id in assignment.problem_ids]
-    return render_template('assignment_results.html', assignment=assignment, problems=problems, attempts=attempts, user_groups=user_groups, users=user_dict)
+    return render_template(
+        'assignment_results.html',
+        assignment=assignment,
+        problems=problems,
+        attempts=attempts,
+        user_groups=user_groups,
+        users=user_dict,
+    )
 
 
 @admin_bp.route('/rejudge/problem/<id>')
@@ -158,8 +185,7 @@ def rejudge_submission(id: int):
     submission = Submission.find_one({'id': id})
     if submission is None:
         abort(404, description="Submission not found")
-    judge.delay(submission.code, submission.cast_to_document(),
-                submission.problem_id)
+    judge.delay(submission.code, submission.cast_to_document(), submission.problem_id)
     flash('Rejudging...')
     return redirect(url_for('submission_bp.submission', id=id))
 
@@ -175,8 +201,7 @@ def user_groups():
 def create_user_group():
     if request.method == 'POST':
         user_ids = request.form.get('selected_user_ids').split(',')
-        user_group = UserGroup(name=request.form['name'],
-                               user_ids=user_ids)
+        user_group = UserGroup(name=request.form['name'], user_ids=user_ids)
         user_group.save(wait=True)
         flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))
@@ -192,15 +217,14 @@ def edit_user_group(id: int):
         for user in users:
             if f'is-in-group{user.id}' in request.form:
                 user_ids.append(user.id)
-        user_group = UserGroup(id=id,
-                               name=request.form['name'],
-                               user_ids=user_ids)
+        user_group = UserGroup(id=id, name=request.form['name'], user_ids=user_ids)
         user_group.save(replace=True)
         flash('Group saved', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     user_group = UserGroup.find_one({'id': id})
     users = User.find_all()
     return render_template('edit_user_group.html', user_group=user_group, users=users)
+
 
 @admin_bp.route('/delete/user_group/<int:id>')
 def delete_user_group(id: int):

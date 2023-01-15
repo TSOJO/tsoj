@@ -6,9 +6,11 @@ import time
 
 api_bp = Blueprint('api_bp', __name__)
 
+
 @api_bp.errorhandler(404)
 def resource_not_found(e):
     return jsonify(error=str(e)), 404
+
 
 @api_bp.route('/db/<collection>/<id>')
 def fetch_db(collection: str, id):
@@ -24,7 +26,7 @@ def fetch_db(collection: str, id):
     if obj is None:
         return jsonify(None)
     return jsonify(obj.cast_to_document())
-            
+
 
 @api_bp.route('/generate-answer', methods=['POST'])
 def generate_answer():
@@ -42,41 +44,48 @@ def generate_answer():
         memory_limit = int(float(memory_limit) * 1024)
     except ValueError:
         abort(400, description='Invalid parameters')
-    
-    answer, verdict = IsolateSandbox().generate_answer(code, input_, time_limit, memory_limit)
-    return jsonify({
-        'answer': answer,
-        'verdict': verdict.cast_to_document(),
-    })
+
+    answer, verdict = IsolateSandbox().generate_answer(
+        code, input_, time_limit, memory_limit
+    )
+    return jsonify(
+        {
+            'answer': answer,
+            'verdict': verdict.cast_to_document(),
+        }
+    )
+
 
 @api_bp.route('/grab-submission-change/', methods=['POST'])
 def grab_submission_change():
     req_json = json.loads(request.data)
     submission_id = req_json.get('id')
     tests_completed = req_json.get('testsCompleted')
-    
+
     try:
         submission_id = int(submission_id)
         tests_completed = int(tests_completed)
     except (ValueError, TypeError):
-        abort(400, description="Invalid parameters")  
-        
+        abort(400, description="Invalid parameters")
+
     # This will hold the request for {hold_for} seconds, and will return whenever submission changes.
     submission = Submission.find_one({'id': submission_id})
     if submission is None:
         abort(404, description='Submission not found')
 
     def submission_as_json():
-        return jsonify({
+        return jsonify(
+            {
                 'finalVerdict': submission.final_verdict.cast_to_document(),
                 'testsCompleted': submission.tests_completed(),
                 'results': [r.cast_to_document() for r in submission.results],
-            })
+            }
+        )
 
     if submission.final_verdict is not Verdict.WJ:
         # Already done
         return submission_as_json()
-        
+
     poll_rate = 0.5  # s
     hold_for = 5  # s
     for _ in range(int(hold_for // poll_rate)):
@@ -84,6 +93,6 @@ def grab_submission_change():
         if submission.tests_completed() != tests_completed:
             return submission_as_json()
         submission = Submission.find_one({'id': submission_id})
-        
+
     # Return it anyway...
     return submission_as_json()

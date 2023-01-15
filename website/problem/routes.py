@@ -7,9 +7,10 @@ from website.models import Problem, Submission
 from isolate_wrapper import Testcase
 
 
-problem_bp = Blueprint('problem_bp', __name__,
-                       template_folder='templates',
-                       static_folder='static')
+problem_bp = Blueprint(
+    'problem_bp', __name__, template_folder='templates', static_folder='static'
+)
+
 
 @problem_bp.route('/<id>')
 def problem(id: str) -> str:
@@ -19,16 +20,17 @@ def problem(id: str) -> str:
     assignment_id = request.args.get('assignment_id')
     return render_template('problem.html', problem=problem, assignment_id=assignment_id)
 
+
 @problem_bp.route('/<id>/submit', methods=['POST'])
 def problem_submit(id: str):
     user_id = current_user.id
 
     user_code = request.form.get('user_code')
-    new_submission = Submission(user_id=user_id,
-                                problem_id=id,
-                                code=user_code)
+    new_submission = Submission(user_id=user_id, problem_id=id, code=user_code)
     submission_id = new_submission.save(wait=True).id
-    judge.delay(user_code=user_code,
-                submission_dict=new_submission.cast_to_document(),
-                problem_id=id,)
+    judge.delay(
+        user_code=user_code,
+        submission_dict=new_submission.cast_to_document(),
+        problem_id=id,
+    )
     return redirect(url_for('submission_bp.submission', id=submission_id))

@@ -6,6 +6,7 @@ from pymongo.database import Database
 from werkzeug.local import LocalProxy
 from flask_pymongo import PyMongo
 
+
 def get_db() -> Database:
     """
     Configuration method to return db instance
@@ -14,7 +15,7 @@ def get_db() -> Database:
 
     if db is None:
         db = g._database = PyMongo(current_app).db
-        
+
     return db
 
 

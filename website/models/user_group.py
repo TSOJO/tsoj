@@ -10,25 +10,20 @@ from website.db import db
 
 class UserGroup(DBModel):
 
-    _max_id : int = 0
+    _max_id: int = 0
 
-    def __init__(self,
-                 name: str,
-                 id: int = None,
-                 user_ids: List[int] = []) -> None:
+    def __init__(self, name: str, id: int = None, user_ids: List[int] = []) -> None:
         self.name = name
         self.id = id
         self.user_ids = user_ids
 
     def fetch_users(self):
-        return User.find_all({'id': {'$in' : self.user_ids}})
+        return User.find_all({'id': {'$in': self.user_ids}})
 
     @classmethod
     def cast_from_document(cls, document: Any) -> UserGroup:
         user_group_obj = UserGroup(
-            id=document['id'],
-            name=document['name'],
-            user_ids=document['user_ids']
+            id=document['id'], name=document['name'], user_ids=document['user_ids']
         )
         return user_group_obj
 
@@ -48,7 +43,9 @@ class UserGroup(DBModel):
         return cls.cast_from_document(result)
 
     @classmethod
-    def find_all(cls, filter: Optional[Mapping[str, Any]] = None, sort=False) -> List[UserGroup]:
+    def find_all(
+        cls, filter: Optional[Mapping[str, Any]] = None, sort=False
+    ) -> List[UserGroup]:
         results = db.user_groups.find(filter=filter)
         user_groups = [cls.cast_from_document(result) for result in results]
         if sort:

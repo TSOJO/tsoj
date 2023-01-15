@@ -13,13 +13,15 @@ class Assignment(DBModel):
 
     _max_id: int = 0
 
-    def __init__(self,
-                 creator: str,
-                 id: Optional[int] = None,
-                 problem_ids: List[str] = [],
-                 user_group_ids : List[int] = [],
-                 archived: bool = False,
-                 set_time: datetime = datetime.utcnow()):
+    def __init__(
+        self,
+        creator: str,
+        id: Optional[int] = None,
+        problem_ids: List[str] = [],
+        user_group_ids: List[int] = [],
+        archived: bool = False,
+        set_time: datetime = datetime.utcnow(),
+    ):
         # Public properties.
         self.id: Optional[int] = id
         self.problem_ids: List[str] = problem_ids
@@ -67,7 +69,9 @@ class Assignment(DBModel):
         return cls.cast_from_document(result)
 
     @classmethod
-    def find_all(cls, filter: Optional[Mapping[str, Any]] = None, sort=False) -> List[Assignment]:
+    def find_all(
+        cls, filter: Optional[Mapping[str, Any]] = None, sort=False
+    ) -> List[Assignment]:
         results = db.assignments.find(filter=filter)
         assignments = [cls.cast_from_document(result) for result in results]
         if sort:

@@ -5,8 +5,12 @@ from celery import Celery
 from flask_login import LoginManager, current_user
 from flask import current_app
 
-celery = Celery(__name__, broker=CELERY_BROKER_URL,
-                backend=CELERY_RESULT_BACKEND, include=['website.celery_tasks'])
+celery = Celery(
+    __name__,
+    broker=CELERY_BROKER_URL,
+    backend=CELERY_RESULT_BACKEND,
+    include=['website.celery_tasks'],
+)
 
 
 class ContextTask(celery.Task):
@@ -18,9 +22,12 @@ class ContextTask(celery.Task):
 celery.Task = ContextTask
 
 login_manager = LoginManager()
+
+
 @login_manager.user_loader
 def load_user(user_id):
     from website.models import User
+
     return User.find_one({'id': user_id})
 
 
@@ -34,6 +41,7 @@ def init_app() -> Flask:
     login_manager.login_message_category = "error"
 
     from website.models import Assignment, Submission, User, Problem, UserGroup
+
     with app.app_context():
         Submission.init()
         Assignment.init()
@@ -59,6 +67,7 @@ def init_app() -> Flask:
 
     # Register error handler.
     from .errors import page_not_found, unauthorised
+
     app.register_error_handler(403, unauthorised)
     app.register_error_handler(404, page_not_found)
 
@@ -70,11 +79,13 @@ def init_app() -> Flask:
             'user_bp.static',
             'static',
             'user_bp.user_debug',  # ! DEBUG ONLY
-            'user_bp.admin_debug'  # ! DEBUG ONLY
+            'user_bp.admin_debug',  # ! DEBUG ONLY
         )
-        if (not current_user.is_authenticated) and (request.endpoint not in allowed_endpoints):
+        if (not current_user.is_authenticated) and (
+            request.endpoint not in allowed_endpoints
+        ):
             return login_manager.unauthorized()
-    
+
     debug_db(app)
 
     return app
@@ -83,6 +94,7 @@ def init_app() -> Flask:
 def debug_db(app):
     from isolate_wrapper import Testcase
     from website.models import Assignment, Submission, User, Problem, UserGroup
+
     problems_list = [
         {
             'id': 'A1',
@@ -114,7 +126,7 @@ def debug_db(app):
                 Testcase('10\n20\n', '-10\n', 0),
             ],
             'is_public': True,
-        }
+        },
     ]
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)
@@ -124,15 +136,30 @@ def debug_db(app):
     user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
     with app.app_context():
         user_group.save(replace=True)
-    
+
     assignment = Assignment(id=1, creator='JER', user_group_ids=[1])
     assignment.add_problems('A1', 'A2')
     with app.app_context():
         assignment.save(replace=True)
 
-    admin = User(id='admin', username='admin_name', full_name='admin_full_name', email='admin@localhost', plaintext_password='admin', user_group_ids=[1], is_admin=True)
-    test_user = User(id='user', username='user_name', full_name='user_full_name', email='user@localhost', plaintext_password='user', user_group_ids=[1], is_admin=False)
+    admin = User(
+        id='admin',
+        username='admin_name',
+        full_name='admin_full_name',
+        email='admin@localhost',
+        plaintext_password='admin',
+        user_group_ids=[1],
+        is_admin=True,
+    )
+    test_user = User(
+        id='user',
+        username='user_name',
+        full_name='user_full_name',
+        email='user@localhost',
+        plaintext_password='user',
+        user_group_ids=[1],
+        is_admin=False,
+    )
     with app.app_context():
         admin.save(replace=True)
         test_user.save(replace=True)
-    

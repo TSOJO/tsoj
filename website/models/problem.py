@@ -9,14 +9,16 @@ from website.models.db_model import DBModel
 
 
 class Problem(DBModel):
-    def __init__(self,
-                 id: str,
-                 name: str,
-                 description: str,
-                 time_limit: int,  # ms
-                 memory_limit: int,  # KB
-                 testcases: List[Testcase],
-                 is_public: bool = False):
+    def __init__(
+        self,
+        id: str,
+        name: str,
+        description: str,
+        time_limit: int,  # ms
+        memory_limit: int,  # KB
+        testcases: List[Testcase],
+        is_public: bool = False,
+    ):
         # Public properties.
         self.id = id
         self.name = name
@@ -30,15 +32,15 @@ class Problem(DBModel):
 
     @classmethod
     def cast_from_document(cls, document: Any) -> Problem:
-        return Problem(id=document['id'],
-                       name=document['name'],
-                       description=document['description'],
-                       time_limit=document['time_limit'],
-                       memory_limit=document['memory_limit'],
-                       testcases=[Testcase(**testcase)
-                                  for testcase in document['testcases']],
-                       is_public=document['is_public']
-                       )
+        return Problem(
+            id=document['id'],
+            name=document['name'],
+            description=document['description'],
+            time_limit=document['time_limit'],
+            memory_limit=document['memory_limit'],
+            testcases=[Testcase(**testcase) for testcase in document['testcases']],
+            is_public=document['is_public'],
+        )
 
     def cast_to_document(self) -> Dict[str, object]:
         return {
