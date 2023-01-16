@@ -240,13 +240,12 @@ def create_user_group():
 @admin_bp.route('/edit/user_group/<int:id>', methods=['GET', 'POST'])
 def edit_user_group(id: int):
     if request.method == 'POST':
-        user_ids = []
-        users = User.find_all()
-        for user in users:
-            if f'is-in-group{user.id}' in request.form:
-                user_ids.append(user.id)
-        user_group = UserGroup(id=id, name=request.form['name'], user_ids=user_ids)
-        user_group.save(replace=True)
+        user_ids_raw = request.form.get('selected_user_ids')
+        user_group = UserGroup.find_one({'id': id})
+        if user_ids_raw:
+            user_ids = user_ids_raw.split(',')
+            user_group.user_ids = user_ids
+        user_group.save(wait=True, replace=True)
         flash('Group saved', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     user_group = UserGroup.find_one({'id': id})

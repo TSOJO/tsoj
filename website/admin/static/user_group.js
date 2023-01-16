@@ -15,7 +15,6 @@
 function get_selected(table) {
 	ids = []
 	for (row of table.bootstrapTable('getSelections')) {
-		console.log(row)
 		ids.push(row['id'])
 	}
 	return ids

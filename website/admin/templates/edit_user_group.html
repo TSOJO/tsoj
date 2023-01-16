@@ -58,6 +58,7 @@
 <script src="{{url_for('.static', filename='user_group.js')}}"></script>
 <script>
     window.onpageshow = function (event) {
+        // ! There's some weird behaviour with back button.
         $('#user-group-table').bootstrapTable('checkBy', {field: 'id', values: {{user_group.user_ids | tojson}}})
     }
 </script>
