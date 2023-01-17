@@ -52,10 +52,9 @@
 <script src="{{url_for('.static', filename='user_group.js')}}"></script>
 <script>
     let f = () => {
-        $('#user-group-table').bootstrapTable('checkBy', { field: 'id', values: ['admin', 'user'] })
+        $('#user-group-table').bootstrapTable('checkBy', { field: 'id', values: {{user_group.user_ids | tojson}} })
     }
     window.onpageshow = (e) => {
-        // f() doesn't work
         setTimeout(f, 0)
     }
 </script>
