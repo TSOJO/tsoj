@@ -24,6 +24,21 @@ class UserGroup(DBModel):
 
     def fetch_users(self):
         return User.find_all({'id': {'$in': self.user_ids}})
+    
+    def update_users(self):
+        # ! User should probably use set() for group IDs instead.
+        # ! Find better way
+        for user in User.find_all({'id': {'$nin': self.user_ids},
+                                   'user_group_ids': {'$elemMatch': {'$in': [self.id]}}}):
+            # Users that used to be in the group but no longer are.
+            user.user_group_ids.remove(self.id)
+            user.save(replace=True)
+        
+        for user in User.find_all({'id': {'$in': self.user_ids},
+                                   'user_group_ids': {'$elemMatch': {'$nin': [self.id]}}}):
+            # Users that used to not be in the group but now are.
+            user.user_group_ids.append(self.id)
+            user.save(replace=True)
 
     @classmethod
     def cast_from_document(cls, document: Any) -> UserGroup:

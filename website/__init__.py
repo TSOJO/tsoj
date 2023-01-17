@@ -52,6 +52,7 @@ def init_app() -> Flask:
     # ! Moving this up results in circular imports.
     from .problem.routes import problem_bp
     from .submission.routes import submission_bp
+    from .assignment.routes import assignment_bp
     from .admin.routes import admin_bp
     from .home.routes import home_bp
     from .api import api_bp
@@ -60,6 +61,7 @@ def init_app() -> Flask:
     # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem')
     app.register_blueprint(submission_bp, url_prefix='/submission')
+    app.register_blueprint(assignment_bp, url_prefix='/assignment')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(home_bp, url_prefix='/')
     app.register_blueprint(api_bp, url_prefix='/api')

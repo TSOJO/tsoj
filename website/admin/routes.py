@@ -230,6 +230,7 @@ def create_user_group():
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
+        user_group.update_users()
         user_group.save(wait=True)
         flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))
@@ -245,6 +246,7 @@ def edit_user_group(id: int):
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
+        user_group.update_users()
         user_group.save(wait=True, replace=True)
         flash('Group saved', 'success')
         return redirect(url_for('admin_bp.user_groups'))
