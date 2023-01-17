@@ -4,7 +4,7 @@ from typing import *
 
 from website.models.db_model import DBModel
 from website.models.user import User
-from website.celery_tasks import add_to_db
+from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 
 
@@ -24,6 +24,21 @@ class UserGroup(DBModel):
 
     def fetch_users(self):
         return User.find_all({'id': {'$in': self.user_ids}})
+
+    def update_users(self):
+        # ! User should probably use set() for group IDs instead.
+        # ! Find better way
+        for user in User.find_all({'id': {'$nin': self.user_ids},
+                                   'user_group_ids': {'$elemMatch': {'$in': [self.id]}}}):
+            # Users that used to be in the group but no longer are.
+            user.user_group_ids.remove(self.id)
+            user.save(replace=True)
+
+        for user in User.find_all({'id': {'$in': self.user_ids},
+                                   'user_group_ids': {'$elemMatch': {'$nin': [self.id]}}}):
+            # Users that used to not be in the group but now are.
+            user.user_group_ids.append(self.id)
+            user.save(replace=True)
 
     @classmethod
     def cast_from_document(cls, document: Any) -> UserGroup:
@@ -67,6 +82,12 @@ class UserGroup(DBModel):
         else:
             add_to_db.delay('user_groups', doc, replace)
         return self
+
+    def delete(self, wait=False) -> None:
+        if wait:
+            delete_from_db('user_groups', self.cast_to_document())
+        else:
+            delete_from_db.delay('user_groups', self.cast_to_document())
 
     @classmethod
     def init(cls) -> None:

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from website.db import db
 from website.models.problem import Problem
-from website.celery_tasks import add_to_db
+from website.celery_tasks import add_to_db, delete_from_db
 from website.models.db_model import DBModel
 
 
@@ -94,6 +94,12 @@ class Assignment(DBModel):
         else:
             add_to_db.delay('assignments', doc, replace)
         return self
+
+    def delete(self, wait=False) -> None:
+        if wait:
+            delete_from_db('assignments', self.cast_to_document())
+        else:
+            delete_from_db.delay('assignments', self.cast_to_document())
 
     @classmethod
     def init(cls) -> None:

@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 
 from website.db import db
-from website.celery_tasks import add_to_db, send_email
+from website.celery_tasks import add_to_db, send_email, delete_from_db
 from isolate_wrapper.custom_types import Verdict
 from website.models.db_model import DBModel
 from website.models import submission as submission
@@ -144,3 +144,9 @@ class User(UserMixin, DBModel):
     def save(self, replace=False) -> User:
         add_to_db.delay('users', self.cast_to_document(), replace)
         return self
+
+    def delete(self, wait=False) -> None:
+        if wait:
+            delete_from_db('users', self.cast_to_document())
+        else:
+            delete_from_db.delay('users', self.cast_to_document())

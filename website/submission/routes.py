@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, abort
 from flask_login import current_user
 
-from website.models import Submission, User
+from website.models import Submission, User, Problem
 from isolate_wrapper import Verdict, Result
 
 submission_bp = Blueprint(
@@ -15,6 +15,9 @@ def submission(id: int) -> str:
     if submission_obj is None:
         abort(404, description="Submission not found")
     user_obj = User.find_one({'id': submission_obj.user_id})
+    problem_obj = Problem.find_one({'id': submission_obj.problem_id})
+    if not current_user.is_admin and not problem_obj.is_public:
+        abort(403, 'Problem is not public')
     show_code = (
         current_user.is_admin
         or current_user.id == submission_obj.user_id

@@ -91,7 +91,6 @@ def edit_problem(id: str):
 @admin_bp.route('/delete/problem/<id>')
 def delete_problem(id: str):
     problem = Problem.find_one({'id': id})
-    raise NotImplementedError
     problem.delete(wait=True)
     flash('Problem deleted', 'success')
     return redirect(url_for('home_bp.problems'))
@@ -171,7 +170,6 @@ def edit_assignment(id: int):
 @admin_bp.route('/delete/assignment/<int:id>')
 def delete_assignment(id: int):
     assignment = Assignment.find_one({'id': id})
-    raise NotImplementedError
     assignment.delete(wait=True)
     flash('Assignment deleted', 'success')
     return redirect(url_for('admin_bp.assignments'))
@@ -230,6 +228,7 @@ def create_user_group():
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
+        user_group.update_users()
         user_group.save(wait=True)
         flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))
@@ -245,6 +244,7 @@ def edit_user_group(id: int):
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
+        user_group.update_users()
         user_group.save(wait=True, replace=True)
         flash('Group saved', 'success')
         return redirect(url_for('admin_bp.user_groups'))
@@ -256,7 +256,6 @@ def edit_user_group(id: int):
 @admin_bp.route('/delete/user_group/<int:id>')
 def delete_user_group(id: int):
     user_group = UserGroup.find_one({'id': id})
-    raise NotImplementedError
     user_group.delete(wait=True)
     flash('Group deleted', 'success')
     return redirect(url_for('admin_bp.user_groups'))
@@ -266,7 +265,6 @@ def delete_user_group(id: int):
 @admin_bp.route('/delete/submission/<int:id>')
 def delete_submission(id: int):
     submission = Submission.find_one({'id': id})
-    raise NotImplementedError
     submission.delete(wait=True)
     flash('Submission deleted', 'success')
     return redirect(url_for('home_bp.submissions'))
