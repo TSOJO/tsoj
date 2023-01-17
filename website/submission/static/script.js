@@ -28,7 +28,7 @@ function verdict_to_html(verdict) {
     }
 }
 
-let submission_id = $('#submission-id').innerHTML
+let submission_id = $('#submission-id').html()
 let tests_completed = 0
 
 function make_request() {
@@ -44,10 +44,11 @@ function make_request() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             tests_completed = data['testsCompleted']
             update_results(data['results'])
             if (data['finalVerdict'].verdict !== "WJ") {
-                $('#final-verdict').innerHTML = verdict_to_html(data['finalVerdict'])
+                $('#final-verdict').html(verdict_to_html(data['finalVerdict']))
             } else {
                 // For problems with only fast testcases, give judge some time so we don't DDOS it
                 // (a request will be sent after every testcase has finished).
@@ -57,28 +58,31 @@ function make_request() {
 }
 
 function update_results(results) {
+    console.log(results)
     for (let i = 0; i < results.length; i++) {
-        let verdict_node = $(`#verdict ${(i + 1)}`)
-        let time_node = $(`#time ${(i + 1)}`)
-        let memory_node = $(`#memory ${(i + 1)}`)
-        if (verdict_node === null) {
+        let verdict_node = $(`#verdict${(i + 1)}`)
+        let time_node = $(`#time${(i + 1)}`)
+        let memory_node = $(`#memory${(i + 1)}`)
+        if (verdict_node.length == 0) {
+            console.log(results[i])
             // Create a new row for this testcase.
             let new_row = document.createElement('tr')
             new_row.innerHTML = [
-                '<td>' + (i + 1) + '</td>',
-                '<td id="verdict' + (i + 1) + '"></td>',
-                '<td id="time' + (i + 1) + '"></td>',
-                '<td id="memory' + (i + 1) + '"></td>'
+                `<td>${i + 1}</td>`,
+                `<td id="verdict${i + 1}"></td>`,
+                `<td id="time${i + 1}"></td>`,
+                `<td id="memory${i + 1}"></td>`,
             ].join('')
-            $('#results-table-body').appendChild(new_row)
-            verdict_node = $(`#verdict ${(i + 1)}`)
-            time_node = $(`#time ${(i + 1)}`)
-            memory_node = $(`#memory ${(i + 1)}`)
+            $('#results-table-body').append(new_row)
+            verdict_node = $(`#verdict${(i + 1)}`)
+            time_node = $(`#time${(i + 1)}`)
+            memory_node = $(`#memory${(i + 1)}`)
+            console.log(new_row)
         }
-        verdict_node.innerHTML = verdict_to_html(results[i].verdict)
+        verdict_node.html(verdict_to_html(results[i].verdict))
         if (results[i].verdict.verdict !== 'WJ') {
-            time_node.innerHTML = results[i].time + 'ms'
-            memory_node.innerHTML = results[i].memory + ' KB'
+            time_node.html(results[i].time + 'ms')
+            memory_node.html(results[i].memory + ' KB')
         }
     }
 }
@@ -93,7 +97,7 @@ window.onpageshow = () => {
     editor.session.setUseWrapMode(true)
     editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, maxLines: Infinity})
     editor.renderer.$cursorLayer.element.style.display = "none"
-    if ($('#final-verdict-verdict').innerHTML === 'WJ') {
+    if ($('#final-verdict-verdict').html() === 'WJ') {
         make_request()
     }
 }
