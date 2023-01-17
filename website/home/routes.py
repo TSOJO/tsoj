@@ -31,7 +31,14 @@ def problems():
 
 @home_bp.route('/submissions')
 def submissions():
-    submissions = Submission.find_all(filter={'user_id': current_user.id}, sort=True)
+    filter = {}
+    user_id = request.args.get('id')
+    problem_id = request.args.get('problem_id')
+    if user_id is not None:
+        filter['id'] = user_id
+    if problem_id is not None:
+        filter['problem_id'] = problem_id
+    submissions = Submission.find_all(filter=filter, sort=True)
     usernames = dict(map(lambda u: (u.id, u.username), User.find_all()))
     return render_template(
         'submissions.html', submissions=submissions, usernames=usernames
