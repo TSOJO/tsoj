@@ -25,7 +25,8 @@ def home():
 @home_bp.route('/problems/')  # ? require trailing slash for some reason
 def problems():
     problems = Problem.find_all()
-    return render_template('problems.html', problems=problems)
+    solved_problems = current_user.get_solved_problem_ids()
+    return render_template('problems.html', problems=problems, solved_problems=solved_problems)
 
 
 @home_bp.route('/submissions')
