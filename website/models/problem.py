@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from isolate_wrapper.custom_types import Testcase
 from website.db import db
-from website.celery_tasks import add_to_db
+from website.celery_tasks import add_to_db, delete_from_db
 from website.models.db_model import DBModel
 
 
@@ -76,3 +76,9 @@ class Problem(DBModel):
         else:
             add_to_db.delay('problems', doc, replace=replace)
         return self
+
+    def delete(self, wait=False) -> None:
+        if wait:
+            delete_from_db('problems', self.cast_to_document())
+        else:
+            delete_from_db.delay('problems', self.cast_to_document())

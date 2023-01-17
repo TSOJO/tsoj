@@ -7,3 +7,6 @@ class DBModel:
 
     def save(self):
         pass
+
+    def delete(self):
+        pass

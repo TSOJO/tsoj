@@ -8,7 +8,7 @@ import logging
 from isolate_wrapper.custom_types import Result, Verdict
 from isolate_wrapper import IsolateSandbox
 
-from website.celery_tasks import add_to_db
+from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 from .assignment import Assignment
 from .user import User
@@ -129,6 +129,12 @@ class Submission:
         else:
             add_to_db.delay('submissions', doc, replace)
         return self
+
+    def delete(self, wait=False) -> None:
+        if wait:
+            delete_from_db('submissions', self.cast_to_document())
+        else:
+            delete_from_db.delay('submissions', self.cast_to_document())
 
     @classmethod
     def init(cls) -> None:
