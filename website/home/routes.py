@@ -40,4 +40,5 @@ def submissions():
         filter['problem_id'] = problem_id
     submissions = Submission.find_all(filter=filter, sort=True)
     users = dict(map(lambda u: (u.id, u), User.find_all()))
-    return render_template('submissions.html', submissions=submissions, users=users)
+    problems = dict(map(lambda p: (p.id, p), Problem.find_all()))
+    return render_template('submissions.html', submissions=submissions, users=users, problems=problems)
