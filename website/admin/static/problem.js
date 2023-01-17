@@ -1,60 +1,60 @@
-let testcases_count = $('#testcases-count').val();
+let testcases_count = $('#testcases-count').val()
 
 function add_field() {
-    testcases_count++;
-    $('#testcases-count').val(testcases_count);
-    let testcase_node = document.getElementById('testcase-div').cloneNode(true);
-    testcase_node.id = '';
-    testcase_node.style.display = 'block';
-    let h5_node = testcase_node.getElementsByClassName('testcase-number')[0];
-    h5_node.innerHTML = 'Testcase ' + testcases_count;
-    let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
-    input_node.name = 'input' + testcases_count;
-    input_node.id = 'input' + testcases_count;
-    let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
-    answer_node.name = 'answer' + testcases_count;
-    answer_node.id = 'answer' + testcases_count;
-    let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0];
-    sample_checkbox.name = 'sample' + testcases_count;
-    sample_checkbox.id = 'sample' + testcases_count;
-    if (document.getElementById('auto-generate-answer-checkbox').checked == true) {
-        answer_node.readOnly = true;
+    testcases_count++
+    $('#testcases-count').val(testcases_count)
+    let testcase_node = $('$testcase-div').cloneNode(true)
+    testcase_node.id = ''
+    testcase_node.style.display = 'block'
+    let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
+    h5_node.innerHTML = 'Testcase ' + testcases_count
+    let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
+    input_node.name = 'input' + testcases_count
+    input_node.id = 'input' + testcases_count
+    let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
+    answer_node.name = 'answer' + testcases_count
+    answer_node.id = 'answer' + testcases_count
+    let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
+    sample_checkbox.name = 'sample' + testcases_count
+    sample_checkbox.id = 'sample' + testcases_count
+    if ($('#auto-generate-answer-checkbox').checked === true) {
+        answer_node.readOnly = true
     }
-    let testcase_container = document.getElementById('testcase-container');
-    testcase_container.appendChild(testcase_node);
+    let testcase_container = $('#testcase-container')
+    testcase_container.appendChild(testcase_node)
 }
 
 function remove_field(node) {
-    if (testcases_count == 1) {
-        const wrapper = document.createElement('div');
+    if (testcases_count === 1) {
+        const wrapper = document.createElement('div')
         wrapper.innerHTML = [
             '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
             '   <div class="flex-grow-1">At least one testcase is required!</div>',
             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
             '</div>'
-        ].join('');
-        const placeholder = document.getElementById('rem-alert-placeholder');
-        placeholder.append(wrapper);
-        return;
+        ].join('')
+        const placeholder = $('#rem-alert-placeholder')
+        placeholder.append(wrapper)
+        return
     }
-    testcases_count--;
-    $('#testcases-count').val(testcases_count);
-    let testcase_container = document.getElementById('testcase-container');
-    testcase_container.removeChild(node);
+    testcases_count--
+    $('#testcases-count').val(testcases_count)
+    let testcase_container = $('#testcase-container')
+    testcase_container.removeChild(node)
     // reindex
     for (let i = 0; i < testcases_count; i++) {
-        let testcase_node = testcase_container.childNodes[i];
-        let h5_node = testcase_node.getElementsByClassName('testcase-number')[0];
-        h5_node.innerHTML = 'Testcase ' + (i + 1);
-        let input_node = testcase_node.getElementsByClassName('testcase-input')[0];
-        input_node.name = input_node.name.slice(0, -1) + (i + 1);
-        input_node.id = input_node.id.slice(0, -1) + (i + 1);
-        let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0];
-        answer_node.name = answer_node.name.slice(0, -1) + (i + 1);
-        answer_node.id = answer_node.id.slice(0, -1) + (i + 1);
-        let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0];
-        sample_checkbox.name = sample_checkbox.name.slice(0, -1) + (i + 1);
-        sample_checkbox.id = sample_checkbox.id.slice(0, -1) + (i + 1);
+        let testcase_node = testcase_container.childNodes[i]
+        let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
+        h5_node.innerHTML = 'Testcase ' + (i + 1)
+        let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
+        input_node.name = input_node.name.slice(0, -1) + (i + 1)
+        input_node.id = input_node.id.slice(0, -1) + (i + 1)
+        let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
+        answer_node.name = answer_node.name.slice(0, -1) + (i + 1)
+        answer_node.id = answer_node.id.slice(0, -1) + (i + 1)
+        let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
+        sample_checkbox.name = sample_checkbox.name.slice(0, -1) + (i + 1)
+        sample_checkbox.id = sample_checkbox.id.slice(0, -1) + (i + 1)
     }
 }
 
@@ -65,9 +65,9 @@ function generate_answers() {
             input: $('#input' + i).val(),
             timeLimit: $('#time-limit').val(),
             memoryLimit: $('#memory-limit').val()
-        };
+        }
 
-        const placeholder = document.getElementById('gen-alert-placeholder');
+        const placeholder = $('#gen-alert-placeholder')
         fetch("/api/generate-answer",
             {
                 method: "POST",
@@ -75,17 +75,17 @@ function generate_answers() {
             })
             .then(response => response.json())
             .then(data => {
-                if (data['verdict'].verdict == 'AC') {
-                    $('#answer' + i).val(data['answer']);
+                if (data['verdict'].verdict === 'AC') {
+                    $('#answer' + i).val(data['answer'])
                 } else {
-                    const wrapper = document.createElement('div');
+                    const wrapper = document.createElement('div')
                     wrapper.innerHTML = [
                         '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
                         '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + '</div>',
                         '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
                         '</div>'
-                    ].join('');
-                    placeholder.append(wrapper);
+                    ].join('')
+                    placeholder.append(wrapper)
                 }
             })
     }
@@ -95,7 +95,7 @@ function generate_answers() {
 (() => {
     'use strict'
 
-    const form = document.querySelector('.needs-validation')
+    const form = $('.needs-validation')
     form.addEventListener('submit', event => {
         if (!form.checkValidity()) {
             event.preventDefault()
@@ -106,63 +106,63 @@ function generate_answers() {
     }, false)
 })()
 
-const id_field = document.getElementById('id');
-const id_invalid_feedback = document.getElementById('id-invalid-feedback')
-id_field.addEventListener('blur', (event) => {
+const id_field = $('#id')
+const id_invalid_feedback = $('#id-invalid-feedback')
+id_field.addEventListener('blur', () => {
     fetch('/api/db/problem/' + id_field.value)
         .then(response => response.json())
         .then(data => {
-            if(data != null) {
-                id_field.setCustomValidity('A problem with that ID already exists.');
-                id_invalid_feedback.innerText = 'A problem with that ID already exists.';
+            if(data !== null) {
+                id_field.setCustomValidity('A problem with that ID already exists.')
+                id_invalid_feedback.innerText = 'A problem with that ID already exists.'
             } else {
-                id_field.setCustomValidity('');
-                id_invalid_feedback.innerText = 'This field is required.';
+                id_field.setCustomValidity('')
+                id_invalid_feedback.innerText = 'This field is required.'
             }
         })
 })
 
 
 window.onpageshow = function (event) {
-    if (testcases_count == 0) {
+    if (testcases_count === 0) {
         add_field()
     }
     
     // Initialise code editor.
-    let editor = ace.edit('editor');
-    ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/');
-    editor.setTheme('ace/theme/textmate');
-    editor.session.setMode('ace/mode/python');
-    editor.setOptions({ minLines: 10, maxLines: 20 });
-    // editor.session.setUseWrapMode(true);
+    let editor = ace.edit('editor')
+    ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')
+    editor.setTheme('ace/theme/textmate')
+    editor.session.setMode('ace/mode/python')
+    editor.setOptions({ minLines: 10, maxLines: 20 })
+    // editor.session.setUseWrapMode(true)
 
     editor.getSession().on('change', function () {
-        $('textarea[name="generator-code"]').val(editor.getValue());
-    });
+        $('textarea[name="generator-code"]').val(editor.getValue())
+    })
 
-    $('#description-md')[0].mdContent = $('#description').val();
+    $('#description-md')[0].mdContent = $('#description').val()
 
     // Checkbox on changed
     $('input[name="generator-checkbox"]').change(function () {
         if (this.checked) {
-            $('#editor-group').show();
+            $('#editor-group').show()
         } else {
-            $('#editor-group').hide();
+            $('#editor-group').hide()
         }
         for (let i = 1; i <= testcases_count; i++) {
-            if (this.checked == true) {
-                document.getElementById('answer' + i).value = 'Press "Generate answers" to generate answers.';
-                document.getElementById('answer' + i).readOnly = true;
+            if (this.checked === true) {
+                $(`#${answer + i}`).value = 'Press "Generate answers" to generate answers.'
+                $(`#${answer + i}`).readOnly = true
             } else {
-                if (document.getElementById('answer' + i).value == 'Press "Generate answers" to generate answers.') {
-                    document.getElementById('answer' + i).value = '';
+                if ($(`#${answer + i}`).value === 'Press "Generate answers" to generate answers.') {
+                    $(`#${answer + i}`).value = ''
                 }
-                document.getElementById('answer' + i).readOnly = false;
+                $(`#${answer + i}`).readOnly = false
             }
         }
-    });
+    })
 }
 
 $('#description').on('input', function (e) {
-    $('#description-md')[0].mdContent = $('#description').val();
+    $('#description-md')[0].mdContent = $('#description').val()
 })

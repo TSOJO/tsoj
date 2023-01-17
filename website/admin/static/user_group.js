@@ -1,7 +1,7 @@
 (() => {
     'use strict'
 
-    const form = document.querySelector('.needs-validation')
+    const form = $('.needs-validation')
     form.addEventListener('submit', event => {
         if (!form.checkValidity()) {
             event.preventDefault()
@@ -21,19 +21,19 @@ function get_selected(table) {
 }
 
 $('#form').submit( function(e) {
-	let user_ids = get_selected($('#user-group-table')).join(',');
-	if (user_ids != '') {
+	let user_ids = get_selected($('#user-group-table')).join(',')
+	if (user_ids !== '') {
 		input = $('<input />')
 			.attr('type', 'hidden')
 			.attr('name', 'selected_user_ids')
-			.attr('value', user_ids);
-		input.appendTo('#form');
+			.attr('value', user_ids)
+		input.appendTo('#form')
 	}
 	
-	return true;
-});
+	return true
+})
 
 // ! Form submission is buggy if user uses 'back' button to go back to the form, so uncheck all.
 window.onpageshow = function(e) {
 	$('#user-group-table').bootstrapTable('uncheckAll')
-};
+}

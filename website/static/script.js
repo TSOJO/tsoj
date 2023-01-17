@@ -1,1 +1,1 @@
-setInterval("MathJax.typeset()", 100);
+setInterval("MathJax.typeset()", 100)
