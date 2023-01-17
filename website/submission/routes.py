@@ -17,7 +17,7 @@ def submission(id: int) -> str:
     user_obj = User.find_one({'id': submission_obj.user_id})
     problem_obj = Problem.find_one({'id': submission_obj.problem_id})
     if not current_user.is_admin and not problem_obj.is_public:
-        abort(400, 'Unauthorized')
+        abort(403, 'Problem is not public')
     show_code = (
         current_user.is_admin
         or current_user.id == submission_obj.user_id
