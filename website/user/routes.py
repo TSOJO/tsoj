@@ -66,11 +66,9 @@ def profile(id: str):
     user = User.find_one({'id': id})
     if user is None:
         abort(404, description="User not found")
-    problems = dict(map(lambda p: (p.id, False), Problem.find_all()))
-    for solved_problem_id in user.get_solved_problem_ids():
-        problems[solved_problem_id] = True
-    problems = list(problems.items())
-    return render_template('profile.html', user=user, problems=problems)
+    problems = Problem.find_all()
+    solved_problems = user.get_solved_problem_ids()
+    return render_template('profile.html', user=user, problems=problems, solved_problems=solved_problems)
 
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
