@@ -23,6 +23,7 @@ class User(UserMixin, DBModel):
         full_name: str = '',
         plaintext_password: str = '',
         user_group_ids: Optional[List[int]] = None,
+        hide_name: bool = False,
         is_admin: bool = False,
     ):
         # Public properties
@@ -30,11 +31,9 @@ class User(UserMixin, DBModel):
         self.id = email.split('@')[0] if id == '' else id
         self.username = self.id if username == '' else username
         self.full_name = full_name
-        if user_group_ids is None:
-            self.user_group_ids = []
-        else:
-            self.user_group_ids = user_group_ids
+        self.user_group_ids = [] if user_group_ids is None else user_group_ids
         self.is_admin = is_admin
+        self.hide_name = hide_name
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)
@@ -112,6 +111,7 @@ class User(UserMixin, DBModel):
             email=document['email'],
             user_group_ids=document['user_group_ids'],
             is_admin=document['is_admin'],
+            hide_name=document['hide_name'],
         )
         user_obj._hashed_password = document['hashed_password']
         return user_obj
@@ -126,6 +126,7 @@ class User(UserMixin, DBModel):
             'hashed_password': self._hashed_password,
             'user_group_ids': self.user_group_ids,
             'is_admin': self.is_admin,
+            'hide_name': self.hide_name,
         }
 
     @classmethod

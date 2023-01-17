@@ -39,7 +39,5 @@ def submissions():
     if problem_id is not None:
         filter['problem_id'] = problem_id
     submissions = Submission.find_all(filter=filter, sort=True)
-    usernames = dict(map(lambda u: (u.id, u.username), User.find_all()))
-    return render_template(
-        'submissions.html', submissions=submissions, usernames=usernames
-    )
+    users = dict(map(lambda u: (u.id, u), User.find_all()))
+    return render_template('submissions.html', submissions=submissions, users=users)

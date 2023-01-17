@@ -17,8 +17,7 @@
 </div>
 <div class="mb-3">
     <h4>Source Code</h4>
-    <div id="editor">{% if show_code %}{{submission.code}}{% else %}# Source code hidden: you have not solved this
-        problem yet :3{% endif %}</div>
+    <div id="editor">{% if show_code %}{{submission.code}}{% else %}# Source code hidden: you have not solved this problem yet :3{% endif %}</div>
 </div>
 <hr>
 <div class="mb-3">
@@ -31,15 +30,13 @@
                         class="text-decoration-none">{{ submission.problem_id }}</a></td>
             </tr>
             <tr>
-                <th class="col">Assignment ID</th>
-                <td class="text-center">{% if submission.assignment_id %}<a
-                        href="{{url_for('assignment_bp.assignment', id=submission.assignment_id)}}"
-                        class="text-decoration-none">{{submission.assignment_id}}</a>{% else %}N/A{% endif %}</td>
-            </tr>
-            <tr>
                 <th class="col">Username</th>
+                {% if not current_user.is_admin and current_user.id != submission.user_id and submission_user.hide_name %}
+                <td class="text-center" style="color: gray;"><i>Hidden</i></td>
+                {% else %}
                 <td class="text-center"><a href="{{url_for('user_bp.profile', id=submission.user_id)}}"
                         class="text-decoration-none">{{ submission_user.username }}</a></td>
+                {% endif %}
             </tr>
             <tr>
                 <th class="col">Submission time (UTC)</th>

@@ -150,6 +150,7 @@ def debug_db(app):
         plaintext_password='admin',
         user_group_ids=[1],
         is_admin=True,
+        hide_name=True,
     )
     test_user = User(
         id='user',
@@ -158,7 +159,6 @@ def debug_db(app):
         email='user@localhost',
         plaintext_password='user',
         user_group_ids=[1],
-        is_admin=False,
     )
     with app.app_context():
         admin.save(replace=True)

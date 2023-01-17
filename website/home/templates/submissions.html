@@ -25,8 +25,14 @@
         <tr>
             <td><a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">
                 {{ submission.submission_time.strftime("%d/%m/%Y %H:%M:%S") }}</a></td>
-            <td><a href="{{url_for('user_bp.profile', id=submission.user_id)}}" class="text-decoration-none">{{
-                    usernames[submission.user_id] }}</a></td>
+            <td>
+                {% if not current_user.is_admin and current_user.id != submission.user_id and users[submission.user_id].hide_name %}
+                <a class="text-decoration-none" style="color: gray;"><i>Hidden</i></a>
+                {% else %}
+                <a href="{{url_for('user_bp.profile', id=submission.user_id)}}" class="text-decoration-none">{{
+                    users[submission.user_id].username }}</a>
+                {% endif %}
+            </td>
             <td><a href="{{url_for('problem_bp.problem', id=submission.problem_id)}}" class="text-decoration-none">{{
                     submission.problem_id }}</a></td>
             <td>

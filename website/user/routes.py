@@ -88,6 +88,11 @@ def settings():
             current_user.full_name = new_full_name
             flash('Full name changed successfully.')
 
+        new_hide_name = 'hide-name' in request.form
+        if new_hide_name != current_user.hide_name:
+            current_user.hide_name = new_hide_name
+            flash('Hide name option changed successfully.')
+
         current_password = request.form.get('current_password')
         new_password = request.form.get('new_password')
         if new_password:
@@ -98,9 +103,7 @@ def settings():
                 flash('Current password not correct.', 'error')
         current_user.save(replace=True)
 
-    return render_template(
-        'settings.html',
-    )
+    return render_template('settings.html')
 
 
 # ! debug
