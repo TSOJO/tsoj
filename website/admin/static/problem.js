@@ -3,7 +3,7 @@ let testcases_count = $('#testcases-count').val()
 function add_field() {
     testcases_count++
     $('#testcases-count').val(testcases_count)
-    let testcase_node = $('$testcase-div').cloneNode(true)
+    let testcase_node = document.getElementById('testcase-div').cloneNode(true)
     testcase_node.id = ''
     testcase_node.style.display = 'block'
     let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
@@ -17,10 +17,10 @@ function add_field() {
     let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
     sample_checkbox.name = 'sample' + testcases_count
     sample_checkbox.id = 'sample' + testcases_count
-    if ($('#auto-generate-answer-checkbox').checked === true) {
+    if (document.getElementById('auto-generate-answer-checkbox').checked === true) {
         answer_node.readOnly = true
     }
-    let testcase_container = $('#testcase-container')
+    let testcase_container = document.getElementById('#testcase-container')
     testcase_container.appendChild(testcase_node)
 }
 
@@ -33,13 +33,13 @@ function remove_field(node) {
             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
             '</div>'
         ].join('')
-        const placeholder = $('#rem-alert-placeholder')
+        const placeholder = document.getElementById('#rem-alert-placeholder')
         placeholder.append(wrapper)
         return
     }
     testcases_count--
     $('#testcases-count').val(testcases_count)
-    let testcase_container = $('#testcase-container')
+    let testcase_container = document.getElementById('#testcase-container')
     testcase_container.removeChild(node)
     // reindex
     for (let i = 0; i < testcases_count; i++) {
@@ -67,7 +67,7 @@ function generate_answers() {
             memoryLimit: $('#memory-limit').val()
         }
 
-        const placeholder = $('#gen-alert-placeholder')
+        const placeholder = document.getElementById('#gen-alert-placeholder')
         fetch("/api/generate-answer",
             {
                 method: "POST",
@@ -95,7 +95,7 @@ function generate_answers() {
 (() => {
     'use strict'
 
-    const form = $('.needs-validation')
+    const form = document.getElementById('.needs-validation')
     form.addEventListener('submit', event => {
         if (!form.checkValidity()) {
             event.preventDefault()
@@ -106,8 +106,8 @@ function generate_answers() {
     }, false)
 })()
 
-const id_field = $('#id')
-const id_invalid_feedback = $('#id-invalid-feedback')
+const id_field = document.getElementById('#id')
+const id_invalid_feedback = document.getElementById('#id-invalid-feedback')
 id_field.addEventListener('blur', () => {
     fetch('/api/db/problem/' + id_field.value)
         .then(response => response.json())
@@ -151,13 +151,13 @@ window.onpageshow = function (event) {
         }
         for (let i = 1; i <= testcases_count; i++) {
             if (this.checked === true) {
-                $(`#${answer + i}`).value = 'Press "Generate answers" to generate answers.'
-                $(`#${answer + i}`).readOnly = true
+                document.getElementById(`#${answer + i}`).value = 'Press "Generate answers" to generate answers.'
+                document.getElementById(`#${answer + i}`).readOnly = true
             } else {
-                if ($(`#${answer + i}`).value === 'Press "Generate answers" to generate answers.') {
-                    $(`#${answer + i}`).value = ''
+                if (document.getElementById(`#${answer + i}`).value === 'Press "Generate answers" to generate answers.') {
+                    document.getElementById(`#${answer + i}`).value = ''
                 }
-                $(`#${answer + i}`).readOnly = false
+                document.getElementById(`#${answer + i}`).readOnly = false
             }
         }
     })
