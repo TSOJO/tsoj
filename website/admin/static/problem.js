@@ -20,7 +20,7 @@ function add_field() {
     if (document.getElementById('auto-generate-answer-checkbox').checked === true) {
         answer_node.readOnly = true
     }
-    let testcase_container = document.getElementById('#testcase-container')
+    let testcase_container = document.getElementById('testcase-container')
     testcase_container.appendChild(testcase_node)
 }
 
@@ -33,13 +33,13 @@ function remove_field(node) {
             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
             '</div>'
         ].join('')
-        const placeholder = document.getElementById('#rem-alert-placeholder')
+        const placeholder = document.getElementById('rem-alert-placeholder')
         placeholder.append(wrapper)
         return
     }
     testcases_count--
     $('#testcases-count').val(testcases_count)
-    let testcase_container = document.getElementById('#testcase-container')
+    let testcase_container = document.getElementById('testcase-container')
     testcase_container.removeChild(node)
     // reindex
     for (let i = 0; i < testcases_count; i++) {
@@ -67,7 +67,7 @@ function generate_answers() {
             memoryLimit: $('#memory-limit').val()
         }
 
-        const placeholder = document.getElementById('#gen-alert-placeholder')
+        const placeholder = document.getElementById('gen-alert-placeholder')
         fetch("/api/generate-answer",
             {
                 method: "POST",
@@ -95,7 +95,7 @@ function generate_answers() {
 (() => {
     'use strict'
 
-    const form = document.getElementById('.needs-validation')
+    const form = document.querySelector('.needs-validation')
     form.addEventListener('submit', event => {
         if (!form.checkValidity()) {
             event.preventDefault()
@@ -106,8 +106,8 @@ function generate_answers() {
     }, false)
 })()
 
-const id_field = document.getElementById('#id')
-const id_invalid_feedback = document.getElementById('#id-invalid-feedback')
+const id_field = document.getElementById('id')
+const id_invalid_feedback = document.getElementById('id-invalid-feedback')
 id_field.addEventListener('blur', () => {
     fetch('/api/db/problem/' + id_field.value)
         .then(response => response.json())
@@ -151,13 +151,13 @@ window.onpageshow = function (event) {
         }
         for (let i = 1; i <= testcases_count; i++) {
             if (this.checked === true) {
-                document.getElementById(`#${answer + i}`).value = 'Press "Generate answers" to generate answers.'
-                document.getElementById(`#${answer + i}`).readOnly = true
+                document.getElementById('answer' + i).value = 'Press "Generate answers" to generate answers.'
+                document.getElementById('answer' + i).readOnly = true
             } else {
-                if (document.getElementById(`#${answer + i}`).value === 'Press "Generate answers" to generate answers.') {
-                    document.getElementById(`#${answer + i}`).value = ''
+                if (document.getElementById('answer' + i).value === 'Press "Generate answers" to generate answers.') {
+                    document.getElementById('answer' + i).value = ''
                 }
-                document.getElementById(`#${answer + i}`).readOnly = false
+                document.getElementById('answer' + i).readOnly = false
             }
         }
     })
