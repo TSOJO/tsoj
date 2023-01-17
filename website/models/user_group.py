@@ -84,6 +84,8 @@ class UserGroup(DBModel):
         return self
 
     def delete(self, wait=False) -> None:
+        self.user_ids = []
+        self.update_users()
         if wait:
             delete_from_db('user_groups', self.cast_to_document())
         else:
