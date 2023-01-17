@@ -25,7 +25,7 @@ window.onpageshow = function(event) {
         $(this).prop('disabled', true);
         // Replace text with a spinner.
         $(this).html(
-            '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Running...'
+            '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Submitting...'
         );
         // Submit form.
         $('#codeForm').submit();
