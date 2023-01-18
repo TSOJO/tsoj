@@ -111,8 +111,8 @@ def settings():
             
         current_user.save(replace=True)
     groups = UserGroup.find_all()
-    user_group_names = [g.name for g in current_user.fetch_groups()]
-    return render_template('settings.html', groups=groups, user_group_names=user_group_names)
+    user_group_ids = [str(g.id) for g in current_user.fetch_groups()]
+    return render_template('settings.html', groups=groups, user_group_ids=user_group_ids)
 
 
 # ! debug

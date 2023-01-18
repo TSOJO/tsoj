@@ -57,6 +57,11 @@ class User(UserMixin, DBModel):
             {'user_group_ids': {'$in': self.user_group_ids}},
             sort=sort,
         )
+    
+    def fetch_groups(self):
+        return user_group_module.UserGroup.find_all(
+            {'id': {'$in': self.user_group_ids}}
+        )
 
     def get_solved_problem_ids(self) -> List[int]:
         problem_ids = set()

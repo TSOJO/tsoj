@@ -32,7 +32,7 @@
             <br />
             <select id="group_select" class="selectpicker" name="group_select" title="Choose a group" multiple>
                 {% for group in groups %}
-                <option value="{{group.id}}">{{group.id}}{{group.name}}</option>
+                <option value="{{group.id}}">{{group.name}}</option>
                 {% endfor %}
             </select>
         </div>
@@ -84,6 +84,6 @@
 
 {% block scripts %}
 <script>
-    $('#group_select').selectpicker('val', {{user_group_names | tojson}})
+    $('#group_select').selectpicker('val', {{user_group_ids | tojson}})
 </script>
 {% endblock %}
