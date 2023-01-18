@@ -97,10 +97,10 @@ class User(UserMixin, DBModel):
         to_add = list(set(new_user_group_ids) - set(self.user_group_ids))
         for user_group in user_group_module.UserGroup.find_all({'id': {'$in': to_remove}}):
             user_group._user_ids.remove(self.id) # sorry
-            user_group.save()
+            user_group.save(replace=True)
         for user_group in user_group_module.UserGroup.find_all({'id': {'$in': to_add}}):
             user_group._user_ids.append(self.id) # sorry again
-            user_group.save()
+            user_group.save(replace=True)
         self._user_group_ids = new_user_group_ids
 
     def add_to_user_group(self, user_group_id: int):
