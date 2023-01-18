@@ -25,6 +25,7 @@ class UserGroup(DBModel):
 
     @user_ids.setter
     def user_ids(self, new_user_ids: List[int]) -> None:
+        self.save()  # Get ID!
         to_remove = list(set(self.user_ids) - set(new_user_ids))
         to_add = list(set(new_user_ids) - set(self.user_ids))
 
