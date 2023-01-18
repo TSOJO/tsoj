@@ -24,14 +24,8 @@ class Assignment(DBModel):
     ):
         # Public properties.
         self.id: Optional[int] = id
-        if problem_ids is None:
-            self.problem_ids = []
-        else:
-            self.problem_ids = problem_ids
-        if user_group_ids is None:
-            self.user_group_ids = []
-        else:
-            self.user_group_ids = user_group_ids
+        self.problem_ids = [] if problem_ids is None else problem_ids
+        self.user_group_ids = [] if user_group_ids is None else user_group_ids
         self.creator = creator
         self.archived = archived
         self.set_time = set_time
@@ -52,7 +46,8 @@ class Assignment(DBModel):
             creator=document['creator'],
             user_group_ids=document['user_group_ids'],
             archived=document['archived'],
-            set_time=datetime.strptime(document['set_time'], '%Y-%m-%dT%H:%M:%S.%f'),
+            set_time=datetime.strptime(
+                document['set_time'], '%Y-%m-%dT%H:%M:%S.%f'),
         )
         return assignment_obj
 

@@ -34,14 +34,8 @@ class Submission:
         self.user_id = user_id
         self.problem_id = problem_id
         self.code = code
-        if final_verdict is None:
-            self.final_verdict = Verdict.WJ
-        else:
-            self.final_verdict = final_verdict
-        if results is None:
-            self.results = []
-        else:
-            self.results = results
+        self.final_verdict = Verdict.WJ if final_verdict is None else final_verdict
+        self.results = [] if results is None else results
         self.id: Optional[int] = id
         self.submission_time = submission_time
 
