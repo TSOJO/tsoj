@@ -51,8 +51,9 @@ def register():
         if user:
             flash('Email already used. Login instead.', 'error')
             return redirect(url_for('user_bp.login'))
-
-        user = User(email=email)
+        
+        full_name = request.form.get('full_name')
+        user = User(email=email, full_name=full_name)
         user.set_password_and_send_email()
         user.save()
         flash(

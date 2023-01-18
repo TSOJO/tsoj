@@ -8,8 +8,12 @@
 </div>
 <form method="POST" action="{{ url_for('user_bp.register') }}" class="needs-validation" novalidate>
     <div class="form-floating mb-3">
-        <input type="email" class="form-control" name="email" id="floatingInput" placeholder="name@tonbridge-school.org" required>
-        <label for="floatingInput">Email address</label>
+        <input type="text" class="form-control" name="full_name" id="full_name" placeholder="John Doe" required>
+        <label for="full_name">Full name</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control" name="email" id="email" placeholder="name@tonbridge-school.org" required>
+        <label for="email">Email address</label>
     </div>
     <p>Your password will be emailed to you.</p>
     <button type="submit" class="btn btn-primary mb-3">Register</button>
