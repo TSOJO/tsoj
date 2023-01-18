@@ -1,4 +1,5 @@
 from os import environ, path
+
 from dotenv import load_dotenv
 
 base_dir = path.abspath(path.dirname(__file__))
@@ -13,3 +14,4 @@ GMAIL_APP_PWD = environ.get('GMAIL_APP_PWD')
 GMAIL_EMAIL = environ.get('GMAIL_EMAIL')
 CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = environ.get('CELERY_RESULT_BACKEND')
+BASE_URL = environ.get('BASE_URL')

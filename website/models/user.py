@@ -1,17 +1,21 @@
 from __future__ import annotations
 
 import secrets
+from datetime import datetime, timedelta
 from os import environ
 from typing import *
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import UserMixin
 
-from website.db import db
-from website.celery_tasks import add_to_db, send_email, delete_from_db
+from flask import request, url_for
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from config import BASE_URL
 from isolate_wrapper.custom_types import Verdict
-from website.models.db_model import DBModel
-from website.models import submission as submission
+from website.celery_tasks import add_to_db, delete_from_db, send_email
+from website.db import db
 from website.models import assignment as assignment
+from website.models import submission as submission
+from website.models.db_model import DBModel
 
 
 class User(UserMixin, DBModel):
@@ -25,6 +29,7 @@ class User(UserMixin, DBModel):
         user_group_ids: Optional[List[int]] = None,
         hide_name: bool = False,
         is_admin: bool = False,
+        password_reset_token_expiration: Optional[datetime] = None
     ):
         # Public properties
         self.email = email
@@ -34,9 +39,11 @@ class User(UserMixin, DBModel):
         self.user_group_ids = [] if user_group_ids is None else user_group_ids
         self.is_admin = is_admin
         self.hide_name = hide_name
+        self.password_reset_token_expiration: Optional[datetime] = password_reset_token_expiration
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)
+        self._hashed_token = None
 
     def get_id(self):
         return self.id
@@ -46,6 +53,15 @@ class User(UserMixin, DBModel):
 
     def check_password(self, plaintext_password):
         return check_password_hash(self._hashed_password, plaintext_password)
+
+    def set_password_reset_token(self, plaintext_token):
+        self._hashed_token = generate_password_hash(plaintext_token)
+    
+    def check_password_reset_token(self, plaintext_token):
+        return self._hashed_token and check_password_hash(self._hashed_token, plaintext_token) and self.password_reset_token_expiration > datetime.utcnow()
+
+    def clear_password_reset_token(self):
+        self._hashed_token = None
 
     def fetch_submissions(self) -> List[submission.Submission]:
         return submission.Submission.find_all({'user_id': f'{self.id}'}, sort=True)
@@ -85,7 +101,6 @@ class User(UserMixin, DBModel):
 
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)
-        self.set_password(password)
 
         subject = 'Your TSOJ password'
         body = (
@@ -99,6 +114,28 @@ class User(UserMixin, DBModel):
         )
 
         send_email.delay(subject, body, self.email)
+        
+        self.set_password(password)
+
+    def send_reset_password_email(self):
+        token = secrets.token_urlsafe(10)
+        subject = 'Reset TSOJ password'
+        body = (
+            f"Hi {self.id},\n\n"
+            "Someone has created a requested a password reset of this email. If it is not you, please ignore this email.\n\n"
+            "Click this link to reset your password.\n"
+            f"{request.url_root[0: -1]}{url_for('user_bp.reset_password', token=token)}\n"
+            "This link expires in 3 hours."
+            f"If this link expires, you can get a new one at {request.url_root}{url_for('user_bp.request_password_reset')}.\n We hope you have a great time in TSOJ.\n\n"
+            "Regards,\n"
+            "The TSOJ Organization\n"
+            "https://github.com/TSOJO/tsoj"
+        )
+
+        send_email.delay(subject, body, self.email)
+
+        self.set_password_reset_token(token)
+        self.password_reset_token_expiration = datetime.utcnow() + timedelta(hours = 3)
 
     """Database Wrapper Methods"""
 
@@ -112,7 +149,11 @@ class User(UserMixin, DBModel):
             user_group_ids=document['user_group_ids'],
             is_admin=document['is_admin'],
             hide_name=document['hide_name'],
+            password_reset_token_expiration=datetime.strptime(
+                document['password_reset_token_expiration'], '%Y-%m-%dT%H:%M:%S.%f'
+            ) if document['password_reset_token_expiration'] else None
         )
+        user_obj._hashed_token = document['hashed_token']
         user_obj._hashed_password = document['hashed_password']
         return user_obj
 
@@ -124,9 +165,11 @@ class User(UserMixin, DBModel):
             'full_name': self.full_name,
             'email': self.email,
             'hashed_password': self._hashed_password,
+            'hashed_token': self._hashed_token,
             'user_group_ids': self.user_group_ids,
             'is_admin': self.is_admin,
             'hide_name': self.hide_name,
+            'password_reset_token_expiration': self.password_reset_token_expiration
         }
 
     @classmethod
@@ -142,6 +185,7 @@ class User(UserMixin, DBModel):
         return [cls.cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> User:
+        print(self.cast_to_document())
         add_to_db.delay('users', self.cast_to_document(), replace)
         return self
 

@@ -14,6 +14,7 @@
     <div class="form-floating mb-3">
         <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
         <label for="floatingPassword">Password</label>
+        <a href="{{url_for('user_bp.request_password_reset')}}" class="text-decoration-none">Forgot password?</a>
     </div>
     <button type="submit" class="btn btn-primary mb-3">Login</button>
 </form>
