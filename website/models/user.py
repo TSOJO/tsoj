@@ -60,7 +60,7 @@ class User(UserMixin, DBModel):
             sort=sort,
         )
 
-    def fetch_groups(self):
+    def fetch_user_groups(self):
         return user_group_module.UserGroup.find_all(
             {'id': {'$in': self.user_group_ids}}
         )

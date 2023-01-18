@@ -67,9 +67,10 @@ def profile(id: str):
     if user is None:
         abort(404, description="User not found")
     problems = Problem.find_all()
-    solved_problems = user.get_solved_problem_ids()
+    solved_problem_ids = user.get_solved_problem_ids()
+    self_user_groups = user.fetch_user_groups()
     return render_template(
-        'profile.html', user=user, problems=problems, solved_problems=solved_problems
+        'profile.html', user=user, problems=problems, solved_problem_ids=solved_problem_ids, self_user_groups=self_user_groups
     )
 
 
@@ -113,7 +114,7 @@ def settings():
 
         current_user.save(replace=True)
     groups = UserGroup.find_all()
-    user_group_ids = [str(g.id) for g in current_user.fetch_groups()]
+    user_group_ids = [str(g.id) for g in current_user.fetch_user_groups()]
     return render_template(
         'settings.html', groups=groups, user_group_ids=user_group_ids
     )
