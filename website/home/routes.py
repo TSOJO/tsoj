@@ -19,7 +19,8 @@ def home():
     problems = {}
     for assignment in assignments:
         problems[assignment.id] = assignment.fetch_problems()
-    return render_template('home.html', assignments=assignments, problems=problems)
+    solved_problems = current_user.get_solved_problem_ids()
+    return render_template('home.html', assignments=assignments, problems=problems, solved_problems=solved_problems)
 
 
 @home_bp.route('/problems/')  # ? require trailing slash for some reason
