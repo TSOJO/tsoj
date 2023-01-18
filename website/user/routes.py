@@ -1,7 +1,8 @@
-from flask import Blueprint, redirect, url_for, render_template, flash, request, abort
-from flask_login import login_user, logout_user, login_required, current_user
+from flask import (Blueprint, abort, flash, redirect, render_template, request,
+                   url_for)
+from flask_login import current_user, login_required, login_user, logout_user
 
-from website.models import User, Problem, UserGroup
+from website.models import Problem, User, UserGroup
 from website.utils import is_safe_url
 
 user_bp = Blueprint(
@@ -118,6 +119,44 @@ def settings():
     return render_template(
         'settings.html', groups=groups, user_group_ids=user_group_ids
     )
+
+@user_bp.route('/reset-password/<token>', methods = ['GET', 'POST'])
+def reset_password(token: str):
+    # ? Rate limit per ip
+    users = User.find_all()
+    search = [u for u in users if u.check_password_reset_token(token)]
+    if len(search) == 0:
+        flash('Invalid password reset link. This may be because your password reset link has expired.', 'error')
+        return redirect(url_for('user_bp.request_password_reset'))
+    user = search[0]
+    print(user)
+    if request.method == 'POST':
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm-password')
+        if password != confirm_password:
+            flash('Passwords do not match. Please try again.', 'error')
+        else:
+            user.set_password(password)
+            user.clear_password_reset_token()
+            user.save(True)
+            flash('Password changed successfully. Login with your new password.')
+            return redirect(url_for('user_bp.login'))
+    return render_template('password-reset.html', user=user, token=token)
+
+@user_bp.route('/reset-password', methods = ['GET', 'POST'])
+def request_password_reset():
+    # TODO Add Captcha
+    if request.method == 'POST':
+        email = request.form.get('email')
+        # Pretend everything is fine even if email is not a valid user
+        flash('Please check your email for a link to reset your password. The link will expire in 3 hours.')
+        user = User.find_one({'email': email})
+        if user:
+            user.send_reset_password_email()
+            print(user._hashed_token)
+            user.save(True)
+        return redirect(url_for('user_bp.login'))
+    return render_template('request-password-reset.html')
 
 
 # ! debug

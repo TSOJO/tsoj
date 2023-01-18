@@ -1,9 +1,10 @@
-from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 from os import environ
-from flask import Flask, request
+
 from celery import Celery
+from flask import Flask, current_app, request
 from flask_login import LoginManager, current_user
-from flask import current_app
+
+from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
 celery = Celery(
     __name__,
@@ -40,7 +41,7 @@ def init_app() -> Flask:
     login_manager.login_view = 'user_bp.login'
     login_manager.login_message_category = "error"
 
-    from website.models import Assignment, Submission, User, Problem, UserGroup
+    from website.models import Assignment, Problem, Submission, User, UserGroup
 
     with app.app_context():
         Submission.init()
@@ -50,12 +51,12 @@ def init_app() -> Flask:
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
     # ! Moving this up results in circular imports.
+    from .admin.routes import admin_bp
+    from .api import api_bp
+    from .assignment.routes import assignment_bp
+    from .home.routes import home_bp
     from .problem.routes import problem_bp
     from .submission.routes import submission_bp
-    from .assignment.routes import assignment_bp
-    from .admin.routes import admin_bp
-    from .home.routes import home_bp
-    from .api import api_bp
     from .user.routes import user_bp
 
     # Register blueprints.
@@ -79,6 +80,8 @@ def init_app() -> Flask:
             login_manager.login_view,  # login page
             'user_bp.register',
             'user_bp.static',
+            'user_bp.request_password_reset',
+            'user_bp.reset_password',
             'static',
             'user_bp.user_debug',  # ! DEBUG ONLY
             'user_bp.admin_debug',  # ! DEBUG ONLY
@@ -95,7 +98,7 @@ def init_app() -> Flask:
 
 def debug_db(app):
     from isolate_wrapper import Testcase
-    from website.models import Assignment, Submission, User, Problem, UserGroup
+    from website.models import Assignment, Problem, Submission, User, UserGroup
 
     problems_list = [
         {
