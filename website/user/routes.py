@@ -129,7 +129,6 @@ def reset_password(token: str):
         flash('Invalid password reset link. This may be because your password reset link has expired.', 'error')
         return redirect(url_for('user_bp.request_password_reset'))
     user = search[0]
-    print(user)
     if request.method == 'POST':
         password = request.form.get('password')
         confirm_password = request.form.get('confirm-password')
