@@ -1,4 +1,4 @@
-let testcases_count = $('#testcases-count').val()
+let testcases_count = parseInt($('#testcases-count').val())
 
 function add_field() {
     testcases_count++
