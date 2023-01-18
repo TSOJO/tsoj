@@ -30,13 +30,13 @@ class UserGroup(DBModel):
         to_add = list(set(new_user_ids) - set(self.user_ids))
 
         for user in user_module.User.find_all({'id': {'$in': to_remove}}):
-            user._user_group_ids.remove(self.id) # very sorry
+            user._user_group_ids.remove(self.id)  # very sorry
             user.save(replace=True)
 
         for user in user_module.User.find_all({'id': {'$in': to_add}}):
-            user._user_group_ids.append(self.id) # forgive me :((((
+            user._user_group_ids.append(self.id)  # forgive me :((((
             user.save(replace=True)
-        
+
         self._user_ids = new_user_ids
 
     def fetch_users(self):

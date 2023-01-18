@@ -68,7 +68,9 @@ def profile(id: str):
         abort(404, description="User not found")
     problems = Problem.find_all()
     solved_problems = user.get_solved_problem_ids()
-    return render_template('profile.html', user=user, problems=problems, solved_problems=solved_problems)
+    return render_template(
+        'profile.html', user=user, problems=problems, solved_problems=solved_problems
+    )
 
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
@@ -101,18 +103,20 @@ def settings():
                 flash('Password changed successfully.')
             else:
                 flash('Current password not correct.', 'error')
-        
+
         selected_groups = request.form.getlist('group_select')
         if selected_groups:
             selected_group_ints = [int(g) for g in selected_groups]
             if set(selected_group_ints) != set(current_user.user_group_ids):
                 current_user.user_group_ids = selected_group_ints
                 flash('Groups changed successfully.')
-            
+
         current_user.save(replace=True)
     groups = UserGroup.find_all()
     user_group_ids = [str(g.id) for g in current_user.fetch_groups()]
-    return render_template('settings.html', groups=groups, user_group_ids=user_group_ids)
+    return render_template(
+        'settings.html', groups=groups, user_group_ids=user_group_ids
+    )
 
 
 # ! debug

@@ -50,14 +50,16 @@ class User(UserMixin, DBModel):
         return check_password_hash(self._hashed_password, plaintext_password)
 
     def fetch_submissions(self) -> List[submission_module.Submission]:
-        return submission_module.Submission.find_all({'user_id': f'{self.id}'}, sort=True)
+        return submission_module.Submission.find_all(
+            {'user_id': f'{self.id}'}, sort=True
+        )
 
     def fetch_assignments(self, sort=False) -> List[assignment_module.Assignment]:
         return assignment_module.Assignment.find_all(
             {'user_group_ids': {'$in': self.user_group_ids}},
             sort=sort,
         )
-    
+
     def fetch_groups(self):
         return user_group_module.UserGroup.find_all(
             {'id': {'$in': self.user_group_ids}}
@@ -96,11 +98,13 @@ class User(UserMixin, DBModel):
         self.save()  # Probably not applicable here but zzzz
         to_remove = list(set(self.user_group_ids) - set(new_user_group_ids))
         to_add = list(set(new_user_group_ids) - set(self.user_group_ids))
-        for user_group in user_group_module.UserGroup.find_all({'id': {'$in': to_remove}}):
-            user_group._user_ids.remove(self.id) # sorry
+        for user_group in user_group_module.UserGroup.find_all(
+            {'id': {'$in': to_remove}}
+        ):
+            user_group._user_ids.remove(self.id)  # sorry
             user_group.save(replace=True)
         for user_group in user_group_module.UserGroup.find_all({'id': {'$in': to_add}}):
-            user_group._user_ids.append(self.id) # sorry again
+            user_group._user_ids.append(self.id)  # sorry again
             user_group.save(replace=True)
         self._user_group_ids = new_user_group_ids
 
@@ -115,7 +119,7 @@ class User(UserMixin, DBModel):
         if self.id not in user_group_obj.user_ids:
             user_group_obj.user_ids.append(id)
             user_group_obj.save()
-    
+
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)
         self.set_password(password)
