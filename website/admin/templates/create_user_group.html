@@ -36,15 +36,8 @@
                 <td></td>
                 <td>
                     <a href="{{url_for('user_bp.profile', id=user.id)}}" class="text-decoration-none">
-                        {% if user.full_name %}
                         {{user.full_name}}
-                        {% else %}
-                        {{user.username}}
-                        {% endif %}
                     </a>
-                    {% if not user.full_name %}
-                    <a class="text-decoration-none" style="color: gray;"><i>(Full name not set)</i></a>
-                    {% endif %}
                 </td>
                 <td>
                     {{user.id}}
