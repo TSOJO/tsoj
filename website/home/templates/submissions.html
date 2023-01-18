@@ -14,14 +14,16 @@
             <th>Username</th>
             <th>Problem</th>
             <th>Verdict</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         {% for submission in submissions %}
         {% if current_user.is_admin or problems[submission.problem_id].is_public %}
         <tr>
-            <td><a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">
-                    {{ submission.submission_time.strftime("%d/%m/%Y %H:%M:%S") }}</a></td>
+            <td>
+                {{ submission.submission_time.strftime("%d/%m/%Y %H:%M:%S") }}
+            </td>
             <td>
                 {% if not current_user.is_admin and current_user.id != submission.user_id and
                 users[submission.user_id].hide_name %}
@@ -69,6 +71,11 @@
                     &nbsp;{{submission.final_verdict.value}}
                 </span>
                 {% endif %}
+            </td>
+            <td>  
+                <a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">
+                    Details
+                </a>
             </td>
         </tr>
         {% endif %}
