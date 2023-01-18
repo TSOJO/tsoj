@@ -5,13 +5,15 @@ from os import environ
 from typing import *
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
+import logging
 
 from website.db import db
 from website.celery_tasks import add_to_db, send_email, delete_from_db
 from isolate_wrapper.custom_types import Verdict
 from website.models.db_model import DBModel
-from website.models import submission as submission
-from website.models import assignment as assignment
+from website.models import submission as submission_module
+from website.models import assignment as assignment_module
+from website.models import user_group as user_group_module
 
 
 class User(UserMixin, DBModel):
@@ -31,7 +33,7 @@ class User(UserMixin, DBModel):
         self.id = email.split('@')[0] if id == '' else id
         self.username = self.id if username == '' else username
         self.full_name = full_name
-        self.user_group_ids = [] if user_group_ids is None else user_group_ids
+        self._user_group_ids = [] if user_group_ids is None else user_group_ids
         self.is_admin = is_admin
         self.hide_name = hide_name
 
@@ -47,11 +49,11 @@ class User(UserMixin, DBModel):
     def check_password(self, plaintext_password):
         return check_password_hash(self._hashed_password, plaintext_password)
 
-    def fetch_submissions(self) -> List[submission.Submission]:
-        return submission.Submission.find_all({'user_id': f'{self.id}'}, sort=True)
+    def fetch_submissions(self) -> List[submission_module.Submission]:
+        return submission_module.Submission.find_all({'user_id': f'{self.id}'}, sort=True)
 
-    def fetch_assignments(self, sort=False) -> List[assignment.Assignment]:
-        return assignment.Assignment.find_all(
+    def fetch_assignments(self, sort=False) -> List[assignment_module.Assignment]:
+        return assignment_module.Assignment.find_all(
             {'user_group_ids': {'$in': self.user_group_ids}},
             sort=sort,
         )
@@ -65,9 +67,9 @@ class User(UserMixin, DBModel):
         problem_ids.sort()
         return problem_ids
 
-    def get_attempt(self, problem_id: int) -> Optional[submission.Submission]:
-        # Return AC submission if there is one, otherwise return any (if any) attempt.
-        ac_submission = submission.Submission.find_one(
+    def get_attempt(self, problem_id: int) -> Optional[submission_module.Submission]:
+        # Return latest AC submission if there is one, otherwise return the latest (if any) attempt.
+        ac_submission = submission_module.Submission.find_one(
             {
                 'problem_id': problem_id,
                 'final_verdict.verdict': 'AC',
@@ -76,13 +78,38 @@ class User(UserMixin, DBModel):
         )
         if ac_submission:
             return ac_submission
-
-        # ! Possible bug if find_one doesn't find the most recent one.
-
-        return submission.Submission.find_one(
+        return submission_module.Submission.find_one(
             {'problem_id': problem_id, 'user_id': self.id}
         )
 
+    @property
+    def user_group_ids(self) -> List[int]:
+        return self._user_group_ids
+
+    @user_group_ids.setter
+    def user_group_ids(self, new_user_group_ids: List[int]):
+        to_remove = list(set(self.user_group_ids) - set(new_user_group_ids))
+        to_add = list(set(new_user_group_ids) - set(self.user_group_ids))
+        for user_group in user_group_module.UserGroup.fnd_all({'id': {'$in': to_remove}}):
+            user_group._user_ids.remove(self.id) # sorry
+            user_group.save()
+        for user_group in user_group_module.UserGroup.fnd_all({'id': {'$in': to_add}}):
+            user_group._user_ids.append(self.id) # sorry again
+            user_group.save()
+        self._user_group_ids = new_user_group_ids
+
+    def add_to_user_group(self, user_group_id: int):
+        user_group_obj = user_group_module.UserGroup.find_one({'id': user_group_id})
+        if user_group_obj is None:
+            logging.error(f'UserGroup {user_group_id} does not exist.')
+            return
+        if user_group_id not in self.user_group_ids:
+            self.user_group_ids.append(user_group_id)
+            self.save()
+        if self.id not in user_group_obj.user_ids:
+            user_group_obj.user_ids.append(id)
+            user_group_obj.save()
+    
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)
         self.set_password(password)
