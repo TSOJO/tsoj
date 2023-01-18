@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, url_for, render_template, flash, request, abort
 from flask_login import login_user, logout_user, login_required, current_user
 
-from website.models import User, Problem
+from website.models import User, Problem, UserGroup
 from website.utils import is_safe_url
 
 user_bp = Blueprint(
@@ -88,7 +88,7 @@ def settings():
             current_user.full_name = new_full_name
             flash('Full name changed successfully.')
 
-        new_hide_name = 'hide-name' in request.form
+        new_hide_name = 'hide_name' in request.form
         if new_hide_name != current_user.hide_name:
             current_user.hide_name = new_hide_name
             flash('Hide name option changed successfully.')
@@ -101,9 +101,18 @@ def settings():
                 flash('Password changed successfully.')
             else:
                 flash('Current password not correct.', 'error')
+        
+        selected_groups = request.form.getlist('group_select')
+        if selected_groups:
+            selected_group_ints = [int(g) for g in selected_groups]
+            if set(selected_group_ints) != set(current_user.user_group_ids):
+                current_user.user_group_ids = selected_group_ints
+                flash('Groups changed successfully.')
+            
         current_user.save(replace=True)
-
-    return render_template('settings.html')
+    groups = UserGroup.find_all()
+    user_group_names = [g.name for g in current_user.fetch_groups()]
+    return render_template('settings.html', groups=groups, user_group_names=user_group_names)
 
 
 # ! debug
