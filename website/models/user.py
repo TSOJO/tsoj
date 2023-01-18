@@ -223,7 +223,6 @@ class User(UserMixin, DBModel):
         return [cls.cast_from_document(result) for result in results]
 
     def save(self, replace=False) -> User:
-        print(self.cast_to_document())
         add_to_db.delay('users', self.cast_to_document(), replace)
         return self
 

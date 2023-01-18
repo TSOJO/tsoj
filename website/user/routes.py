@@ -153,7 +153,6 @@ def request_password_reset():
         user = User.find_one({'email': email})
         if user:
             user.send_reset_password_email()
-            print(user._hashed_token)
             user.save(True)
         return redirect(url_for('user_bp.login'))
     return render_template('request-password-reset.html')
