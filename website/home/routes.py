@@ -26,7 +26,9 @@ def home():
 def problems():
     problems = Problem.find_all()
     solved_problems = current_user.get_solved_problem_ids()
-    return render_template('problems.html', problems=problems, solved_problems=solved_problems)
+    return render_template(
+        'problems.html', problems=problems, solved_problems=solved_problems
+    )
 
 
 @home_bp.route('/submissions')
@@ -41,4 +43,6 @@ def submissions():
     submissions = Submission.find_all(filter=filter, sort=True)
     users = dict(map(lambda u: (u.id, u), User.find_all()))
     problems = dict(map(lambda p: (p.id, p), Problem.find_all()))
-    return render_template('submissions.html', submissions=submissions, users=users, problems=problems)
+    return render_template(
+        'submissions.html', submissions=submissions, users=users, problems=problems
+    )

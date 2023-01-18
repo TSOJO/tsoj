@@ -24,8 +24,17 @@
                 value="{{current_user.full_name}}" required>
         </div>
         <div class="mb-3">
-            <input type="checkbox" name="hide-name" id="hide-name" {% if current_user.hide_name %}checked{% endif %}>
-            <label for="school" class="form-label">Hide name in submissions</label>
+            <input type="checkbox" class="form-check-input" name="hide_name" id="hide_name" {% if current_user.hide_name %}checked{% endif %}>
+            <label for="hide_name" class="form-label">Hide name in submissions</label>
+        </div>
+        <div class="mb-3">
+            <label for="group_select" class="form-label">Groups</label>
+            <br />
+            <select id="group_select" class="selectpicker" name="group_select" title="Choose a group" multiple>
+                {% for group in groups %}
+                <option value="{{group.id}}">{{group.name}}</option>
+                {% endfor %}
+            </select>
         </div>
         <div>
             <button type="submit" class="btn btn-primary">Save</button>
@@ -59,8 +68,8 @@
                     Organisation will <b>not</b> be responsible if your password is somehow leaked.</p>
             </div>
             <div class="form-group">
-                <input type="checkbox" id="agree" name="agree" required>
-                <label>I understand the importance of choosing a password that I do not normally use</label>
+                <input type="checkbox" class="form-check-input" id="agree" name="agree" required>
+                <label for="agree" class="form-label">I understand the importance of choosing a password that I do not normally use</label>
                 <div class="invalid-feedback">
                     Please agree to the above statement.
                 </div>
@@ -71,4 +80,10 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $('#group_select').selectpicker('val', {{user_group_ids | tojson}})
+</script>
 {% endblock %}

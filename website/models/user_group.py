@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import *
 
 from website.models.db_model import DBModel
-from website.models.user import User
+from website.models import user as user_module
 from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 
@@ -17,28 +17,30 @@ class UserGroup(DBModel):
     ) -> None:
         self.name = name
         self.id = id
-        if user_ids is None:
-            self.user_ids = []
-        else:
-            self.user_ids = user_ids
+        self._user_ids = [] if user_ids is None else user_ids
+
+    @property
+    def user_ids(self) -> List[int]:
+        return self._user_ids
+
+    @user_ids.setter
+    def user_ids(self, new_user_ids: List[int]) -> None:
+        self.save()  # Get ID!
+        to_remove = list(set(self.user_ids) - set(new_user_ids))
+        to_add = list(set(new_user_ids) - set(self.user_ids))
+
+        for user in user_module.User.find_all({'id': {'$in': to_remove}}):
+            user._user_group_ids.remove(self.id)  # very sorry
+            user.save(replace=True)
+
+        for user in user_module.User.find_all({'id': {'$in': to_add}}):
+            user._user_group_ids.append(self.id)  # forgive me :((((
+            user.save(replace=True)
+
+        self._user_ids = new_user_ids
 
     def fetch_users(self):
-        return User.find_all({'id': {'$in': self.user_ids}})
-
-    def update_users(self):
-        # ! User should probably use set() for group IDs instead.
-        # ! Find better way
-        for user in User.find_all({'id': {'$nin': self.user_ids},
-                                   'user_group_ids': {'$elemMatch': {'$in': [self.id]}}}):
-            # Users that used to be in the group but no longer are.
-            user.user_group_ids.remove(self.id)
-            user.save(replace=True)
-
-        for user in User.find_all({'id': {'$in': self.user_ids},
-                                   'user_group_ids': {'$elemMatch': {'$nin': [self.id]}}}):
-            # Users that used to not be in the group but now are.
-            user.user_group_ids.append(self.id)
-            user.save(replace=True)
+        return user_module.User.find_all({'id': {'$in': self.user_ids}})
 
     @classmethod
     def cast_from_document(cls, document: Any) -> UserGroup:
@@ -85,7 +87,6 @@ class UserGroup(DBModel):
 
     def delete(self, wait=False) -> None:
         self.user_ids = []
-        self.update_users()
         if wait:
             delete_from_db('user_groups', self.cast_to_document())
         else:

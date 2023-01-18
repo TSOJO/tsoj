@@ -1,10 +1,8 @@
-import secrets
-
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for)
 from flask_login import current_user, login_required, login_user, logout_user
 
-from website.models import Problem, User
+from website.models import Problem, User, UserGroup
 from website.utils import is_safe_url
 
 user_bp = Blueprint(
@@ -71,7 +69,9 @@ def profile(id: str):
         abort(404, description="User not found")
     problems = Problem.find_all()
     solved_problems = user.get_solved_problem_ids()
-    return render_template('profile.html', user=user, problems=problems, solved_problems=solved_problems)
+    return render_template(
+        'profile.html', user=user, problems=problems, solved_problems=solved_problems
+    )
 
 
 @user_bp.route('/settings', methods=['GET', 'POST'])
@@ -91,7 +91,7 @@ def settings():
             current_user.full_name = new_full_name
             flash('Full name changed successfully.')
 
-        new_hide_name = 'hide-name' in request.form
+        new_hide_name = 'hide_name' in request.form
         if new_hide_name != current_user.hide_name:
             current_user.hide_name = new_hide_name
             flash('Hide name option changed successfully.')
@@ -104,9 +104,20 @@ def settings():
                 flash('Password changed successfully.')
             else:
                 flash('Current password not correct.', 'error')
-        current_user.save(replace=True)
 
-    return render_template('settings.html')
+        selected_groups = request.form.getlist('group_select')
+        if selected_groups:
+            selected_group_ints = [int(g) for g in selected_groups]
+            if set(selected_group_ints) != set(current_user.user_group_ids):
+                current_user.user_group_ids = selected_group_ints
+                flash('Groups changed successfully.')
+
+        current_user.save(replace=True)
+    groups = UserGroup.find_all()
+    user_group_ids = [str(g.id) for g in current_user.fetch_groups()]
+    return render_template(
+        'settings.html', groups=groups, user_group_ids=user_group_ids
+    )
 
 @user_bp.route('/reset-password/<token>', methods = ['GET', 'POST'])
 def reset_password(token: str):

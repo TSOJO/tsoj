@@ -41,6 +41,7 @@ def add_to_db(collection_name: str, document: Dict[str, Any], replace: bool):
         db[collection_name].replace_one({'_id': document['_id']}, document, upsert=True)
     return 'done'
 
+
 @celery.task(name='delete')
 def delete_from_db(collection_name: str, document: Dict[str, Any]):
     db[collection_name].delete_one({'_id': document['_id']})

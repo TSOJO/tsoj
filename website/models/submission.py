@@ -10,8 +10,8 @@ from isolate_wrapper import IsolateSandbox
 
 from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
-from .assignment import Assignment
-from .user import User
+from website.models.assignment import Assignment
+from website.models.user import User
 from website.models.db_model import DBModel
 
 
