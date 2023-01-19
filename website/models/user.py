@@ -151,12 +151,11 @@ class User(UserMixin, DBModel):
         subject = 'Your TSOJ password'
         body = (
             f"Hi {self.full_name},\n\n"
-            "Someone has created a TSOJ account using this email. If it is not you, please ignore this email.\n\n"
+            "Someone has created a TSOJ account using this email. If it was not you, please ignore this email.\n\n"
             f"Your login password is: {password}\n\n"
-            "You can change this password in the account settings page. We hope you have a great time in TSOJ.\n\n"
+            "You can change your password in the account settings page. We hope you have a great time in TSOJ.\n\n"
             "Regards,\n"
-            "The TSOJ Organization\n"
-            "https://github.com/TSOJO/tsoj"
+            "TSOJ"
         )
 
         send_email.delay(subject, body, self.email)
@@ -168,14 +167,13 @@ class User(UserMixin, DBModel):
         subject = 'Reset TSOJ password'
         body = (
             f"Hi {self.full_name},\n\n"
-            "Someone has created a requested a password reset of this email. If it is not you, please ignore this email.\n\n"
+            "Someone has created a requested a password reset of this email. If it was not you, please ignore this email.\n\n"
             "Click this link to reset your password.\n"
             f"{request.url_root[0: -1]}{url_for('user_bp.reset_password', token=token)}\n"
             "This link expires in 3 hours."
             f"If this link expires, you can get a new one at {request.url_root}{url_for('user_bp.request_password_reset')}.\n We hope you have a great time in TSOJ.\n\n"
             "Regards,\n"
-            "The TSOJ Organization\n"
-            "https://github.com/TSOJO/tsoj"
+            "TSOJ"
         )
 
         send_email.delay(subject, body, self.email)
