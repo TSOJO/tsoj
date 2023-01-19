@@ -20,8 +20,12 @@ def unauthorised():
         'admin_bp.delete_problem',
         'admin_bp.rejudge_submission',
     ]
-    if not current_user.is_admin():
-        abort(403, description='Admin account required to access this page')
+    if current_user.is_admin():
+        return
+    if current_user.is_contributor() and request.endpoint in allowed_endpoints_for_contributors:
+        return
+    abort(403, description='Admin account required to access this page')
+
 
 
 # Problem
