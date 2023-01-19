@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import secrets
 from datetime import datetime, timedelta
-from os import environ
 from typing import *
 
 from flask import request, url_for
@@ -151,7 +150,7 @@ class User(UserMixin, DBModel):
 
         subject = 'Your TSOJ password'
         body = (
-            f"Hi {self.id},\n\n"
+            f"Hi {self.full_name},\n\n"
             "Someone has created a TSOJ account using this email. If it is not you, please ignore this email.\n\n"
             f"Your login password is: {password}\n\n"
             "You can change this password in the account settings page. We hope you have a great time in TSOJ.\n\n"
@@ -168,7 +167,7 @@ class User(UserMixin, DBModel):
         token = secrets.token_urlsafe(10)
         subject = 'Reset TSOJ password'
         body = (
-            f"Hi {self.id},\n\n"
+            f"Hi {self.full_name},\n\n"
             "Someone has created a requested a password reset of this email. If it is not you, please ignore this email.\n\n"
             "Click this link to reset your password.\n"
             f"{request.url_root[0: -1]}{url_for('user_bp.reset_password', token=token)}\n"

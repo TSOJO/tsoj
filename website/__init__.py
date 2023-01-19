@@ -1,5 +1,3 @@
-from os import environ
-
 from celery import Celery
 from flask import Flask, current_app, request
 from flask_login import LoginManager, current_user

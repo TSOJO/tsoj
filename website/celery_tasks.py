@@ -9,7 +9,7 @@ import logging
 import smtplib
 import ssl
 from email.message import EmailMessage
-from os import environ
+from config import GMAIL_APP_PWD, GMAIL_EMAIL
 
 
 @celery.task(name='judge')
@@ -50,8 +50,8 @@ def delete_from_db(collection_name: str, document: Dict[str, Any]):
 
 @celery.task(name='send_email')
 def send_email(subject: str, body: str, to_email: str):
-    from_email = environ.get('GMAIL_EMAIL')
-    pwd = environ.get('GMAIL_APP_PWD')
+    from_email = GMAIL_EMAIL
+    pwd = GMAIL_APP_PWD
 
     email = EmailMessage()
     email['From'] = from_email
