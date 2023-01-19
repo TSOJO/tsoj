@@ -20,8 +20,12 @@ def unauthorised():
         'admin_bp.delete_problem',
         'admin_bp.rejudge_submission',
     ]
-    if not current_user.is_admin():
-        abort(403, description='Admin account required to access this page')
+    if current_user.is_admin():
+        return
+    if current_user.is_contributor() and request.endpoint in allowed_endpoints_for_contributors:
+        return
+    abort(403, description='Admin account required to access this page')
+
 
 
 # Problem
@@ -223,7 +227,7 @@ def create_user_group():
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
-        user_group.save(wait=True)
+        user_group.save(wait=True, replace=True)
         flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     users = User.find_all()
@@ -253,8 +257,8 @@ def delete_user_group(id: int):
     flash('Group deleted', 'success')
     return redirect(url_for('admin_bp.user_groups'))
 
+# Other
 
-# ! Do we need this??
 @admin_bp.route('/delete/submission/<int:id>')
 def delete_submission(id: int):
     submission = Submission.find_one({'id': id})

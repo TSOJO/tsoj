@@ -25,18 +25,17 @@ class UserGroup(DBModel):
 
     @user_ids.setter
     def user_ids(self, new_user_ids: List[int]) -> None:
-        self.save()  # Get ID!
+        if self.id is None:
+            self.save()
         to_remove = list(set(self.user_ids) - set(new_user_ids))
         to_add = list(set(new_user_ids) - set(self.user_ids))
-
         for user in user_module.User.find_all({'id': {'$in': to_remove}}):
-            user._user_group_ids.remove(self.id)  # very sorry
-            user.save(replace=True)
-
+            if self.id in user.user_group_ids:
+                user.user_group_ids.remove(self.id)
+                user.save(replace=True)
         for user in user_module.User.find_all({'id': {'$in': to_add}}):
-            user._user_group_ids.append(self.id)  # forgive me :((((
+            user.user_group_ids.append(self.id)
             user.save(replace=True)
-
         self._user_ids = new_user_ids
 
     def fetch_users(self):

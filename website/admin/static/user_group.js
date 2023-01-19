@@ -21,13 +21,13 @@ function get_selected(table) {
 }
 
 $('#form').submit( function(e) {
-	let user_ids = get_selected($('#user-group-table')).join(',');
+	let user_ids = get_selected($('#user-group-table')).join(',')
 	if (user_ids != '') {
 		input = $('<input />')
 			.attr('type', 'hidden')
 			.attr('name', 'selected_user_ids')
-			.attr('value', user_ids);
-		input.appendTo('#form');
+			.attr('value', user_ids)
+		input.appendTo('#form')
 	}
 	
 	return true;
