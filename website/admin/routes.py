@@ -19,7 +19,6 @@ def unauthorised():
         'admin_bp.edit_problem',
         'admin_bp.delete_problem',
         'admin_bp.rejudge_submission',
-        'admin_bp.rejudge_problem',
     ]
     if not current_user.is_admin():
         abort(403, description='Admin account required to access this page')
@@ -194,12 +193,6 @@ def _rejudge_problem(id: str):
     for submission in submissions:
         judge.delay(submission.code, submission.cast_to_document(), id)
     flash(f'Rejudging all submissions to problem {id}...')
-
-
-@admin_bp.route('/rejudge/problem/<id>')
-def rejudge_problem(id: str):
-    _rejudge_problem(id)
-    return redirect(url_for('problem_bp.problem', id=id))
 
 
 @admin_bp.route('/rejudge/submission/<int:id>')
