@@ -1,0 +1,16 @@
+.d-flex {
+    flex-wrap: wrap;
+}
+
+.user-group-text {
+    padding: 7px;
+    width: fit-content;
+}
+
+.admin-text {
+    color:rgb(199, 13, 0);
+}
+
+.contributor-text {
+    color:rgb(209, 136, 0);
+}

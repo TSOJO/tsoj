@@ -15,22 +15,21 @@
 <hr>
 <h4>A member of:</h4>
 <div class="d-flex mb-3" style="gap: 10px;">
-    {% if current_user.is_admin() %}
-    <div class="card mb-3" style="padding:7px; width:fit-content;">
-        <p class="card-text">Admin</p>
+    {% if user.is_admin() %}
+    <div class="card mb-3 user-group-text admin-text">
+        <b class="card-text">Admin</b>
     </div>
-    {% endif %}
-    {% if current_user.is_contributor() %}
-    <div class="card mb-3" style="padding:7px; width:fit-content;">
-        <p class="card-text">Admin</p>
+    {% elif user.is_contributor() %}
+    <div class="card mb-3 user-group-text contributor-text">
+        <b class="card-text">Contributor</b>
     </div>
     {% endif %}
     {% for user_group in self_user_groups %}
-    <div class="card mb-3" style="padding:7px; width:fit-content;">
+    <div class="card mb-3 user-group-text">
         <p class="card-text">{{user_group.name}}</p>
     </div>
     {% else %}
-    {% if not current_user.is_admin() and not current_user.is_contributor() %}
+    {% if not user.is_admin() and not user.is_contributor() %}
     <p>No groups found.</p>
     {% endif %}
     {% endfor %}
