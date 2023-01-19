@@ -14,7 +14,7 @@
     </thead>
     <tbody>
         {% for problem in problems %}
-        {% if current_user.is_admin or problem.is_public %}
+        {% if current_user.is_admin() or problem.is_public %}
         <tr class="d-flex">
             <td class="col-3" scope="col">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">

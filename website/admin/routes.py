@@ -14,7 +14,14 @@ admin_bp = Blueprint(
 @admin_bp.before_request
 @login_required
 def unauthorised():
-    if not current_user.is_admin:
+    allowed_endpoints_for_contributors = [
+        'admin_bp.create_problem',
+        'admin_bp.edit_problem',
+        'admin_bp.delete_problem',
+        'admin_bp.rejudge_submission',
+        'admin_bp.rejudge_problem',
+    ]
+    if not current_user.is_admin():
         abort(403, description='Admin account required to access this page')
 
 
@@ -81,7 +88,7 @@ def edit_problem(id: str):
         problem.save(replace=True)
 
         if 'rejudge' in request.form:
-            rejudge_problem(problem.id)
+            _rejudge_problem(problem.id)
         flash('Problem saved', 'success')
         return redirect(url_for('problem_bp.problem', id=problem.id))
     problem = Problem.find_one({'id': id})
@@ -178,26 +185,21 @@ def delete_assignment(id: int):
 # Rejudge
 
 
-def rejudge_problem(id: str):
+def _rejudge_problem(id: str):
     problem = Problem.find_one({'id': id})
     if problem is None:
-        return  # ! hmmm
+        flash(f'Unable to rejudge problem {id}, id not found.', 'error')
+        return
     submissions = Submission.find_all({'problem_id': id})
     for submission in submissions:
         judge.delay(submission.code, submission.cast_to_document(), id)
     flash(f'Rejudging all submissions to problem {id}...')
 
 
-# @admin_bp.route('/rejudge/problem/<id>')
-# def rejudge_problem(id: str):
-#     problem = Problem.find_one({'id': id})
-#     if problem is None:
-#         abort(404, description="Problem not found.")
-#     submissions = Submission.find_all({'problem_id': id})
-#     for submission in submissions:
-#         judge.delay(submission.code, submission.cast_to_document(), id)
-#     flash(f'Rejudging all submissions with problem ID {id}...')
-#     return redirect(url_for('home_bp.submissions', problem_id=id))
+@admin_bp.route('/rejudge/problem/<id>')
+def rejudge_problem(id: str):
+    _rejudge_problem(id)
+    return redirect(url_for('problem_bp.problem', id=id))
 
 
 @admin_bp.route('/rejudge/submission/<int:id>')
@@ -266,3 +268,18 @@ def delete_submission(id: int):
     submission.delete(wait=True)
     flash('Submission deleted', 'success')
     return redirect(url_for('home_bp.submissions'))
+
+@admin_bp.route('/edit/privileges', methods=['GET', 'POST'])
+def edit_privileges():
+    users = User.find_all()
+    if request.method == 'POST':
+        for user in users:
+            new_privilege = int(request.form.get(f'privilege{user.id}'))
+            if user == current_user and new_privilege != user.privilege:
+                flash('You cannot change your own privileges!', 'error')
+                continue
+            if new_privilege != user.privilege:
+                user.privilege = new_privilege
+                user.save(wait=True, replace=True)
+        flash('Privileges updated', 'success')
+    return render_template('edit_privileges.html', users=users)

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between mb-1">
     <h1>Submission #<a id="submission-id">{{submission.id}}</a></h1>
-    {% if current_user.is_admin %}
+    {% if current_user.is_contributor() %}
     <div class="btn-group">
         <a href="{{ url_for('admin_bp.rejudge_submission', id=submission.id) }}"
             class="btn btn-secondary align-self-center">Rejudge</a>
@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <th class="col">Username</th>
-                {% if not current_user.is_admin and current_user.id != submission.user_id and submission_user.hide_name %}
+                {% if not current_user.is_admin() and current_user.id != submission.user_id and submission_user.hide_name %}
                 <td class="text-center" style="color: gray;"><i>Hidden</i></td>
                 {% else %}
                 <td class="text-center"><a href="{{url_for('user_bp.profile', id=submission.user_id)}}"

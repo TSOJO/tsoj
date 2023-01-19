@@ -15,7 +15,12 @@
 <hr>
 <h4>A member of:</h4>
 <div class="d-flex mb-3" style="gap: 10px;">
-    {% if current_user.is_admin %}
+    {% if current_user.is_admin() %}
+    <div class="card mb-3" style="padding:7px; width:fit-content;">
+        <p class="card-text">Admin</p>
+    </div>
+    {% endif %}
+    {% if current_user.is_contributor() %}
     <div class="card mb-3" style="padding:7px; width:fit-content;">
         <p class="card-text">Admin</p>
     </div>
@@ -25,7 +30,7 @@
         <p class="card-text">{{user_group.name}}</p>
     </div>
     {% else %}
-    {% if not current_user.is_admin %}
+    {% if not current_user.is_admin() and not current_user.is_contributor() %}
     <p>No groups found.</p>
     {% endif %}
     {% endfor %}

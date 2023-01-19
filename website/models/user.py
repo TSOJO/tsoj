@@ -31,7 +31,7 @@ class User(UserMixin, DBModel):
         plaintext_password: str = '',
         user_group_ids: Optional[List[int]] = None,
         hide_name: bool = False,
-        is_admin: bool = False,
+        privilege: int = 0,
         password_reset_token_expiration: Optional[datetime] = None
     ):
         # Public properties
@@ -40,13 +40,16 @@ class User(UserMixin, DBModel):
         self.username = self.id if username == '' else username
         self.full_name = full_name
         self._user_group_ids = [] if user_group_ids is None else user_group_ids
-        self.is_admin = is_admin
+        self.privilege = privilege
         self.hide_name = hide_name
         self.password_reset_token_expiration: Optional[datetime] = password_reset_token_expiration
 
         # Private properties
         self._hashed_password = generate_password_hash(plaintext_password)
         self._hashed_token = None
+
+    def __eq__(self, other):
+        return self.id == other.id
 
     def get_id(self):
         return self.id
@@ -65,6 +68,12 @@ class User(UserMixin, DBModel):
 
     def clear_password_reset_token(self):
         self._hashed_token = None
+
+    def is_admin(self):
+        return self.privilege >= 2
+    
+    def is_contributor(self):
+        return self.privilege >= 1
 
     def fetch_submissions(self) -> List[submission_module.Submission]:
         return submission_module.Submission.find_all(
@@ -185,7 +194,7 @@ class User(UserMixin, DBModel):
             full_name=document['full_name'],
             email=document['email'],
             user_group_ids=document['user_group_ids'],
-            is_admin=document['is_admin'],
+            privilege=document['privilege'],
             hide_name=document['hide_name'],
             password_reset_token_expiration=datetime.strptime(
                 document['password_reset_token_expiration'], '%Y-%m-%dT%H:%M:%S.%f'
@@ -205,7 +214,7 @@ class User(UserMixin, DBModel):
             'hashed_password': self._hashed_password,
             'hashed_token': self._hashed_token,
             'user_group_ids': self.user_group_ids,
-            'is_admin': self.is_admin,
+            'privilege': self.privilege,
             'hide_name': self.hide_name,
             'password_reset_token_expiration': self.password_reset_token_expiration
         }
@@ -222,8 +231,11 @@ class User(UserMixin, DBModel):
         results = db.users.find(filter=filter)
         return [cls.cast_from_document(result) for result in results]
 
-    def save(self, replace=False) -> User:
-        add_to_db.delay('users', self.cast_to_document(), replace)
+    def save(self, wait=False, replace=False) -> User:
+        if wait:
+            add_to_db('users', self.cast_to_document(), replace)
+        else:
+            add_to_db.delay('users', self.cast_to_document(), replace)
         return self
 
     def delete(self, wait=False) -> None:

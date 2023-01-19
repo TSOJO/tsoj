@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between">
     <h1>Problems</h1>
-    {% if current_user.is_admin %}
+    {% if current_user.is_contributor() %}
     <a href="{{ url_for('admin_bp.create_problem') }}" class="btn btn-success align-self-center">Create</a>
     {% endif %}
 </div>
@@ -19,7 +19,7 @@
     </thead>
     <tbody>
         {% for problem in problems %}
-        {% if current_user.is_admin or problem.is_public %}
+        {% if current_user.is_contributor() or problem.is_public %}
         <tr class="d-flex">
             <td class="col-3" scope="col">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">

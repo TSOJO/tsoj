@@ -67,8 +67,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('user_bp.admin_debug')}}">Login admin(debug)</a>
                     </li>
-
-                    {% if current_user.is_admin %}
+                    
+                    {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin() %}
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
                         <div class="dropdown-menu">
@@ -78,10 +79,10 @@
                             <div class="dropdown-divider"></div>
                             <a href="{{url_for('admin_bp.assignments')}}" class="dropdown-item">View assignments</a>
                             <a href="{{url_for('admin_bp.user_groups')}}" class="dropdown-item">View groups</a>
+                            <a href="{{url_for('admin_bp.edit_privileges')}}" class="dropdown-item">Edit user privileges</a>
                         </div>
                     </li>
                     {% endif %}
-                    {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello,
                             <b>{{current_user.username}}</b></a>

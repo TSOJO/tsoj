@@ -17,7 +17,7 @@ def problem(id: str) -> str:
     problem = Problem.find_one({'id': id})
     if problem is None:
         abort(404, description="Problem not found")
-    if not current_user.is_admin and not problem.is_public:
+    if not current_user.is_contributor() and not problem.is_public:
         abort(403, 'Problem is not public')
     assignment_id = request.args.get('assignment_id')
     return render_template('problem.html', problem=problem, assignment_id=assignment_id)

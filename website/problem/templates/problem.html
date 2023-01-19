@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between mb-1">
     <h1>{{problem.id}}: {{problem.name}}</h1>
-    {% if current_user.is_admin %}
+    {% if current_user.is_contributor() %}
     <div>
         {% if problem.is_public %}
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill me-2"
@@ -21,6 +21,8 @@
         </svg>
         {% endif %}
         <div class="btn-group">
+            <a href="{{ url_for('admin_bp.rejudge_problem', id=problem.id) }}"
+                class="btn btn-secondary align-self-center">Rejudge</a>
             <a href="{{ url_for('admin_bp.edit_problem', id=problem.id) }}"
                 class="btn btn-primary align-self-center">Edit</a>
             <a href="{{ url_for('admin_bp.delete_problem', id=problem.id) }}"
