@@ -1,5 +1,5 @@
 from flask import (Blueprint, abort, flash, redirect, render_template, request,
-                   url_for)
+                   url_for, current_app)
 from flask_login import current_user, login_required, login_user, logout_user
 
 from website.models import Problem, User, UserGroup
@@ -46,10 +46,15 @@ def logout():
 def register():
     if request.method == 'POST':
         email = request.form.get('email')
+
+        if current_app.config.get('TONBRIDGE') and not email.endswith('@tonbridge-school.org'):
+            flash('Please use your school email to register.', 'error')
+            return redirect(url_for('user_bp.register'))
+        
         user = User.find_one({'email': email})
 
         if user:
-            flash('Email already used. Login instead.', 'error')
+            flash('Email is already registered, please login instead.', 'error')
             return redirect(url_for('user_bp.login'))
         
         full_name = request.form.get('full_name')
