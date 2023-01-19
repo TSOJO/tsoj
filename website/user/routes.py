@@ -162,12 +162,10 @@ def request_password_reset():
         return redirect(url_for('user_bp.login'))
     return render_template('request-password-reset.html')
 
-
-# ! debug
-
-
 @user_bp.route('/admin_debug')
 def admin_debug():
+    if not current_app.config.get('DEBUG'):
+        abort(404)
     logout_user()
     login_user(User.find_one({'id': 'admin'}))
     return redirect(url_for('home_bp.home'))
@@ -175,6 +173,8 @@ def admin_debug():
 
 @user_bp.route('/user_debug')
 def user_debug():
+    if not current_app.config.get('DEBUG'):
+        abort(404)
     logout_user()
     login_user(User.find_one({'id': 'user'}))
     return redirect(url_for('home_bp.home'))
