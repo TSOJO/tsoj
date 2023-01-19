@@ -1,0 +1,6 @@
+*
+!website
+!isolate_wrapper
+!config.py
+!.env
+!requirements.txt

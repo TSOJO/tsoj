@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  website:
+    build: .
+    command: gunicorn -b 0.0.0.0:8000 -w 4 --threads 2 'website:init_app()'
+    restart: always
+    ports:
+      - 5000:8000
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongo
+      - celery
+  
+  celery:
+    build: .
+    command: celery -A website.celery_worker.celery worker --loglevel=INFO
+    restart: always
+    privileged: true
+
+  redis:
+    image: redis:7.0
+    restart: always
+    expose:
+      - 6379
+    command: redis-server  # PASSWORD with $()
+    volumes:
+      - cache:/data
+
+  mongo:
+    image: mongo:6.0
+    restart: always
+    expose:
+      - 27017
+    # PASSWORD
+    volumes:
+      - db:/data/db
+
+volumes:
+  cache:
+  db:
