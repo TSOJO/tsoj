@@ -10,13 +10,8 @@
             Copy link
         </a>
     </div>
-    <!-- btn-group -->
-    <div class="btn-group">
-        <a href="{{url_for('admin_bp.edit_assignment', id=assignment.id)}}"
-            class="btn btn-secondary align-self-center">Edit</a>
-        <a href="{{url_for('admin_bp.delete_assignment', id=assignment.id)}}"
-            class="btn btn-danger align-self-center">Delete</a>
-    </div>
+    <a href="{{url_for('admin_bp.delete_assignment', id=assignment.id)}}"
+        class="btn btn-danger align-self-center">Delete</a>
 </div>
 {% for user_group in user_groups %}
 <div class="mb-3">

@@ -245,6 +245,7 @@ class User(UserMixin, DBModel):
         return self
 
     def delete(self, wait=False) -> None:
+        self.user_group_ids = []
         if wait:
             delete_from_db('users', self.cast_to_document())
         else:

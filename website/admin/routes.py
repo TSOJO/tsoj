@@ -169,12 +169,6 @@ def create_assignment():
         'create_assignment.html', problems=problems, user_groups=user_groups
     )
 
-
-@admin_bp.route("/edit/assignment/<int:id>")
-def edit_assignment(id: int):
-    ...
-
-
 @admin_bp.route('/delete/assignment/<int:id>')
 def delete_assignment(id: int):
     assignment = Assignment.find_one({'id': id})
