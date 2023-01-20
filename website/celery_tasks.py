@@ -13,7 +13,7 @@ from config import GMAIL_APP_PWD, GMAIL_EMAIL
 
 
 @celery.task(name='judge')
-def judge(user_code: str, submission_dict, problem_id: int):
+def judge(user_code: str, submission_dict, problem_id):
     submission = models.Submission.cast_from_document(submission_dict)
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()

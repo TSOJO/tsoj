@@ -183,7 +183,7 @@ def delete_assignment(id: int):
 def _rejudge_problem(id: str):
     problem = Problem.find_one({'id': id})
     if problem is None:
-        flash(f'Unable to rejudge problem {id}, id not found.', 'error')
+        flash(f'Unable to rejudge problem {id}: problem not found.', 'error')
         return
     submissions = Submission.find_all({'problem_id': id})
     for submission in submissions:
@@ -196,6 +196,10 @@ def rejudge_submission(id: int):
     submission = Submission.find_one({'id': id})
     if submission is None:
         abort(404, description="Submission not found")
+    problem = Problem.find_one({'id': submission.problem_id})
+    if problem is None:
+        flash(f'Unable to rejudge submission {id}: problem not found.', 'error')
+        return redirect(url_for('submission_bp.submission', id=id))
     judge.delay(submission.code, submission.cast_to_document(), submission.problem_id)
     flash('Rejudging...')
     return redirect(url_for('submission_bp.submission', id=id))
