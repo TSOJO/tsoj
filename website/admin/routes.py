@@ -129,19 +129,17 @@ def assignment_results(id: int):
     user_groups = [
         UserGroup.find_one({'id': u_g_id}) for u_g_id in assignment.user_group_ids
     ]
-    user_dict = {}
+    user_dict = {}  # {user_id: user object}
     for user_group in user_groups:
         for user_id in user_group.user_ids:
             user_dict[user_id] = User.find_one({'id': user_id})
 
-    attempts = {}
-    for user_id, user in user_dict.items():
-        attempts[user_id] = [user.get_attempt(p_id) for p_id in assignment.problem_ids]
+    assignment_submissions = {user_id: user.get_assignment_submissions(assignment) for user_id, user in user_dict.items()}
     return render_template(
         'assignment_results.html',
         assignment=assignment,
         problems=problems,
-        attempts=attempts,
+        assignment_submissions=assignment_submissions,
         user_groups=user_groups,
         users=user_dict,
     )

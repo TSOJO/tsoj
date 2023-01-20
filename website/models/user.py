@@ -100,21 +100,32 @@ class User(UserMixin, DBModel):
         problem_ids.sort()
         return problem_ids
 
-    def get_attempt(self, problem_id: int) -> Optional[submission_module.Submission]:
-        # Return latest AC submission if there is one, otherwise return the latest (if any) attempt.
-        ac_submission = submission_module.Submission.find_one(
-            {
-                'problem_id': problem_id,
-                'final_verdict.verdict': 'AC',
-                'user_id': self.id,
-            }
-        )
-        if ac_submission:
-            return ac_submission
-        return submission_module.Submission.find_one(
-            {'problem_id': problem_id, 'user_id': self.id}
-        )
-
+    def get_assignment_submissions(self, assignment):
+        # Return a dictionary of submissions to an assignment made by the user.
+        # {problem_id: (all_submissions, overall_verdict)}
+        # overall_verdict = 2 when there is an AC somewhere in the submissions.
+        # overall_verdict = 1 when submissions are all 'wrong'.
+        # overall_verdict = 0 when there are no submissions.
+        all_submissions = {}
+        for problem_id in assignment.problem_ids:
+            problem_submissions = submission_module.Submission.find_all(
+                {
+                    'problem_id': problem_id,
+                    'user_id': self.id,
+                }
+            )
+            
+            for submission in problem_submissions:
+                if submission.final_verdict.is_ac():
+                    all_submissions[problem_id] = (problem_submissions, 2)
+                    break
+            else:  # No AC found
+                if problem_submissions:  # Must be wrong
+                    all_submissions[problem_id] = (problem_submissions, 1)
+                else:  # Nothing!
+                    all_submissions[problem_id] = ([], 0)
+        return all_submissions
+    
     @property
     def user_group_ids(self) -> List[int]:
         return self._user_group_ids
