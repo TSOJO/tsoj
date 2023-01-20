@@ -40,6 +40,7 @@
 </div>
 <div class="d-flex flex-wrap" style="gap:20px;">
     {% for problem in problems %}
+    {% if problem.is_public %}
     <div class="col-sm-1 border rounded-1 d-flex justify-content-evenly align-items-center" style="height:50px;">
         <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">{{problem.id}}</a>
         {% if problem.id in solved_problem_ids %}
@@ -55,6 +56,7 @@
         </svg>
         {% endif %}
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}
