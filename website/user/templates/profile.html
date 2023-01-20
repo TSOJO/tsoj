@@ -3,13 +3,10 @@
 {% block title %}{{user.username}}{% endblock %}
 
 {% block content %}
-<div class="mb-3">
-    <h1>{{user.username}}</h1>
-</div>
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">{{user.full_name}}</h5>
-        <p class="card-text">{{user.email}}</p>
+        <h1 class="card-title">{{user.username}}</h1>
+        <p class="card-text">{{user.full_name}}</p>
     </div>
 </div>
 <hr>
