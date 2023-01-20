@@ -168,8 +168,8 @@ class User(UserMixin, DBModel):
             f"Hi {self.full_name},\n\n"
             "Someone has created a requested a password reset of this email. If it was not you, please ignore this email.\n\n"
             "Click this link to reset your password.\n"
-            f"{request.url_root[0: -1]}{url_for('user_bp.reset_password', token=token)}\n"
-            "This link expires in 3 hours.\n"
+            f"{request.url_root[0: -1]}{url_for('user_bp.reset_password', token=token)}\n\n"
+            "This link expires in 3 hours.\n\n"
             "Regards,\n"
             "TSOJ"
         )

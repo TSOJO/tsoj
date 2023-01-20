@@ -138,15 +138,11 @@ def reset_password(token: str):
     user = search[0]
     if request.method == 'POST':
         password = request.form.get('password')
-        confirm_password = request.form.get('confirm-password')
-        if password != confirm_password:
-            flash('Passwords do not match. Please try again.', 'error')
-        else:
-            user.set_password(password)
-            user.clear_password_reset_token()
-            user.save(replace=True)
-            flash('Password changed successfully. Login with your new password.')
-            return redirect(url_for('user_bp.login'))
+        user.set_password(password)
+        user.clear_password_reset_token()
+        user.save(replace=True)
+        flash('Password changed successfully. Login with your new password.')
+        return redirect(url_for('user_bp.login'))
     return render_template('password_reset.html', user=user, token=token)
 
 @user_bp.route('/password/reset', methods=['GET', 'POST'])
