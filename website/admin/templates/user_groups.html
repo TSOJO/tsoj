@@ -8,13 +8,31 @@
     <a href="{{url_for('admin_bp.create_user_group')}}" class="btn btn-success align-self-center">Create</a>
 </div>
 {% for user_group in user_groups %}
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="delete-confirm-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="delete-confirm-modal-label">Confirm deletion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this group?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{{url_for('admin_bp.delete_user_group', id=user_group.id)}}"
+                    class="btn btn-danger align-self-center">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="card mb-3">
     <div class="card-body">
         <div class="d-flex justify-content-between" style="gap:20px;">
             <h4 class="card-title">{{user_group.name}}</h4>
             <div class="btn-group">
                 <a href="{{url_for('admin_bp.edit_user_group', id=user_group.id)}}" class="btn btn-primary align-self-center">Edit</a>
-                <a href="{{url_for('admin_bp.delete_user_group', id=user_group.id)}}" class="btn btn-danger align-self-center">Delete</a>
+                <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" class="btn btn-danger align-self-center">Delete</a>
             </div>
         </div>
         Users: 

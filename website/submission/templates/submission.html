@@ -3,17 +3,34 @@
 {% block title %}Submission {{submission.id}}{% endblock %}
 
 {% block content %}
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="delete-confirm-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="delete-confirm-modal-label">Confirm deletion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this submission?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{{ url_for('admin_bp.delete_submission', id=submission.id) }}"
+                    class="btn btn-danger align-self-center">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="d-flex justify-content-between mb-1">
     <h1>Submission #<a id="submission-id">{{submission.id}}</a></h1>
     {% if current_user.is_contributor() %}
     <div class="btn-group">
         <a href="{{ url_for('admin_bp.rejudge_submission', id=submission.id) }}"
             class="btn btn-secondary align-self-center">Rejudge</a>
-        <a href="{{ url_for('admin_bp.delete_submission', id=submission.id) }}"
+        <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal"
             class="btn btn-danger align-self-center">Delete</a>
     </div>
     {% endif %}
-
 </div>
 <div class="mb-3">
     <h4>Source Code</h4>

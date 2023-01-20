@@ -3,6 +3,25 @@
 {% block title %}Results: Assignment {{assignment.id}}{% endblock %}
 
 {% block content %}
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="delete-confirm-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="delete-confirm-modal-label">Confirm deletion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this assignment?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{{url_for('admin_bp.delete_assignment', id=assignment.id)}}"
+                    class="btn btn-danger align-self-center">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+<a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal"
 <div class="d-flex justify-content-between mb-3">
     <div class="d-flex">
         <h1>Results: Assignment {{assignment.id}}</h1>
@@ -10,7 +29,6 @@
             Copy link
         </a>
     </div>
-    <a href="{{url_for('admin_bp.delete_assignment', id=assignment.id)}}"
         class="btn btn-danger align-self-center">Delete</a>
 </div>
 {% for user_group in user_groups %}
@@ -109,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                    <a data-bs-toggle="modal" data-bs-target="#modal_{{user_id}}_{{problem.id}}" data-user="{{user_id}}" data-problem="{{problem.id}}">
+                    <a data-bs-toggle="modal" data-bs-target="#modal_{{user_id}}_{{problem.id}}" style="cursor:pointer;">
                         {% if assignment_submissions[user_id][problem.id][1] == 2 %}
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#198754"
                             class="bi bi-check-circle-fill" viewBox="0 0 16 16">
