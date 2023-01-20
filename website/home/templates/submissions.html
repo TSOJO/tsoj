@@ -22,7 +22,9 @@
         {% if current_user.is_contributor() or problems[submission.problem_id].is_public %}
         <tr>
             <td>
-                {{ submission.submission_time.strftime("%d/%m/%Y %H:%M:%S") }}
+                <a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">
+                    {{ submission.submission_time.strftime("%d/%m/%Y %H:%M:%S") }}
+                </a>
             </td>
             <td>
                 {% if not current_user.is_admin() and current_user.id != submission.user_id and
@@ -72,7 +74,7 @@
                 </span>
                 {% endif %}
             </td>
-            <td>  
+            <td>
                 <a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">
                     Details
                 </a>
