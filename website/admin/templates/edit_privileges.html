@@ -29,7 +29,7 @@
                 </td>
                 <td class="col-3">
                     <select name="privilege{{user.id}}" id="privileges">
-                        <option value="0" {% if user.privilege==0 %} selected {% endif %}>User</option>
+                        <option value="0" {% if user.privilege==0 %} selected {% endif %}>Student</option>
                         <option value="1" {% if user.privilege==1 %} selected {% endif %}>Contributor</option>
                         <option value="2" {% if user.privilege==2 %} selected {% endif %}>Admin</option>
                     </select>
