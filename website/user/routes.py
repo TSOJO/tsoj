@@ -105,10 +105,14 @@ def settings():
 
         current_password = request.form.get('current_password')
         new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
         if new_password:
             if current_user.check_password(current_password):
-                current_user.set_password(new_password)
-                flash('Password changed successfully.')
+                if new_password == confirm_password:
+                    current_user.set_password(new_password)
+                    flash('Password changed successfully.')
+                else:
+                    flash('New passwords must match', 'error')
             else:
                 flash('Current password not correct.', 'error')
 
@@ -137,12 +141,16 @@ def reset_password(token: str):
         return redirect(url_for('user_bp.request_password_reset'))
     user = search[0]
     if request.method == 'POST':
-        password = request.form.get('password')
-        user.set_password(password)
-        user.clear_password_reset_token()
-        user.save(replace=True)
-        flash('Password changed successfully. Login with your new password.')
-        return redirect(url_for('user_bp.login'))
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        if new_password == confirm_password:
+            user.set_password(new_password)
+            user.clear_password_reset_token()
+            user.save(replace=True)
+            flash('Password changed successfully. Login with your new password.')
+            return redirect(url_for('user_bp.login'))
+        else:
+            flash('Passwords must match.', 'error')
     return render_template('password_reset.html', user=user, token=token)
 
 @user_bp.route('/password/reset', methods=['GET', 'POST'])

@@ -42,7 +42,7 @@
     </form>
 
     <form method="POST" class="form-group mb-3 needs-validation border p-4"
-        oninput="confirm_password.setCustomValidity(confirm_password.value != password.value ? 'Passwords don\'t match.' : '')"
+        oninput="confirm_password.setCustomValidity(confirm_password.value != new_password.value ? 'Passwords don\'t match.' : '')"
         novalidate>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
