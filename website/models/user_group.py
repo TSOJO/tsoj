@@ -26,7 +26,7 @@ class UserGroup(DBModel):
     @user_ids.setter
     def user_ids(self, new_user_ids: List[int]) -> None:
         if self.id is None:
-            self.save()
+            self.save(wait=True)
         to_remove = list(set(self.user_ids) - set(new_user_ids))
         to_add = list(set(new_user_ids) - set(self.user_ids))
         for user in user_module.User.find_all({'id': {'$in': to_remove}}):

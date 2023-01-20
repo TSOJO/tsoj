@@ -227,7 +227,7 @@ def create_user_group():
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
-        user_group.save(wait=True, replace=True)
+        user_group.save(replace=True, wait=True)
         flash('Group created', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     users = User.find_all()
@@ -242,7 +242,7 @@ def edit_user_group(id: int):
         if user_ids_raw:
             user_ids = user_ids_raw.split(',')
             user_group.user_ids = user_ids
-        user_group.save(wait=True, replace=True)
+        user_group.save(replace=True, wait=True)
         flash('Group saved', 'success')
         return redirect(url_for('admin_bp.user_groups'))
     user_group = UserGroup.find_one({'id': id})
@@ -277,6 +277,6 @@ def edit_privileges():
                 continue
             if new_privilege != user.privilege:
                 user.privilege = new_privilege
-                user.save(wait=True, replace=True)
+                user.save(replace=True, wait=True)
         flash('Privileges updated', 'success')
     return render_template('edit_privileges.html', users=users)

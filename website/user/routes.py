@@ -126,10 +126,11 @@ def settings():
         'settings.html', groups=groups, user_group_ids=user_group_ids
     )
 
-@user_bp.route('/reset-password/<token>', methods = ['GET', 'POST'])
+@user_bp.route('/password/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token: str):
     # ? Rate limit per ip
     users = User.find_all()
+    # TODO: See user.check_password_reset_token() TODO.
     search = [u for u in users if u.check_password_reset_token(token)]
     if len(search) == 0:
         flash('Invalid password reset link. This may be because your password reset link has expired.', 'error')
@@ -143,12 +144,12 @@ def reset_password(token: str):
         else:
             user.set_password(password)
             user.clear_password_reset_token()
-            user.save(True)
+            user.save(replace=True)
             flash('Password changed successfully. Login with your new password.')
             return redirect(url_for('user_bp.login'))
-    return render_template('password-reset.html', user=user, token=token)
+    return render_template('password_reset.html', user=user, token=token)
 
-@user_bp.route('/reset-password', methods = ['GET', 'POST'])
+@user_bp.route('/password/reset', methods=['GET', 'POST'])
 def request_password_reset():
     # TODO Add Captcha
     if request.method == 'POST':
@@ -158,9 +159,9 @@ def request_password_reset():
         user = User.find_one({'email': email})
         if user:
             user.send_reset_password_email()
-            user.save(True)
+            user.save(replace=True)
         return redirect(url_for('user_bp.login'))
-    return render_template('request-password-reset.html')
+    return render_template('request_password_reset.html')
 
 @user_bp.route('/admin_debug')
 def admin_debug():

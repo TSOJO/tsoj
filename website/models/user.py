@@ -63,6 +63,7 @@ class User(UserMixin, DBModel):
         self._hashed_token = generate_password_hash(plaintext_token)
     
     def check_password_reset_token(self, plaintext_token):
+        # TODO: Make this a classmethod and find (preferably all at once).
         return self._hashed_token and check_password_hash(self._hashed_token, plaintext_token) and self.password_reset_token_expiration > datetime.utcnow()
 
     def clear_password_reset_token(self):
@@ -138,10 +139,10 @@ class User(UserMixin, DBModel):
             return
         if user_group_id not in self.user_group_ids:
             self.user_group_ids.append(user_group_id)
-            self.save()
+            self.save(replace=True)
         if self.id not in user_group_obj.user_ids:
             user_group_obj.user_ids.append(id)
-            user_group_obj.save()
+            user_group_obj.save(replace=True)
 
     def set_password_and_send_email(self):
         password = secrets.token_urlsafe(8)
@@ -168,8 +169,7 @@ class User(UserMixin, DBModel):
             "Someone has created a requested a password reset of this email. If it was not you, please ignore this email.\n\n"
             "Click this link to reset your password.\n"
             f"{request.url_root[0: -1]}{url_for('user_bp.reset_password', token=token)}\n"
-            "This link expires in 3 hours."
-            f"If this link expires, you can get a new one at {request.url_root}{url_for('user_bp.request_password_reset')}.\n We hope you have a great time in TSOJ.\n\n"
+            "This link expires in 3 hours.\n"
             "Regards,\n"
             "TSOJ"
         )
@@ -226,7 +226,7 @@ class User(UserMixin, DBModel):
         results = db.users.find(filter=filter)
         return [cls.cast_from_document(result) for result in results]
 
-    def save(self, wait=False, replace=False) -> User:
+    def save(self, replace=False, wait=False) -> User:
         if wait:
             add_to_db('users', self.cast_to_document(), replace)
         else:
