@@ -5,7 +5,7 @@ Edit privileges
 {% endblock %}
 
 {% block content %}
-<h1>Edit User Privileges</h1>
+<h1>Edit user privileges</h1>
 <form action="{{url_for('admin_bp.edit_privileges')}}" method="post">
     <table class="table table-striped table-bordered table-responsive-xl align-middle" data-toggle="table"
         data-search="true" data-pagination="true" data-pagination-loop="false">
@@ -40,6 +40,6 @@ Edit privileges
             {% endfor %}
         </tbody>
     </table>
-    <input type="submit" value="Save">
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>
 {% endblock %}
