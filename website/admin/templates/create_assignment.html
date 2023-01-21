@@ -17,16 +17,9 @@
 <div class="row">
     <div class="col-lg-6 border-end">
         <h4>Problems</h4>
-        <table 
-            id="table"
-            class="table table-striped table-bordered"
-            data-toggle="table"
-            data-search="true"
-            data-pagination="true"
-            data-pagination-loop="false"
-            data-click-to-select="true"
-            data-maintain-meta-data="true"
-        >
+        <table id="table" class="table table-striped table-bordered" data-toggle="table" data-search="true"
+            data-pagination="true" data-pagination-loop="false" data-click-to-select="true"
+            data-maintain-meta-data="true">
             <thead>
                 <tr>
                     <th data-field="state" data-checkbox="true" scope="col"></th>
@@ -38,7 +31,19 @@
                 {% for problem in problems %}
                 <tr>
                     <td></td>
-                    <td>{{problem.id}}</td>
+                    <td>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <a href="{{url_for('problem_bp.problem', id=problem.id)}}"
+                                class="text-decoration-none">{{problem.id}}</a>
+                            {% if not problem.is_public %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                            </svg>
+                            {% endif %}
+                        </div>
+                    </td>
                     <td>
                         <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">
                             {{problem.name}}
@@ -51,16 +56,9 @@
     </div>
     <div class="col-lg-6">
         <h4>Set to</h4>
-        <table 
-            id="user-group-table"
-            class="table table-striped table-bordered"
-            data-toggle="table"
-            data-search="true"
-            data-pagination="true"
-            data-pagination-loop="false"
-            data-click-to-select="true"
-            data-maintain-meta-data="true"
-        >
+        <table id="user-group-table" class="table table-striped table-bordered" data-toggle="table" data-search="true"
+            data-pagination="true" data-pagination-loop="false" data-click-to-select="true"
+            data-maintain-meta-data="true">
             <thead>
                 <tr>
                     <th data-field="state" data-checkbox="true" scope="col"></th>

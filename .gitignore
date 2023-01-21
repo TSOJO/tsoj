@@ -139,3 +139,6 @@ metadata/*
 
 # redis
 *.rdb
+
+# scripts
+*.sh
