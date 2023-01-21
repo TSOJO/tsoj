@@ -21,15 +21,14 @@
         </div>
     </div>
 </div>
-<a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal"
 <div class="d-flex justify-content-between mb-3">
     <div class="d-flex">
-        <h1>Results: Assignment {{assignment.id}}</h1>
+        <h1>Results of Assignment {{assignment.id}}</h1>
         <a class="btn btn-primary align-self-center ms-3" onclick="copy_text(this, '{{url_for('assignment_bp.assignment', id=assignment.id)}}')" data-bs-toggle="tooltip" data-bs-trigger="manual" title="Copied!" style="cursor:pointer;">
             Copy link
         </a>
     </div>
-        class="btn btn-danger align-self-center">Delete</a>
+    <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" class="btn btn-danger align-self-center">Delete</a>
 </div>
 {% for user_group in user_groups %}
 <div class="mb-3">
