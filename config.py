@@ -12,6 +12,9 @@ TONBRIDGE = environ.get('TONBRIDGE') == '1'
 GMAIL_APP_PWD = environ.get('GMAIL_APP_PWD')
 GMAIL_EMAIL = environ.get('GMAIL_EMAIL')
 
+INITIAL_ADMIN_EMAIL = environ.get('INITIAL_ADMIN_EMAIL')
+INITIAL_ADMIN_PASSWORD = environ.get('INITIAL_ADMIN_PASSWORD')
+
 if DEV:
     DEBUG = True
     MONGO_URI = 'mongodb://127.0.0.1:27017/tsoj'

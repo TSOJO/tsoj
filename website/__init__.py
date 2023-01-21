@@ -90,7 +90,8 @@ def init_app() -> Flask:
         ):
             return login_manager.unauthorized()
 
-    debug_db(app)
+    add_initial_admin(app)
+    # debug_db(app)
     
     if not app.config['DEV']:
         # ! Seems to work without, but adding anyway just in case...
@@ -100,6 +101,19 @@ def init_app() -> Flask:
         )
 
     return app
+
+
+def add_initial_admin(app):
+    from website.models import User
+    
+    admin = User(
+        email=app.config['INITIAL_ADMIN_EMAIL'],
+        plaintext_password=app.config['INITIAL_ADMIN_PASSWORD'],
+        privilege=2,
+    )
+    
+    with app.app_context():
+        admin.save(replace=True)
 
 
 def debug_db(app):
