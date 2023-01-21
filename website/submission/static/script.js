@@ -44,7 +44,6 @@ function make_request() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             tests_completed = data['testsCompleted']
             update_results(data['results'])
             if (data['finalVerdict'].verdict !== "WJ") {
@@ -58,13 +57,11 @@ function make_request() {
 }
 
 function update_results(results) {
-    console.log(results)
     for (let i = 0; i < results.length; i++) {
         let verdict_node = $(`#verdict${(i + 1)}`)
         let time_node = $(`#time${(i + 1)}`)
         let memory_node = $(`#memory${(i + 1)}`)
         if (verdict_node.length == 0) {
-            console.log(results[i])
             // Create a new row for this testcase.
             let new_row = document.createElement('tr')
             new_row.innerHTML = [
@@ -77,7 +74,6 @@ function update_results(results) {
             verdict_node = $(`#verdict${(i + 1)}`)
             time_node = $(`#time${(i + 1)}`)
             memory_node = $(`#memory${(i + 1)}`)
-            console.log(new_row)
         }
         verdict_node.html(verdict_to_html(results[i].verdict))
         if (results[i].verdict.verdict !== 'WJ') {
