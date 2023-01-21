@@ -9,7 +9,6 @@ from flask import request, url_for
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from config import BASE_URL
 from isolate_wrapper.custom_types import Verdict
 from website.celery_tasks import add_to_db, delete_from_db, send_email
 from website.db import db

@@ -82,7 +82,7 @@ def init_app() -> Flask:
             'user_bp.reset_password',
             'static',
         )
-        if app.config['DEBUG']:
+        if app.config['DEV']:
             allowed_endpoints += ('user_bp.user_debug', 'user_bp.admin_debug')
         if (not current_user.is_authenticated) and (
             request.endpoint not in allowed_endpoints

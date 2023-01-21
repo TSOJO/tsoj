@@ -60,7 +60,7 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    {% if config['DEBUG'] %}
+                    {% if config['DEV'] %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('user_bp.user_debug')}}">Login user(debug)</a>
                     </li>

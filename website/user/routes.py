@@ -169,7 +169,7 @@ def request_password_reset():
 
 @user_bp.route('/admin_debug')
 def admin_debug():
-    if not current_app.config.get('DEBUG'):
+    if not current_app.config.get('DEV'):
         abort(404)
     logout_user()
     login_user(User.find_one({'id': 'admin'}))
@@ -178,7 +178,7 @@ def admin_debug():
 
 @user_bp.route('/user_debug')
 def user_debug():
-    if not current_app.config.get('DEBUG'):
+    if not current_app.config.get('DEV'):
         abort(404)
     logout_user()
     login_user(User.find_one({'id': 'user'}))
