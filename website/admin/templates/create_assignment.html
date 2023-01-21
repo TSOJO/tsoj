@@ -23,8 +23,9 @@
             <thead>
                 <tr>
                     <th data-field="state" data-checkbox="true" scope="col"></th>
-                    <th data-field="id" scope="col">ID</th>
+                    <th data-field="id_vis" scope="col">ID</th>
                     <th data-field="name" scope="col">Name</th>
+                    <th data-field="id" data-visible="false" scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -48,6 +49,9 @@
                         <a href="{{url_for('problem_bp.problem', id=problem.id)}}" class="text-decoration-none">
                             {{problem.name}}
                         </a>
+                    </td>
+                    <td>
+                        {{problem.id}}
                     </td>
                 </tr>
                 {% endfor %}
