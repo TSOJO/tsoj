@@ -1,6 +1,7 @@
 from celery import Celery
 from flask import Flask, current_app, request
 from flask_login import LoginManager, current_user
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
@@ -90,6 +91,13 @@ def init_app() -> Flask:
             return login_manager.unauthorized()
 
     debug_db(app)
+    
+    if not app.config['DEV']:
+        # ! Seems to work without, but adding anyway just in case...
+        # https://flask.palletsprojects.com/en/2.2.x/deploying/proxy_fix/
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+        )
 
     return app
 
