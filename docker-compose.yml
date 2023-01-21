@@ -1,24 +1,39 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx:1.22
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ./website/:/var/www/:ro  # so nginx has read-only access to static files
+    environment:
+      - NGINX_HOSTNAMES=${NGINX_HOSTNAMES}
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/
+    ports:
+      - 80:80
+    depends_on:
+      - website
+
   website:
     build: .
     command: gunicorn -b 0.0.0.0:8000 -w 4 --threads 2 'website:init_app()'
     restart: always
-    ports:
-      - 5000:8000
+    expose:
+      - 8000
     env_file:
       - .env
     depends_on:
+      - celery
       - redis
       - mongo
-      - celery
   
   celery:
     build: .
     command: celery -A website.celery_worker.celery worker --loglevel=INFO
     restart: always
     privileged: true
+    depends_on:
+      - redis
 
   redis:
     image: redis:7.0
