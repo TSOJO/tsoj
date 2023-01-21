@@ -17,10 +17,13 @@ home_bp = Blueprint(
 def home():
     assignments: List[Assignment] = current_user.fetch_assignments(sort=True)
     problems = {}
+    finished_assignment_ids = []
+    solved_problem_ids = current_user.get_solved_problem_ids()
     for assignment in assignments:
         problems[assignment.id] = assignment.fetch_problems()
-    solved_problems = current_user.get_solved_problem_ids()
-    return render_template('home.html', assignments=assignments, problems=problems, solved_problems=solved_problems)
+        if all(pid in solved_problem_ids for pid in assignment.problem_ids):
+            finished_assignment_ids.append(assignment.id)
+    return render_template('home.html', assignments=assignments, problems=problems, finished_assignment_ids=finished_assignment_ids)
 
 
 @home_bp.route('/problems/')  # ? require trailing slash for some reason
