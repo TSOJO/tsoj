@@ -18,17 +18,15 @@
             {% for user in users %}
             <tr class="d-flex">
                 <td class="col-3" scope="col">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                        <a href="{{url_for('user_bp.profile', id=user.id)}}"
-                            class="text-decoration-none">{{user.id}}</a>
-                    </div>
+                    <a href="{{url_for('user_bp.profile', id=user.id)}}"
+                        class="text-decoration-none">{{user.id}}</a>
                 </td>
                 <td class="col-6">
                     <a href="{{url_for('user_bp.profile', id=user.id)}}"
                         class="text-decoration-none">{{user.full_name}}</a>
                 </td>
-                <td class="col-3">
-                    <select name="privilege{{user.id}}" id="privileges">
+                <td class="col-3" style="height:fit-content;">
+                    <select class="form-select form-select-sm" name="privilege{{user.id}}" id="privileges">
                         <option value="0" {% if user.privilege==0 %} selected {% endif %}>Student</option>
                         <option value="1" {% if user.privilege==1 %} selected {% endif %}>Contributor</option>
                         <option value="2" {% if user.privilege==2 %} selected {% endif %}>Admin</option>
