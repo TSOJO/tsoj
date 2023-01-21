@@ -23,7 +23,7 @@ def home():
         problems[assignment.id] = assignment.fetch_problems()
         if all(pid in solved_problem_ids for pid in assignment.problem_ids):
             finished_assignment_ids.append(assignment.id)
-    return render_template('home.html', assignments=assignments, problems=problems, finished_assignment_ids=finished_assignment_ids)
+    return render_template('home.html', assignments=assignments, problems=problems, finished_assignment_ids=finished_assignment_ids, solved_problem_ids=solved_problem_ids)
 
 
 @home_bp.route('/problems/')  # ? require trailing slash for some reason
