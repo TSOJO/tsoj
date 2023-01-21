@@ -94,7 +94,7 @@ def init_app() -> Flask:
     # debug_db(app)
     
     if not app.config['DEV']:
-        # ! Seems to work without, but adding anyway just in case...
+        # This fixes the host header.
         # https://flask.palletsprojects.com/en/2.2.x/deploying/proxy_fix/
         app.wsgi_app = ProxyFix(
             app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
