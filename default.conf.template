@@ -1,0 +1,42 @@
+# Based off https://github.com/benoitc/gunicorn/blob/master/examples/nginx.conf
+upstream app_server {
+    # `fail_timeout=0` will keep retrying the server.
+    server website:8000 fail_timeout=0;
+    # If need be, more servers can be defined here for load balancing.
+}
+
+server {
+    # If Host does not match `server_name` below, close connection.
+    # This is to prevent host spoofing.
+    listen 80 default_server;
+    return 444;
+}
+
+server {
+    # nginx will try to match server_name here.
+    # If does not match, go above.
+    listen      80;
+    server_name ${NGINX_HOSTNAMES};
+
+    keepalive_timeout 5;
+
+    # Website folder. See below.
+    root /var/www/;
+
+    location / {
+        # `try_files` appends $uri to `root`.
+        # If nothing is found there, fallback to `@proxy_to_app`.
+        # This serves static files more efficiently.
+        try_files $uri @proxy_to_app;
+    }
+
+    location @proxy_to_app {
+        # From Flask documentation.
+        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto   $scheme;
+        proxy_set_header    X-Forwarded-Host    $host;
+        proxy_set_header    X-Forwarded-Prefix  /;
+        proxy_redirect      off;
+        proxy_pass          http://app_server;
+    }
+}

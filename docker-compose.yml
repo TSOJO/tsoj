@@ -4,11 +4,10 @@ services:
   nginx:
     image: nginx:1.22
     volumes:
-      - ./nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ./default.conf.template:/etc/nginx/templates/default.conf.template
       - ./website/:/var/www/:ro  # so nginx has read-only access to static files
     environment:
       - NGINX_HOSTNAMES=${NGINX_HOSTNAMES}
-      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/
     ports:
       - 80:80
     depends_on:
