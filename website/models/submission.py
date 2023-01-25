@@ -2,17 +2,13 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Dict, Mapping, List, Optional, cast
-from pymongo.errors import DuplicateKeyError
-import logging
 
 from isolate_wrapper.custom_types import Result, Verdict
 from isolate_wrapper import IsolateSandbox
 
 from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
-from website.models.assignment import Assignment
 from website.models.user import User
-from website.models.db_model import DBModel
 
 
 class Submission:
