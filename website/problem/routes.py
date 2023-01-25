@@ -19,8 +19,8 @@ def problem(id: str) -> str:
         abort(404, description="Problem not found")
     if not current_user.is_contributor() and not problem.is_public:
         abort(403, 'Problem is not public')
-    assignment_id = request.args.get('assignment_id')
-    return render_template('problem.html', problem=problem, assignment_id=assignment_id)
+    example_testcases = [testcase for testcase in problem.testcases if testcase.batch_number == 0]
+    return render_template('problem.html', problem=problem, example_testcases=example_testcases)
 
 
 @problem_bp.route('/<id>/submit', methods=['POST'])

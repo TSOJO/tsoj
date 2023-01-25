@@ -50,10 +50,10 @@
 <div class="row">
     <div class="col-lg-6">
         <md-block>{{problem.description}}</md-block>
+        {% if example_testcases %}
         <hr>
         <h4>Examples</h4>
-        {% for testcase in problem.testcases %}
-        {% if testcase.batch_number == 0 %}
+        {% for testcase in example_testcases %}
         <div class="row">
             <div class="form-group mb-3 col-sm-6">
                 <label class="form-label">Input</label>
@@ -73,8 +73,8 @@
             </div>
         </div>
         <hr>
-        {% endif %}
         {% endfor %}
+        {% endif %}
     </div>
     <div class="col-lg-6">
         <h4>Your code</h4>
