@@ -20,7 +20,7 @@ class Assignment(DBModel):
         problem_ids: List[str] = None,
         user_group_ids: List[int] = None,
         archived: bool = False,
-        set_time: datetime = datetime.utcnow(),
+        set_time: datetime = None,
     ):
         # Public properties.
         self.id: Optional[int] = id
@@ -28,7 +28,7 @@ class Assignment(DBModel):
         self.user_group_ids = [] if user_group_ids is None else user_group_ids
         self.creator = creator
         self.archived = archived
-        self.set_time = set_time
+        self.set_time = datetime.utcnow() if set_time is None else set_time
 
     def add_problems(self, *problem_ids):
         self.problem_ids.extend(problem_ids)
