@@ -8,14 +8,17 @@ upstream app_server {
 server {
     # If Host does not match `server_name` below, close connection.
     # This is to prevent host spoofing.
-    listen 80 default_server;
+    listen 80;  # IPv4
+    listen [::]:80;  # IPv6
+
     return 444;
 }
 
 server {
     # nginx will try to match server_name here.
     # If does not match, go above.
-    listen      80;
+    listen      80;  # IPv4
+    listen      [::]:80;  # IPv6
     server_name ${NGINX_HOSTNAMES};
 
     keepalive_timeout 5;

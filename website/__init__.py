@@ -91,7 +91,7 @@ def init_app() -> Flask:
             return login_manager.unauthorized()
 
     add_initial_admin(app)
-    # debug_db(app)
+    debug_db(app)
     
     if not app.config['DEV']:
         # This fixes the host header.
