@@ -72,12 +72,21 @@
                 <small>Click to copy.</small>
             </div>
         </div>
-        <hr>
         {% endfor %}
         {% endif %}
     </div>
     <div class="col-lg-6">
-        <h4>Your code</h4>
+        <div class="d-flex align-items-center mb-2" style="gap:10px;">
+            <div class="flex-grow-1">
+                <h4 class="my-0">Your code</h4>
+            </div>
+            <div>
+                <small class="my-0"><b>Time limit: </b>{{problem.time_limit / 1000}}s</small>
+            </div>
+            <div>
+                <small class="my-0"><b>Memory limit: </b>{{problem.memory_limit / 1024}}MB</small>
+            </div>
+        </div>
         <div class="mb-3">
             <form method="POST" action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}" id="codeForm">
                 <input type="hidden" name="problem_id" value="{{problem.id}}" />
