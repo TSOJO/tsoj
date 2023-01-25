@@ -27,8 +27,7 @@ class Submission:
         final_verdict: Optional[Verdict] = None,
         results: Optional[List[Result]] = None,
         id: Optional[int] = None,
-        assignment_id: Optional[int] = None,
-        submission_time: datetime = datetime.utcnow(),
+        submission_time: Optional[datetime] = None
     ):
         # Public properties.
         self.user_id = user_id
@@ -37,7 +36,7 @@ class Submission:
         self.final_verdict = Verdict.WJ if final_verdict is None else final_verdict
         self.results = [] if results is None else results
         self.id: Optional[int] = id
-        self.submission_time = submission_time
+        self.submission_time = datetime.utcnow() if submission_time is None else submission_time
 
     def create_empty_results(self, num_results):
         self.results = []
@@ -60,11 +59,6 @@ class Submission:
 
     def fetch_user(self) -> User:
         return cast(User, User.find_one({'id': self.user_id}))
-
-    def fetch_assignment(self) -> Optional[Assignment]:
-        if self.assignment_id is None:
-            return None
-        return cast(Assignment, Assignment.find_one({'id': self.assignment_id}))
 
     """Database Wrapper Methods"""
 
