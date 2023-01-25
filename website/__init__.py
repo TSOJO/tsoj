@@ -106,6 +106,9 @@ def init_app() -> Flask:
 def add_initial_admin(app):
     from website.models import User
     
+    if not app.config['INITIAL_ADMIN_EMAIL'] or not app.config['INITIAL_ADMIN_PASSWORD']:
+        return
+
     admin = User(
         email=app.config['INITIAL_ADMIN_EMAIL'],
         plaintext_password=app.config['INITIAL_ADMIN_PASSWORD'],
