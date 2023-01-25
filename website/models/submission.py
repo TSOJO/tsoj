@@ -9,6 +9,7 @@ from isolate_wrapper import IsolateSandbox
 from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 from website.models.user import User
+from website.models.problem import Problem
 
 
 class Submission:
@@ -44,7 +45,14 @@ class Submission:
         self.final_verdict = IsolateSandbox.decide_final_verdict(
             [r.verdict for r in self.results]
         )
-        self.save(replace=True)
+        self.save(replace=True, wait=True)
+        if self.final_verdict.is_ac():
+            previous_submissions = Submission.find_all({'user_id': self.user_id, 'problem_id': self.problem_id, 'final_verdict': self.final_verdict.cast_to_document()})
+            if previous_submissions and len(previous_submissions) < 2:
+                # User has not solved before
+                problem = self.fetch_problem()
+                problem.num_solves += 1
+                problem.save(replace=True)
 
     def tests_completed(self):
         count = 0
@@ -55,6 +63,9 @@ class Submission:
 
     def fetch_user(self) -> User:
         return cast(User, User.find_one({'id': self.user_id}))
+    
+    def fetch_problem(self) -> Problem:
+        return cast(Problem, Problem.find_one({'id': self.problem_id}))
 
     """Database Wrapper Methods"""
 
