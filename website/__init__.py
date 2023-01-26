@@ -160,7 +160,7 @@ def debug_db(app):
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)
         with app.app_context():
-            problem.save(replace=True)
+            problem.save()
 
     user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
     with app.app_context():
