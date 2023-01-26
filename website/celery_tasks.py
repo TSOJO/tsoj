@@ -34,9 +34,9 @@ def add_to_db(collection_name: str, document: Dict[str, Any], replace: bool):
             db[collection_name].insert_one(document)
         except DuplicateKeyError:
             logging.warning(
-                'Attempted to save duplicate document into collection. Use replace=True for replacement.'
+                'Save failed: attempted to save duplicate document into collection. Use replace=True to replace.'
             )
-            return 'warning: duplicate document'
+            return 'save failed: duplicate document'
     else:
         db[collection_name].replace_one({'_id': document['_id']}, document, upsert=True)
     return 'done'

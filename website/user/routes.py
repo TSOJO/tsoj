@@ -13,12 +13,12 @@ user_bp = Blueprint(
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
         password = request.form.get('password')
         user = User.find_one({'email': email})
 
         if not user:
-            flash('Email does not exist.', 'error')
+            flash('Invalid email', 'error')
             return redirect(url_for('user_bp.login'))
         if not user.check_password(password):
             flash('Invalid email or password', 'error')
@@ -45,7 +45,7 @@ def logout():
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
 
         if current_app.config.get('TONBRIDGE') and not email.endswith('@tonbridge-school.org'):
             flash('Please use your school email to register.', 'error')
@@ -54,7 +54,7 @@ def register():
         user = User.find_one({'email': email})
 
         if user:
-            flash('Email is already registered, please login instead.', 'error')
+            flash('Email is already registered, please login.', 'error')
             return redirect(url_for('user_bp.login'))
         
         full_name = request.form.get('full_name')
