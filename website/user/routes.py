@@ -76,8 +76,9 @@ def profile(id: str):
     problems = Problem.find_all()
     solved_problem_ids = user.get_solved_problem_ids()
     self_user_groups = user.fetch_user_groups()
+    developers = current_app.config['DEVELOPERS']
     return render_template(
-        'profile.html', user=user, problems=problems, solved_problem_ids=solved_problem_ids, self_user_groups=self_user_groups
+        'profile.html', user=user, problems=problems, solved_problem_ids=solved_problem_ids, self_user_groups=self_user_groups, developers=developers
     )
 
 
@@ -121,7 +122,7 @@ def settings():
             selected_group_ints = [int(g) for g in selected_groups]
             if set(selected_group_ints) != set(current_user.user_group_ids):
                 current_user.user_group_ids = selected_group_ints
-                flash('Groups changed successfully.')
+                flash('Group changed successfully.')
 
         current_user.save(replace=True)
     groups = UserGroup.find_all()

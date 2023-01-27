@@ -9,6 +9,8 @@ SECRET_KEY = environ.get('SECRET_KEY')
 DEV = environ.get('DEV') == '1'
 TONBRIDGE = environ.get('TONBRIDGE') == '1'
 
+DEVELOPERS = environ.get('DEVELOPERS').split()
+
 GMAIL_APP_PWD = environ.get('GMAIL_APP_PWD')
 GMAIL_EMAIL = environ.get('GMAIL_EMAIL')
 

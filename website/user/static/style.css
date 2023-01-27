@@ -7,6 +7,10 @@
     width: fit-content;
 }
 
+.developer-text {
+    color: rgb(202, 51, 255);
+}
+
 .admin-text {
     color:rgb(199, 13, 0);
 }
