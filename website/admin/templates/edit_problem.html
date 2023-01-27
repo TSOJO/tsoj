@@ -49,20 +49,30 @@
             </div>
         </div>
 
-        <div class="form-group mb-3">
-            <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
-            <textarea class="form-control" name="description" id="description" rows="5"
-                placeholder="Enter problem description" required>{{problem.description}}</textarea>
-            <div class="invalid-feedback">
-                This field is required.
+        <div class="row mb-3">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
+                    <textarea class="form-control" name="description" id="description" rows="10"
+                        placeholder="Enter problem description" style="white-space: pre-line;" required>{{problem.description}}</textarea>
+                    <div class="invalid-feedback">
+                        This field is required.
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <label for="description-md" class="form-label">Preview</label>
+                <div class="card">
+                    <md-block id="description-md">{{problem.description}}</md-block>
+                </div>
             </div>
         </div>
 
-        <p>Description Preview</p>
-        <div class="card mb-3">
-            <md-block id="description-md">
-                {{problem.description}}
-            </md-block>
+        <div class="row mb-3">
+            <div class="form-group">
+                <label for="hints" class="form-label">Hints (separated by a new line)</label>
+                <textarea class="form-control" name="hints" id="hints" rows="5">{{problem.hints | join('\n')}}</textarea>
+            </div>
         </div>
 
         <label class="form-label">Testcases</label>

@@ -17,6 +17,7 @@ class Problem(DBModel):
         time_limit: int,  # ms
         memory_limit: int,  # KB
         testcases: List[Testcase],
+        hints: str = None,
         num_solves: int = 0,
         is_public: bool = False,
     ):
@@ -27,6 +28,7 @@ class Problem(DBModel):
         self.time_limit = time_limit
         self.memory_limit = memory_limit
         self.testcases = testcases
+        self.hints = '' if hints is None else hints
         self.num_solves = num_solves
         self.is_public = is_public
 
@@ -41,6 +43,7 @@ class Problem(DBModel):
             time_limit=document['time_limit'],
             memory_limit=document['memory_limit'],
             testcases=[Testcase(**testcase) for testcase in document['testcases']],
+            hints=document['hints'],
             num_solves=document['num_solves'],
             is_public=document['is_public'],
         )
@@ -54,6 +57,7 @@ class Problem(DBModel):
             'time_limit': self.time_limit,
             'memory_limit': self.memory_limit,
             'testcases': [testcase.__dict__ for testcase in self.testcases],
+            'hints': self.hints,
             'num_solves': self.num_solves,
             'is_public': self.is_public,
         }

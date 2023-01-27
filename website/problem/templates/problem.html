@@ -74,6 +74,22 @@
         </div>
         {% endfor %}
         {% endif %}
+        <div class="accordion">
+            {% for hint in problem.hints %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{loop.index}}">
+                        Hint #{{loop.index}}
+                    </button>
+                </h2>
+                <div id="collapse{{loop.index}}" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {{hint}}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
     <div class="col-lg-6">
         <div class="d-flex align-items-center mb-2" style="gap:10px;">
