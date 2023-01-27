@@ -52,28 +52,32 @@
         <md-block>{{problem.description}}</md-block>
         {% if example_testcases %}
         <hr>
-        <h4>Examples</h4>
+        <h4 class="mb-0">Examples</h4>
         {% for testcase in example_testcases %}
         <div class="row">
-            <div class="form-group mb-3 col-sm-6">
+            <div class="form-group mt-2 col-sm-6">
                 <label class="form-label">Input</label>
                 <div class="card">
                     <div class="card-body in-out-text" onclick="copy_text(this)" data-bs-toggle="tooltip"
                         data-bs-trigger="manual" title="Copied!">{{testcase.input}}</div>
                 </div>
-                <small>Click to copy.</small>
             </div>
-            <div class="form-group mb-3 col-sm-6">
+            <div class="form-group mt-2 col-sm-6">
                 <label class="form-label">Answer</label>
                 <div class="card">
                     <div class="card-body in-out-text" onclick="copy_text(this)" data-bs-toggle="tooltip"
                         data-bs-trigger="manual" title="Copied!">{{testcase.answer}}</div>
                 </div>
-                <small>Click to copy.</small>
             </div>
         </div>
         {% endfor %}
+        <div class="d-flex">
+            <small class="ms-auto text-muted">Click to copy</small>
+        </div>
         {% endif %}
+        
+        {% if problem.hints %}
+        <hr>
         <div class="accordion">
             {% for hint in problem.hints %}
             <div class="accordion-item">
@@ -90,6 +94,7 @@
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
     <div class="col-lg-6">
         <div class="d-flex align-items-center mb-2" style="gap:10px;">
