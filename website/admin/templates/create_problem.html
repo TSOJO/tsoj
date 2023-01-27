@@ -1,40 +1,42 @@
 {% extends "base.html" %}
-
-{% block title %}Create Problem{% endblock %}
-
+{% block title %}Create Problem{% endblock title %}
 {% block content %}
-<div class="mb-3">
-    <h1>Create Problem</h1>
-</div>
-<form method="POST" class="needs-validation" novalidate>
-    <div class="form-group mb-3">
-        <label for="id" class="form-label">ID</label>
-        <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" required>
-        <div class="invalid-feedback" id="id-invalid-feedback">
-            This field is required.
+    <div class="mb-3">
+        <h1>Create Problem</h1>
+    </div>
+    <form method="post" class="needs-validation" novalidate>
+        <div class="form-group mb-3">
+            <label for="id" class="form-label">ID</label>
+            <input type="text"
+                   class="form-control"
+                   name="id"
+                   id="id"
+                   placeholder="Enter problem ID"
+                   required/>
+            <div class="invalid-feedback" id="id-invalid-feedback">This field is required.</div>
         </div>
-    </div>
-
-    <div class="form-group mb-3">
-        <input class="form-check-input is-public-checkbox" type="checkbox" name="is_public" id="is-public">
-        <label class="form-check-label" for="is-public">Public</label>
-    </div>
-
-    <div class="form-group mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name" required>
-        <div class="invalid-feedback">
-            This field is required.
+        <div class="form-group mb-3">
+            <input class="form-check-input is-public-checkbox"
+                   type="checkbox"
+                   name="is_public"
+                   id="is-public" />
+            <label class="form-check-label" for="is-public">Public</label>
         </div>
-    </div>
-
-
-    <div class="row mb-3">
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
-                <textarea class="form-control" name="description" id="description" rows="10"
-                    placeholder="Enter problem description" style="white-space: pre-line;" required>
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text"
+                   class="form-control"
+                   name="name"
+                   id="name"
+                   placeholder="Enter problem name"
+                   required />
+            <div class="invalid-feedback">This field is required.</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
+                    <textarea class="form-control" name="description" id="description" rows="10" placeholder="Enter problem description" style="white-space: pre-line;" required>
 Enter description
 
 ##### Input
@@ -45,101 +47,118 @@ Enter output format
 
 ##### Constraints
 Enter input constraints</textarea>
-                <div class="invalid-feedback">
-                    This field is required.
+                    <div class="invalid-feedback">This field is required.</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <label for="description-md" class="form-label">Preview</label>
+                <div class="card">
+                    <md-block id="description-md"></md-block>
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <label for="description-md" class="form-label">Preview</label>
-            <div class="card">
-                <md-block id="description-md"></md-block>
+        <div class="row mb-3">
+            <div class="form-group">
+                <label for="hints" class="form-label">Hints (separated by a new line)</label>
+                <textarea class="form-control" name="hints" id="hints" rows="5"></textarea>
             </div>
         </div>
-    </div>
-
-
-    <div class="row mb-3">
-        <div class="form-group">
-            <label for="hints" class="form-label">Hints (separated by a new line)</label>
-            <textarea class="form-control" name="hints" id="hints" rows="5"></textarea>
-        </div>
-    </div>
-
-
-    <label class="form-label">Testcases</label>
-    <div class="border p-4 mb-3">
-        <button type="button" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
-        <div id="rem-alert-placeholder"></div>
-        <!-- dummy testcase -->
-        <div id="testcase-div" style="display: none" class="border p-4">
-            <div class="container">
-                <div class="d-flex">
-                    <div class="me-auto my-auto">
-                        <h5 class="testcase-number my-0"></h5>
+        <label class="form-label">Testcases</label>
+        <div class="border p-4 mb-3">
+            <button type="button" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
+            <div id="rem-alert-placeholder"></div>
+            <!-- dummy testcase -->
+            <div id="testcase-div" style="display: none" class="border p-4">
+                <div class="container">
+                    <div class="d-flex">
+                        <div class="me-auto my-auto">
+                            <h5 class="testcase-number my-0"></h5>
+                        </div>
+                        <div class="my-auto px-4">
+                            <input class="form-check-input testcase-sample" type="checkbox" value="" />
+                            <label class="form-check-label">Sample case</label>
+                        </div>
+                        <div class="my-auto">
+                            <button type="button"
+                                    class="btn btn-danger"
+                                    onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">
+                                Remove
+                            </button>
+                        </div>
                     </div>
-                    <div class="my-auto px-4">
-                        <input class="form-check-input testcase-sample" type="checkbox" value="">
-                        <label class="form-check-label">Sample case</label>
-                    </div>
-                    <div class="my-auto">
-                        <button type="button" class="btn btn-danger"
-                            onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">Remove</button>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group mb-3 col-sm-6">
+                            <label class="form-label">Input</label>
+                            <textarea class="form-control testcase-input" rows="3"></textarea>
+                        </div>
+                        <div class="form-group mb-3 col-sm-6">
+                            <label class="form-label">Answer</label>
+                            <textarea class="form-control testcase-answer" rows="3"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="form-group mb-3 col-sm-6">
-                        <label class="form-label">Input</label>
-                        <textarea class="form-control testcase-input" rows="3"></textarea>
-                    </div>
-                    <div class="form-group mb-3 col-sm-6">
-                        <label class="form-label">Answer</label>
-                        <textarea class="form-control testcase-answer" rows="3"></textarea>
-                    </div>
-                </div>
+            <div id="testcase-container"
+                 class="overflow-auto bg-light mb-3"
+                 style="max-height:760px"></div>
+            <input id="testcases-count"
+                   name="testcases-count"
+                   type="text"
+                   value="0"
+                   hidden />
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       value=""
+                       id="auto-generate-answer-checkbox"
+                       name="generator-checkbox" />
+                <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
+            </div>
+            <div class="mt-3" id="editor-group" style="display:none">
+                <textarea name="generator-code" id="generator-code" hidden></textarea>
+                <div id="editor" class="mb-3"></div>
+                <button type="button"
+                        class="btn btn-primary"
+                        id="gen-answer-button"
+                        onclick="generate_answers()">
+                    Generate
+                    answers
+                </button>
+                <div id="gen-alert-placeholder"></div>
             </div>
         </div>
-
-        <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px;"></div>
-        <input id="testcases-count" name="testcases-count" type="text" value="0" hidden>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
-                name="generator-checkbox">
-            <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
+        <label for="time-limit" class="form-label">Time limit</label>
+        <div class="input-group mb-3">
+            <input type="text"
+                   class="form-control"
+                   name="time-limit"
+                   id="time-limit"
+                   value="1.0"
+                   required />
+            <span class="input-group-text">seconds (recommended: 1-10)</span>
+            <div class="invalid-feedback">This field is required.</div>
         </div>
-
-        <div class="mt-3" id="editor-group" style="display:none">
-            <textarea name="generator-code" id="generator-code" hidden></textarea>
-            <div id="editor" class="mb-3"></div>
-            <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generate_answers()">Generate
-                answers</button>
-            <div id="gen-alert-placeholder"></div>
+        <label for="memory-limit" class="form-label">Memory limit</label>
+        <div class="input-group mb-3">
+            <input type="text"
+                   class="form-control"
+                   name="memory-limit"
+                   id="memory-limit"
+                   value="128"
+                   required />
+            <span class="input-group-text">MB (recommended: 64-512)</span>
+            <div class="invalid-feedback">
+                This field is required.
+            </div>
         </div>
-    </div>
-
-    <label for="time-limit" class="form-label">Time limit</label>
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" name="time-limit" id="time-limit" value="1.0" required>
-        <span class="input-group-text">seconds (recommended: 1-10)</span>
-        <div class="invalid-feedback">
-            This field is required.
-        </div>
-    </div>
-
-    <label for="memory-limit" class="form-label">Memory limit</label>
-    <div class="input-group mb-3">
-        <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="128" required>
-        <span class="input-group-text">MB (recommended: 64-512)</span>
-        <div class="invalid-feedback">
-            This field is required.
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
-{% endblock %}
-
+        <button type="submit" class="btn btn-primary">
+            Create
+        </button>
+    </form>
+{% endblock content %}
 {% block scripts %}
-<script type="text/javascript" src="{{url_for('.static', filename='problem.js')}}"></script>
-{% endblock %}
+    <script type="text/javascript"
+            src="{{url_for('.static', filename='problem.js')}}"></script>
+{% endblock scripts %}

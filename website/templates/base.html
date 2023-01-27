@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %} - TSOJ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-        crossorigin="anonymous" />
-    <link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
-        rel="stylesheet"
-        integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
-    
-    <link href="{{url_for('.static', filename='style.css')}}" rel="stylesheet">
-    <script>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="description" content="Tonbridge School Online Judge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+            {% block title %}{% endblock title %} - TSOJ
+        </title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+              crossorigin="anonymous" />
+        <link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css"
+              rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css"
+              rel="stylesheet"
+              integrity="sha512-mR/b5Y7FRsKqrYZou7uysnOdCIJib/7r5QeJMFvLNHNhtye3xJp1TdJVPLtetkukFn227nKpXD9OjUc09lx97Q=="
+              crossorigin="anonymous"
+              referrerpolicy="no-referrer" />
+        <link href="{{ url_for('.static', filename='style.css')}}" rel="stylesheet" />
+        <script>
         MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -31,131 +33,140 @@
                 }
             }
         };
-    </script>
-    <script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
         </script>
-</head>
-
-<body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
-                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="{{url_for('home_bp.home')}}">
-                <img src="{{url_for('static', filename='school-logo.png')}}" alt="School logo" height="30">
-            </a>
-            <div class="collapse navbar-collapse" id="navbar">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('home_bp.home')}}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('home_bp.problems')}}">Problems</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('home_bp.submissions')}}">Submissions</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    {% if config['DEV'] %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('user_bp.user_debug')}}">Login user(debug)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('user_bp.admin_debug')}}">Login admin(debug)</a>
-                    </li>
-                    {% endif %}
-                    
-                    {% if current_user.is_authenticated %}
-                    {% if current_user.is_admin() %}
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
-                        <div class="dropdown-menu">
-                            <a href="{{url_for('admin_bp.create_problem')}}" class="dropdown-item">Create problem</a>
-                            <a href="{{url_for('admin_bp.create_assignment')}}" class="dropdown-item">Create
-                                assignment</a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{{url_for('admin_bp.assignments')}}" class="dropdown-item">View assignments</a>
-                            <a href="{{url_for('admin_bp.user_groups')}}" class="dropdown-item">View groups</a>
-                            <a href="{{url_for('admin_bp.edit_privileges')}}" class="dropdown-item">Edit user privileges</a>
-                        </div>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello,
-                            <b>{{current_user.username}}</b></a>
-                        <div class="dropdown-menu">
-                            <a href="{{url_for('user_bp.profile', id=current_user.id)}}"
-                                class="dropdown-item">Profile</a>
-                            <a href="{{url_for('user_bp.settings')}}" class="dropdown-item">Account settings</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('user_bp.logout')}}">Logout</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('user_bp.login')}}">Login</a>
-                    </li>
-                    {% endif %}
-                </ul>
+        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+        </script>
+    </head>
+    <body class="d-flex flex-column min-vh-100">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbar"
+                        aria-controls="navbarTogglerDemo03"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('home_bp.home')}}">
+                    <img src="{{ url_for('static', filename='school-logo.png')}}"
+                         alt="School logo"
+                         height="30" width="36" />
+                </a>
+                <div class="collapse navbar-collapse" id="navbar">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('home_bp.home')}}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('home_bp.problems')}}">Problems</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('home_bp.submissions')}}">Submissions</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        {% if config['DEV'] %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('user_bp.user_debug')}}">Login user(debug)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('user_bp.admin_debug')}}">Login admin(debug)</a>
+                            </li>
+                        {% endif %}
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.is_admin() %}
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
+                                    <div class="dropdown-menu">
+                                        <a href="{{ url_for('admin_bp.create_problem')}}" class="dropdown-item">Create problem</a>
+                                        <a href="{{ url_for('admin_bp.create_assignment')}}"
+                                           class="dropdown-item">Create
+                                        assignment</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="{{ url_for('admin_bp.assignments')}}" class="dropdown-item">View assignments</a>
+                                        <a href="{{ url_for('admin_bp.user_groups')}}" class="dropdown-item">View groups</a>
+                                        <a href="{{ url_for('admin_bp.edit_privileges')}}" class="dropdown-item">Edit user privileges</a>
+                                    </div>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello,
+                                    <b>{{ current_user.username }}</b></a>
+                                <div class="dropdown-menu">
+                                    <a href="{{ url_for('user_bp.profile', id=current_user.id)}}"
+                                       class="dropdown-item">Profile</a>
+                                    <a href="{{ url_for('user_bp.settings')}}" class="dropdown-item">Account settings</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('user_bp.logout')}}">Logout</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('user_bp.login')}}">Login</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
+        </nav>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                        <div class="alert alert-danger alert-dismissable fade show d-flex justify-content-between"
+                             role="alert">
+                            {{ message }}
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success alert-dismissable fade show d-flex justify-content-between"
+                             role="alert">
+                            {{ message }}
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="container p-3 mb-3">
+            {% block content %}{% endblock content %}
         </div>
-    </nav>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    {% if category == 'error' %}
-    <div class="alert alert-danger alert-dismissable fade show d-flex justify-content-between" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% else %}
-    <div class="alert alert-success alert-dismissable fade show d-flex justify-content-between" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-
-    <div class="container p-3 mb-3">
-        {% block content %}
-        {% endblock %}
-    </div>
-
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <small class="text-muted">Tonbridge School Online Judge | ⭐ us on <a href="https://github.com/TSOJO/tsoj"
-                    class="text-decoration-none">GitHub</a>
-                <br />
-                <a href="https://forms.office.com/e/bdLM4pYQhs" class="text-decoration-none" target="_blank">Send feedback</a></small>
-        </div>
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
-        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"
-        integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/ace.min.js"></script>
-    <script type="module" src="{{url_for('static', filename='md-block.js')}}"></script>
-
-    <script type="text/javascript" src="/static/script.js"></script>
-    <script type="text/javascript" src="{{url_for('.static', filename='script.js')}}"></script>
-    {% block scripts %}
-    {% endblock %}
-</body>
-
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container text-center">
+                <small class="text-muted">
+                    Tonbridge School Online Judge | ⭐ us on <a href="https://github.com/TSOJO/tsoj" class="text-decoration-none">GitHub</a>
+                    <br />
+                    <a href="https://forms.office.com/e/bdLM4pYQhs"
+                       class="text-decoration-none"
+                       target="_blank">Send feedback</a>
+                </small>
+            </div>
+        </footer>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+                integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+                crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"
+                integrity="sha512-FHZVRMUW9FsXobt+ONiix6Z0tIkxvQfxtCSirkKc5Sb4TKHmqq1dZa8DphF0XqKb3ldLu/wgMa8mT6uXiLlRlw=="
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/ace.min.js"></script>
+        <script type="module" src="{{url_for('static', filename='md-block.js')}}"></script>
+        <script type="text/javascript" src="/static/script.js"></script>
+        <script type="text/javascript"
+                src="{{url_for('.static', filename='script.js')}}"></script>
+        {% block scripts %}{% endblock scripts %}
+    </body>
 </html>

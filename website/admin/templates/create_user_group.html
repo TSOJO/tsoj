@@ -1,56 +1,50 @@
 {% extends "base.html" %}
-
-{% block title %}Create Group{% endblock %}
-
+{% block title %}Create Group{% endblock title %}
 {% block content %}
-<div>
-    <h1>Create Group</h1>
-</div>
-<form method="POST" id="form" class="needs-validation" novalidate>
-    <div class="form-group mb-3">
-        <label for="id" class="form-label">Name</label>
-        <input type="text" class="form-control" name="name" id="name" placeholder="Enter group name" required>
-        <div class="invalid-feedback">
-            This field is required.
-        </div>
+    <div>
+        <h1>Create Group</h1>
     </div>
-    <p>Members</p>
-    <table 
-        id="user-group-table"
-        class="table table-striped table-bordered"
-        data-toggle="table"
-        data-search="true"
-        data-pagination="true"
-        data-pagination-loop="false"
-        data-click-to-select="true"
-        data-maintain-meta-data="true">        
-        <thead>
-            <tr>
-                <th data-field="state" data-checkbox="true"></th>
-                <th data-field="name" scope="col">Name</th>
-                <th data-field="id" data-visible="false" scope="col">ID</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td></td>
-                <td>
-                    <a href="{{url_for('user_bp.profile', id=user.id)}}" class="text-decoration-none">
-                        {{user.full_name}}
-                    </a>
-                </td>
-                <td>
-                    {{user.id}}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
-{% endblock %}
-
-{% block scripts %}
-<script src="{{url_for('.static', filename='user_group.js')}}"></script>
-{% endblock %}
+    <form method="post" id="form" class="needs-validation" novalidate>
+        <div class="form-group mb-3">
+            <label for="id" class="form-label">Name</label>
+            <input type="text"
+                   class="form-control"
+                   name="name"
+                   id="name"
+                   placeholder="Enter group name"
+                   required />
+            <div class="invalid-feedback">This field is required.</div>
+        </div>
+        <p>Members</p>
+        <table id="user-group-table"
+               class="table table-striped table-bordered"
+               data-toggle="table"
+               data-search="true"
+               data-pagination="true"
+               data-pagination-loop="false"
+               data-click-to-select="true"
+               data-maintain-meta-data="true">
+            <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true"></th>
+                    <th data-field="name" scope="col">Name</th>
+                    <th data-field="id" data-visible="false" scope="col">ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td></td>
+                        <td>
+                            <a href="{{ url_for('user_bp.profile', id=user.id)}}"
+                               class="text-decoration-none">{{ user.full_name }}</a>
+                        </td>
+                        <td>{{ user.id }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+{% endblock content %}
+{% block scripts %}<script src="{{url_for('.static', filename='user_group.js')}}"></script>{% endblock scripts %}
