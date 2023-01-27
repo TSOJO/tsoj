@@ -90,7 +90,7 @@ def edit_problem(id: str):
             )
 
         problem = Problem(**problem_info, testcases=testcases)
-        problem.save(replace=True)
+        problem.save(replace=True, wait=True)
 
         if 'rejudge' in request.form:
             _rejudge_problem(problem.id)

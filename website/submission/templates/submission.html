@@ -41,11 +41,11 @@
     <div class="mb-3">
         <h4>Source Code</h4>
         <div id="editor">
-            {% if show_code %}
-                {{ submission.code }}
-            {% else %}
+            {%- if show_code -%}
+                {{- submission.code -}}
+            {%- else -%}
                 # Source code hidden: you have not solved this problem yet :3
-            {% endif %}
+            {%- endif -%}
         </div>
     </div>
     <hr />

@@ -17,7 +17,7 @@ class Problem(DBModel):
         time_limit: int,  # ms
         memory_limit: int,  # KB
         testcases: List[Testcase],
-        hints: str = None,
+        hints: Optional[List] = None,
         num_solves: int = 0,
         is_public: bool = False,
     ):
@@ -28,7 +28,7 @@ class Problem(DBModel):
         self.time_limit = time_limit
         self.memory_limit = memory_limit
         self.testcases = testcases
-        self.hints = '' if hints is None else hints
+        self.hints = [] if hints is None else hints
         self.num_solves = num_solves
         self.is_public = is_public
 
