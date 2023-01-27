@@ -208,14 +208,14 @@ def rejudge_submission(id: int):
 # User group
 
 
-@admin_bp.route('/user_groups')
+@admin_bp.route('/groups')
 def user_groups():
     user_groups = UserGroup.find_all()
     users = {user.id: user for user in User.find_all()}
     return render_template('user_groups.html', user_groups=user_groups, users=users)
 
 
-@admin_bp.route('/create/user_group', methods=['GET', 'POST'])
+@admin_bp.route('/create/group', methods=['GET', 'POST'])
 def create_user_group():
     if request.method == 'POST':
         user_ids_raw = request.form.get('selected_user_ids')
@@ -230,7 +230,7 @@ def create_user_group():
     return render_template('create_user_group.html', users=users)
 
 
-@admin_bp.route('/edit/user_group/<int:id>', methods=['GET', 'POST'])
+@admin_bp.route('/edit/group/<int:id>', methods=['GET', 'POST'])
 def edit_user_group(id: int):
     if request.method == 'POST':
         user_ids_raw = request.form.get('selected_user_ids')
@@ -246,7 +246,7 @@ def edit_user_group(id: int):
     return render_template('edit_user_group.html', user_group=user_group, users=users)
 
 
-@admin_bp.route('/delete/user_group/<int:id>')
+@admin_bp.route('/delete/group/<int:id>')
 def delete_user_group(id: int):
     user_group = UserGroup.find_one({'id': id})
     user_group.delete(wait=True)
