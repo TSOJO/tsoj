@@ -23,10 +23,10 @@ class User(UserMixin, DBModel):
     def __init__(
         self,
         email: str,
-        id: str = '',
-        username: str = '',
-        full_name: str = '',
-        plaintext_password: str = '',
+        id: str = None,
+        username: str = None,
+        full_name: str = None,
+        plaintext_password: str = None,
         user_group_ids: Optional[List[int]] = None,
         hide_name: bool = False,
         privilege: int = 0,
@@ -34,15 +34,16 @@ class User(UserMixin, DBModel):
     ):
         # Public properties
         self.email = email
-        self.id = email.split('@')[0] if id == '' else id
-        self.username = self.id if username == '' else username
-        self.full_name = full_name
+        self.id = email.split('@')[0] if id is None else id
+        self.username = self.id if username is None else username
+        self.full_name = '' if full_name is None else full_name
         self._user_group_ids = [] if user_group_ids is None else user_group_ids
         self.privilege = privilege
         self.hide_name = hide_name
         self.password_reset_token_expiration: Optional[datetime] = password_reset_token_expiration
 
         # Private properties
+        plaintext_password = '' if plaintext_password is None else plaintext_password
         self._hashed_password = generate_password_hash(plaintext_password)
         self._hashed_token = None
 
