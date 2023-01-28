@@ -17,10 +17,7 @@ def login():
         password = request.form.get('password')
         user = User.find_one({'email': email})
 
-        if not user:
-            flash('Invalid email', 'error')
-            return redirect(url_for('user_bp.login'))
-        if not user.check_password(password):
+        if not user or not user.check_password(password):
             flash('Invalid email or password', 'error')
             return redirect(url_for('user_bp.login'))
 
