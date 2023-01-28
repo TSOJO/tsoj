@@ -39,7 +39,7 @@ def login():
 def logout():
     logout_user()
     flash('Logged out successfully.')
-    return redirect(url_for('home_bp.home'))
+    return redirect(url_for('user_bp.login'))
 
 
 @user_bp.route('/register', methods=['GET', 'POST'])
@@ -151,40 +151,50 @@ def settings():
     )
 
 @user_bp.route('/verify/<plaintext_token>')
-def verify(plaintext_token):
-    token_data = Token.get_token_data(plaintext_token)
+def verify_new_email(plaintext_token):
+    token_data = Token.get_token_data(plaintext_token, 'change_email')
     if token_data is None:
         flash('Invalid token. This may be because it has expired.', 'error')
         return redirect(url_for('home_bp.home'))
+    
+    
     user_id = token_data['user_id']
     user = User.find_one({'id': user_id})
+    
+    if user is None:
+        flash('User not found.', 'error')
+        return redirect(url_for('user_bp.request_password_reset'))
+    
     user.email = token_data['new_email']
     user.save(replace=True, wait=True)
     flash('Email changed successfully.')
     return redirect(url_for('home_bp.home'))
 
-@user_bp.route('/password/reset/<token>', methods=['GET', 'POST'])
-def reset_password(token: str):
-    # ? Rate limit per ip
-    users = User.find_all()
-    # TODO: See user.check_password_reset_token() TODO.
-    search = [u for u in users if u.check_password_reset_token(token)]
-    if len(search) == 0:
-        flash('Invalid password reset link. This may be because your password reset link has expired.', 'error')
-        return redirect(url_for('user_bp.request_password_reset'))
-    user = search[0]
+@user_bp.route('/reset-password/<plaintext_token>', methods=['GET', 'POST'])
+def reset_password(plaintext_token: str):
     if request.method == 'POST':
+        token_data = Token.get_token_data(plaintext_token, 'change_password')
+        if token_data is None:
+            flash('Invalid token. This may be because it has expired.', 'error')
+            return redirect(url_for('user_bp.request_password_reset'))
+        
+        user_id = token_data['user_id']
+        user = User.find_one({'id': user_id})
+        
+        if user is None:
+            flash('User not found.', 'error')
+            return redirect(url_for('home_bp.home'))
+        
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
         if new_password == confirm_password:
             user.set_password(new_password)
-            user.clear_password_reset_token()
-            user.save(replace=True)
+            user.save(replace=True, wait=True)
             flash('Password changed successfully. Login with your new password.')
             return redirect(url_for('user_bp.login'))
         else:
             flash('Passwords must match.', 'error')
-    return render_template('password_reset.html', user=user, token=token)
+    return render_template('password_reset.html', plaintext_token=plaintext_token)
 
 @user_bp.route('/password/reset', methods=['GET', 'POST'])
 def request_password_reset():

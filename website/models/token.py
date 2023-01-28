@@ -16,12 +16,18 @@ class Token(DBModel):
         self,
         token_data: Dict,
         id: Optional[int] = None,
+        action: Optional[str] = None,
         hashed_token: Optional[str] = None,
         expiration: Optional[datetime] = None,
         ttl: int = 3
     ):
         self.token_data = token_data
         self.id = id
+        
+        if action is None:
+            self.action = ''
+        else:
+            self.action = action
         
         if hashed_token is None:
             self.plaintext_token = secrets.token_urlsafe(16)
@@ -39,10 +45,15 @@ class Token(DBModel):
         return self.expiration > datetime.utcnow()
     
     @classmethod
-    def get_token_data(cls, plaintext_token):
+    def get_token_data(cls, plaintext_token, action):
         hashed_token = hashlib.md5(plaintext_token.encode('utf-8')).hexdigest()
-        token = Token.find_one({'hashed_token': hashed_token})
-        if token is None:
+        token = Token.find_one(
+            {
+                'hashed_token': hashed_token,
+                'action': action,
+            }
+        )
+        if token is None or token.action != action:
             return None
         if not token.is_valid():
             token.delete()
@@ -57,6 +68,7 @@ class Token(DBModel):
         token_obj = Token(
             id=document['id'],
             token_data=document['token_data'],
+            action=document['action'],
             hashed_token=document['hashed_token'],
             expiration=datetime.strptime(
                 document['expiration'], '%Y-%m-%dT%H:%M:%S.%f'
@@ -69,6 +81,7 @@ class Token(DBModel):
             '_id': self.id,
             'id': self.id,
             'token_data': self.token_data,
+            'action': self.action,
             'hashed_token': self.hashed_token,
             'expiration': self.expiration.strftime('%Y-%m-%dT%H:%M:%S.%f'),
         }
