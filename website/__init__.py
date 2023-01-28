@@ -162,16 +162,16 @@ def debug_db(app):
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)
         with app.app_context():
-            problem.save()
+            problem.save(replace=True)
 
     user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
     with app.app_context():
-        user_group.save()
+        user_group.save(replace=True)
 
     assignment = Assignment(id=1, creator='JER', user_group_ids=[1])
     assignment.add_problems('A1', 'A2')
     with app.app_context():
-        assignment.save()
+        assignment.save(replace=True)
 
     admin = User(
         id='admin',
@@ -193,5 +193,5 @@ def debug_db(app):
         privilege=1,
     )
     with app.app_context():
-        admin.save()
-        test_user.save()
+        admin.save(replace=True)
+        test_user.save(replace=True)

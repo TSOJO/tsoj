@@ -50,9 +50,7 @@ class Submission:
             previous_submissions = Submission.find_all({'user_id': self.user_id, 'problem_id': self.problem_id, 'final_verdict': self.final_verdict.cast_to_document()})
             if previous_submissions and len(previous_submissions) < 2:
                 # User has not solved before
-                problem = self.fetch_problem()
-                problem.num_solves += 1
-                problem.save(replace=True)
+                self.fetch_problem().increment_num_solves()
 
     def tests_completed(self):
         count = 0

@@ -1,10 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, abort, flash
-from typing import List
 from flask_login import current_user
 
 from website.celery_tasks import judge
 from website.models import Problem, Submission
-from isolate_wrapper import Testcase
 
 
 problem_bp = Blueprint(

@@ -32,6 +32,10 @@ class Problem(DBModel):
         self.num_solves = num_solves
         self.is_public = is_public
 
+    def increment_num_solves(self):
+        self.num_solves += 1
+        self.save(replace=True)
+
     """Database Wrapper Methods"""
 
     @classmethod

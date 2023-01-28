@@ -5,8 +5,8 @@ class DBModel:
     def cast_to_document(self) -> Dict[str, object]:
         pass
 
-    def save(self):
+    def save(self, replace=False, wait=False):
         pass
 
-    def delete(self):
+    def delete(self, wait=False):
         pass
