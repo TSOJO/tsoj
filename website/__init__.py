@@ -80,7 +80,7 @@ def init_app() -> Flask:
             login_manager.login_view,  # login page
             'user_bp.register',
             'user_bp.static',
-            'user_bp.request_password_reset',
+            'user_bp.forgot_password',
             'user_bp.reset_password',
             'static',
         )

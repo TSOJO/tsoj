@@ -163,7 +163,7 @@ def verify_new_email(plaintext_token):
     
     if user is None:
         flash('User not found.', 'error')
-        return redirect(url_for('user_bp.request_password_reset'))
+        return redirect(url_for('user_bp.forgot_password'))
     
     user.email = token_data['new_email']
     user.save(replace=True, wait=True)
@@ -176,7 +176,7 @@ def reset_password(plaintext_token: str):
         token_data = Token.get_token_data(plaintext_token, 'change_password')
         if token_data is None:
             flash('Invalid token. This may be because it has expired.', 'error')
-            return redirect(url_for('user_bp.request_password_reset'))
+            return redirect(url_for('user_bp.forgot_password'))
         
         user_id = token_data['user_id']
         user = User.find_one({'id': user_id})
@@ -196,8 +196,8 @@ def reset_password(plaintext_token: str):
             flash('Passwords must match.', 'error')
     return render_template('password_reset.html', plaintext_token=plaintext_token)
 
-@user_bp.route('/password/reset', methods=['GET', 'POST'])
-def request_password_reset():
+@user_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
     # TODO Add Captcha
     if request.method == 'POST':
         email = request.form.get('email')
@@ -208,7 +208,7 @@ def request_password_reset():
             user.send_reset_password_email()
             user.save(replace=True)
         return redirect(url_for('user_bp.login'))
-    return render_template('request_password_reset.html')
+    return render_template('forgot_password.html')
 
 @user_bp.route('/admin_debug')
 def admin_debug():
