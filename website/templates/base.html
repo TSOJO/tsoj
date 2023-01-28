@@ -38,6 +38,7 @@
         </script>
     </head>
     <body class="d-flex flex-column min-vh-100">
+        {% if current_user.is_authenticated %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <button class="navbar-toggler"
@@ -75,43 +76,38 @@
                                 <a class="nav-link" href="{{ url_for('user_bp.admin_debug')}}">Login admin(debug)</a>
                             </li>
                         {% endif %}
-                        {% if current_user.is_authenticated %}
-                            {% if current_user.is_admin() %}
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
-                                    <div class="dropdown-menu">
-                                        <a href="{{ url_for('admin_bp.create_problem')}}" class="dropdown-item">Create problem</a>
-                                        <a href="{{ url_for('admin_bp.create_assignment')}}"
-                                           class="dropdown-item">Create
-                                        assignment</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a href="{{ url_for('admin_bp.assignments')}}" class="dropdown-item">View assignments</a>
-                                        <a href="{{ url_for('admin_bp.user_groups')}}" class="dropdown-item">View groups</a>
-                                        <a href="{{ url_for('admin_bp.edit_privileges')}}" class="dropdown-item">Edit user privileges</a>
-                                    </div>
-                                </li>
-                            {% endif %}
+                        {% if current_user.is_admin() %}
                             <li class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello,
-                                    <b>{{ current_user.username }}</b></a>
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
                                 <div class="dropdown-menu">
-                                    <a href="{{ url_for('user_bp.profile', id=current_user.id)}}"
-                                       class="dropdown-item">Profile</a>
-                                    <a href="{{ url_for('user_bp.settings')}}" class="dropdown-item">Account settings</a>
+                                    <a href="{{ url_for('admin_bp.create_problem')}}" class="dropdown-item">Create problem</a>
+                                    <a href="{{ url_for('admin_bp.create_assignment')}}"
+                                        class="dropdown-item">Create
+                                    assignment</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="{{ url_for('admin_bp.assignments')}}" class="dropdown-item">View assignments</a>
+                                    <a href="{{ url_for('admin_bp.user_groups')}}" class="dropdown-item">View groups</a>
+                                    <a href="{{ url_for('admin_bp.edit_privileges')}}" class="dropdown-item">Edit user privileges</a>
                                 </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('user_bp.logout')}}">Logout</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('user_bp.login')}}">Login</a>
-                            </li>
                         {% endif %}
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hello,
+                                <b>{{ current_user.username }}</b></a>
+                            <div class="dropdown-menu">
+                                <a href="{{ url_for('user_bp.profile', id=current_user.id)}}"
+                                    class="dropdown-item">Profile</a>
+                                <a href="{{ url_for('user_bp.settings')}}" class="dropdown-item">Account settings</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('user_bp.logout')}}">Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
+        {% endif %}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
