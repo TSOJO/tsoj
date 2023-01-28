@@ -82,6 +82,7 @@ def init_app() -> Flask:
             'user_bp.static',
             'user_bp.forgot_password',
             'user_bp.reset_password',
+            'user_bp.verify_new_email',
             'static',
         )
         if app.config['DEV']:
