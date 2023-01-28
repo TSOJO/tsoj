@@ -2,7 +2,7 @@ from flask import (Blueprint, abort, flash, redirect, render_template, request,
                    url_for, current_app)
 from flask_login import current_user, login_required, login_user, logout_user
 
-from website.models import Problem, User, UserGroup
+from website.models import Problem, User, UserGroup, Token
 from website.utils import is_safe_url
 
 user_bp = Blueprint(
@@ -85,44 +85,63 @@ def profile(id: str):
 @user_bp.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'POST':
-        new_username = request.form.get('username')
-        if new_username and new_username != current_user.username:
-            existing = User.find_all({'username': new_username})
-            if existing:
-                flash('Username already exists', 'error')
-            else:
-                current_user.username = new_username
-                flash('Username changed successfully.')
-
-        new_full_name = request.form.get('full_name')
-        if new_full_name and new_full_name != current_user.full_name:
-            current_user.full_name = new_full_name
-            flash('Full name changed successfully.')
-
-        new_hide_name = 'hide_name' in request.form
-        if new_hide_name != current_user.hide_name:
-            current_user.hide_name = new_hide_name
-            flash('Hide name option changed successfully.')
-
-        current_password = request.form.get('current_password')
-        new_password = request.form.get('new_password')
-        confirm_password = request.form.get('confirm_password')
-        if new_password:
+        if request.form.get('action') == 'email_update':
+            current_password = request.form.get('current_password')
+            new_email = request.form.get('email')
+            print(new_email)
+            print(current_password)
             if current_user.check_password(current_password):
-                if new_password == confirm_password:
-                    current_user.set_password(new_password)
-                    flash('Password changed successfully.')
-                else:
-                    flash('New passwords must match', 'error')
+                if new_email and new_email != current_user.email:
+                    existing = User.find_all({'email': new_email})
+                    if existing:
+                        flash('That email is already being used for another account.', 'error')
+                    else:
+                        current_user.validate_new_email(new_email)
+                        flash('An email has been sent to the new address with a verification link.')
             else:
                 flash('Current password not correct.', 'error')
+                    
+        elif request.form.get('action') == 'profile_update':
+            new_username = request.form.get('username')
+            if new_username and new_username != current_user.username:
+                existing = User.find_all({'username': new_username})
+                if existing:
+                    flash('Username already exists.', 'error')
+                else:
+                    current_user.username = new_username
+                    flash('Username changed successfully.')
 
-        selected_groups = request.form.getlist('group_select')
-        if selected_groups:
-            selected_group_ints = [int(g) for g in selected_groups]
-            if set(selected_group_ints) != set(current_user.user_group_ids):
-                current_user.user_group_ids = selected_group_ints
-                flash('Group changed successfully.')
+            new_full_name = request.form.get('full_name')
+            if new_full_name and new_full_name != current_user.full_name:
+                current_user.full_name = new_full_name
+                flash('Full name changed successfully.')
+
+            new_hide_name = 'hide_name' in request.form
+            if new_hide_name != current_user.hide_name:
+                current_user.hide_name = new_hide_name
+                flash('Hide name option changed successfully.')
+                
+            selected_groups = request.form.getlist('group_select')
+            if selected_groups:
+                selected_group_ints = [int(g) for g in selected_groups]
+                if set(selected_group_ints) != set(current_user.user_group_ids):
+                    current_user.user_group_ids = selected_group_ints
+                    flash('Group changed successfully.')
+        
+        elif request.form.get('action') == 'password_update':
+            current_password = request.form.get('current_password')
+            confirm_password = request.form.get('confirm_password')
+            new_password = request.form.get('new_password')
+            if new_password:
+                if current_user.check_password(current_password):
+                    if new_password == confirm_password:
+                        current_user.set_password(new_password)
+                        flash('Password changed successfully.')
+                    else:
+                        flash('New passwords must match.', 'error')
+                else:
+                    flash('Current password not correct.', 'error')
+
 
         current_user.save(replace=True)
     groups = UserGroup.find_all()
@@ -130,6 +149,19 @@ def settings():
     return render_template(
         'settings.html', groups=groups, user_group_ids=user_group_ids
     )
+
+@user_bp.route('/verify/<plaintext_token>')
+def verify(plaintext_token):
+    token_data = Token.get_token_data(plaintext_token)
+    if token_data is None:
+        flash('Invalid token. This may be because it has expired.', 'error')
+        return redirect(url_for('home_bp.home'))
+    user_id = token_data['user_id']
+    user = User.find_one({'id': user_id})
+    user.email = token_data['new_email']
+    user.save(replace=True, wait=True)
+    flash('Email changed successfully.')
+    return redirect(url_for('home_bp.home'))
 
 @user_bp.route('/password/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token: str):

@@ -16,6 +16,7 @@ from website.models import assignment as assignment
 from website.models import assignment as assignment_module
 from website.models import submission as submission_module
 from website.models import user_group as user_group_module
+from website.models import token as token_module
 from website.models.db_model import DBModel
 
 
@@ -188,7 +189,28 @@ class User(UserMixin, DBModel):
         send_email.delay(subject, body, self.email)
 
         self.set_password_reset_token(token)
-        self.password_reset_token_expiration = datetime.utcnow() + timedelta(hours = 3)
+        self.password_reset_token_expiration = datetime.utcnow() + timedelta(hours=3)
+    
+    def validate_new_email(self, new_email):
+        token = token_module.Token(token_data={
+            'action': 'change_email',
+            'user_id': self.id,
+            'new_email': new_email,
+        })
+        plaintext_token = token.save(wait=True).plaintext_token
+        
+        subject = 'Verify email'
+        body = (
+            f"Hi {self.full_name},\n\n"
+            "Someone has changed their email address to this address. If it was not you, please ignore this email.\n\n"
+            "Click this link to verify this address.\n"
+            f"{request.url_root[0: -1]}{url_for('user_bp.verify', plaintext_token=plaintext_token)}\n\n"
+            "This link expires in 3 hours.\n\n"
+            "Regards,\n"
+            "TSOJ"
+        )
+
+        send_email.delay(subject, body, new_email)
 
     """Database Wrapper Methods"""
 

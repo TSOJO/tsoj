@@ -40,12 +40,13 @@ def init_app() -> Flask:
     login_manager.login_view = 'user_bp.login'
     login_manager.login_message_category = "error"
 
-    from website.models import Assignment, Problem, Submission, User, UserGroup
+    from website.models import Assignment, Problem, Submission, User, UserGroup, Token
 
     with app.app_context():
         Submission.init()
         Assignment.init()
         UserGroup.init()
+        Token.init()
 
     # Register blueprints.
     # ! I know you hate this (I do too), but PLEASE don't touch.
@@ -164,12 +165,12 @@ def debug_db(app):
 
     user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
     with app.app_context():
-        user_group.save(replace=True)
+        user_group.save()
 
     assignment = Assignment(id=1, creator='JER', user_group_ids=[1])
     assignment.add_problems('A1', 'A2')
     with app.app_context():
-        assignment.save(replace=True)
+        assignment.save()
 
     admin = User(
         id='admin',
@@ -191,5 +192,5 @@ def debug_db(app):
         privilege=1,
     )
     with app.app_context():
-        admin.save(replace=True)
-        test_user.save(replace=True)
+        admin.save()
+        test_user.save()
