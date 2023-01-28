@@ -1,32 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Register{% endblock title %}
 {% block content %}
-    <div class="mb-3">
-        <h1>Register</h1>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="card col-lg-6 p-4">
+            <div class="card-body">
+                <h2 class="card-title mb-3">Register</h2>
+                <form method="post"
+                    action="{{ url_for('user_bp.register') }}"
+                    class="needs-validation"
+                    novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text"
+                            class="form-control"
+                            name="full_name"
+                            id="full_name"
+                            placeholder="John Doe"
+                            required />
+                        <label for="full_name">Full name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email"
+                            class="form-control"
+                            name="email"
+                            id="email"
+                            placeholder="name@tonbridge-school.org"
+                            required />
+                        <label for="email">Email address</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-3">Register</button>
+                </form>
+                <div class="d-flex justify-content-between" style="gap:20px;">
+                    <a>Your password will be emailed to you.</a>
+                    <a href="{{ url_for('user_bp.login')}}" class="text-decoration-none">Login</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <form method="post"
-          action="{{ url_for('user_bp.register') }}"
-          class="needs-validation"
-          novalidate>
-        <div class="form-floating mb-3">
-            <input type="text"
-                   class="form-control"
-                   name="full_name"
-                   id="full_name"
-                   placeholder="John Doe"
-                   required />
-            <label for="full_name">Full name</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="email"
-                   class="form-control"
-                   name="email"
-                   id="email"
-                   placeholder="name@tonbridge-school.org"
-                   required />
-            <label for="email">Email address</label>
-        </div>
-        <p>Your password will be emailed to you.</p>
-        <button type="submit" class="btn btn-primary mb-3">Register</button>
-    </form>
 {% endblock content %}

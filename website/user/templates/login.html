@@ -1,36 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock title %}
 {% block content %}
-    <div class="mb-3">
-        <h1>Login</h1>
+    <div class="d-flex justify-content-center mt-5">
+        <div class="card col-lg-6 p-4">
+            <div class="card-body">
+                <h2 class="card-title mb-3">Login</h2>
+                <form method="post"
+                      action="{{ url_for('user_bp.login') }}"
+                      class="needs-validation"
+                      novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="email"
+                               class="form-control"
+                               name="email"
+                               id="floatingInput"
+                               placeholder="name@tonbridge-school.org"
+                               required />
+                        <label for="floatingInput">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password"
+                               class="form-control"
+                               name="password"
+                               id="floatingPassword"
+                               placeholder="Password"
+                               required />
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-3">Login</button>
+                </form>
+                <div class="d-flex justify-content-between" style="gap:20px;">
+                    <a href="{{ url_for('user_bp.request_password_reset')}}"
+                       class="text-decoration-none">Forgot password?</a>
+                    <a href="{{ url_for('user_bp.register')}}" class="text-decoration-none">Register</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <form method="post"
-          action="{{ url_for('user_bp.login') }}"
-          class="needs-validation"
-          novalidate>
-        <div class="form-floating mb-3">
-            <input type="email"
-                   class="form-control"
-                   name="email"
-                   id="floatingInput"
-                   placeholder="name@tonbridge-school.org"
-                   required />
-            <label for="floatingInput">Email address</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="password"
-                   class="form-control"
-                   name="password"
-                   id="floatingPassword"
-                   placeholder="Password"
-                   required />
-            <label for="floatingPassword">Password</label>
-            <a href="{{ url_for('user_bp.request_password_reset')}}"
-               class="text-decoration-none">Forgot password?</a>
-        </div>
-        <button type="submit" class="btn btn-primary mb-3">Login</button>
-    </form>
-    <p>
-        No account? <a href="{{ url_for('user_bp.register')}}" class="text-decoration-none">Register</a> instead.
-    </p>
 {% endblock content %}
