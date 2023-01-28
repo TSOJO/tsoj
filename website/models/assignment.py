@@ -80,7 +80,7 @@ class Assignment(DBModel):
         return assignments
 
     def save(self, replace=False, wait=False) -> Assignment:
-        if not self.id:
+        if self.id is None:
             Assignment._max_id += 1
             self.id = Assignment._max_id
         doc = self.cast_to_document()

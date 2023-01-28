@@ -114,7 +114,7 @@ class Submission:
         return submissions
 
     def save(self, replace=False, wait=False) -> Submission:
-        if not self.id:
+        if self.id is None:
             # Generate new incremented ID
             Submission._max_id += 1
             self.id = Submission._max_id

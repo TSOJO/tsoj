@@ -74,7 +74,7 @@ class UserGroup(DBModel):
         return user_groups
 
     def save(self, replace=False, wait=False) -> UserGroup:
-        if not self.id:
+        if self.id is None:
             UserGroup._max_id += 1
             self.id = UserGroup._max_id
         doc = self.cast_to_document()
