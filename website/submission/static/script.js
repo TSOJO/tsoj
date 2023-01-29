@@ -60,23 +60,11 @@ function make_request() {
 function update_results(results) {
     for (let i = 0; i < results.length; i++) {
         let verdict_node = $(`#verdict${(i + 1)}`)
+        if (!verdict_node.html().includes('Waiting for Judge'))
+            continue
         let time_node = $(`#time${(i + 1)}`)
         let memory_node = $(`#memory${(i + 1)}`)
         let details_node = $(`#details${(i + 1)}`)
-        // if (verdict_node.length == 0) {
-        //     // Create a new row for this testcase.
-        //     let new_row = document.createElement('tr')
-        //     new_row.innerHTML = [
-        //         `<td>${i + 1}</td>`,
-        //         `<td id="verdict${i + 1}"></td>`,
-        //         `<td id="time${i + 1}"></td>`,
-        //         `<td id="memory${i + 1}"></td>`,
-        //     ].join('')
-        //     $('#results-table-body').append(new_row)
-        //     verdict_node = $(`#verdict${(i + 1)}`)
-        //     time_node = $(`#time${(i + 1)}`)
-        //     memory_node = $(`#memory${(i + 1)}`)
-        // }
         verdict_node.html(verdict_to_html(results[i].verdict))
         if (results[i].verdict.verdict !== 'WJ') {
             time_node.html(results[i].time + 'ms')
@@ -96,7 +84,7 @@ function update_results(results) {
                 '                    aria-label="Close"></button>',
                 '            </div>',
                 '            <div class="modal-body">',
-                '                <div style="white-space:pre-line;" class="consolas">',
+                '                <div style="white-space:pre-wrap;" class="consolas">',
                 '                    '+results[i].message+'',
                 '                </div>',
                 '            </div>',

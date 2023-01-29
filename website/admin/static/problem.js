@@ -115,7 +115,7 @@ function generate_answers() {
                             '                    aria-label="Close"></button>',
                             '            </div>',
                             '            <div class="modal-body">',
-                            '                <div style="white-space:pre-line;" class="consolas">',
+                            '                <div style="white-space:pre-wrap;" class="consolas">',
                             '                    '+message+'',
                             '                </div>',
                             '            </div>',
