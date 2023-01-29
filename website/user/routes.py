@@ -22,7 +22,6 @@ def login():
             return redirect(url_for('user_bp.login'))
 
         login_user(user)
-        flash(f'Logged in successfully as {user.username}.')
 
         next_page = request.args.get('next')
         if not is_safe_url(next_page):
@@ -35,7 +34,6 @@ def login():
 @user_bp.route('/logout')
 def logout():
     logout_user()
-    flash('Logged out successfully.')
     return redirect(url_for('user_bp.login'))
 
 
@@ -85,8 +83,6 @@ def settings():
         if request.form.get('action') == 'email_update':
             current_password = request.form.get('current_password')
             new_email = request.form.get('email')
-            print(new_email)
-            print(current_password)
             if current_user.check_password(current_password):
                 if new_email and new_email != current_user.email:
                     existing = User.find_all({'email': new_email})
@@ -103,7 +99,7 @@ def settings():
             if new_username and new_username != current_user.username:
                 existing = User.find_all({'username': new_username})
                 if existing:
-                    flash('Username already exists.', 'error')
+                    flash('That username is already being used for another account.', 'error')
                 else:
                     current_user.username = new_username
                     flash('Username changed successfully.')
