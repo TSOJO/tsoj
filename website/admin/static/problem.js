@@ -80,9 +80,9 @@ function generate_answers() {
         }
 
         const placeholder = document.getElementById('gen-alert-placeholder')
-        fetch("/api/generate-answer",
+        fetch('/api/generate-answer',
             {
-                method: "POST",
+                method: 'POST',
                 body: JSON.stringify(payload),
             })
             .then(response => response.json())
@@ -139,10 +139,13 @@ function generate_answers() {
 const id_field = document.getElementById('id')
 const id_invalid_feedback = document.getElementById('id-invalid-feedback')
 id_field.addEventListener('blur', () => {
-    fetch('/api/db/problem/' + id_field.value)
-        .then(response => response.json())
-        .then(data => {
-            if(data !== null) {
+    fetch('/api/db/problem/' + id_field.value,
+        {
+            method: 'HEAD',
+        })
+        .then(response => response['status'])
+        .then(status => {
+            if(status === 200) {
                 id_field.setCustomValidity('A problem with that ID already exists.')
                 id_invalid_feedback.innerText = 'A problem with that ID already exists.'
             } else {

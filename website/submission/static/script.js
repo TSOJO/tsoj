@@ -37,7 +37,8 @@ function make_request() {
         testsCompleted: tests_completed
     }
 
-    fetch("/api/grab-submission-change",
+    // Long poll for submission change.
+    fetch("/api/capture-submission-change",
         {
             method: "POST",
             body: JSON.stringify(payload),

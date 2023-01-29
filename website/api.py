@@ -12,20 +12,11 @@ def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
 
-@api_bp.route('/db/<collection>/<id>')
-def fetch_db(collection: str, id):
-    obj: DBModel = None
-    if collection == 'problem':
-        obj = Problem.find_one({'id': id})
-    if collection == 'user':
-        obj = User.find_one({'id': id})
-    if collection == 'assignment':
-        obj = Assignment.find_one({'id': id})
-    if collection == 'submission':
-        obj = Submission.find_one({'id': id})
-    if obj is None:
-        return jsonify(None)
-    return jsonify(obj.cast_to_document())
+@api_bp.route('/db/problem/<id>', methods=['HEAD'])
+def check_problem_exists(id):
+    if Problem.find_one({'id': id}) is None:
+        return '', 204
+    return '', 200
 
 
 @api_bp.route('/generate-answer', methods=['POST'])
@@ -57,8 +48,9 @@ def generate_answer():
     )
 
 
-@api_bp.route('/grab-submission-change/', methods=['POST'])
-def grab_submission_change():
+@api_bp.route('/capture-submission-change/', methods=['POST'])
+def capture_submission_change():
+    # Long poll for submission change.
     req_json = json.loads(request.data)
     submission_id = req_json.get('id')
     tests_completed = req_json.get('testsCompleted')
@@ -67,7 +59,7 @@ def grab_submission_change():
         submission_id = int(submission_id)
         tests_completed = int(tests_completed)
     except (ValueError, TypeError):
-        abort(400, description="Invalid parameters")
+        abort(400, description='Invalid parameters')
 
     # This will hold the request for {hold_for} seconds, and will return whenever submission changes.
     submission = Submission.find_one({'id': submission_id})
