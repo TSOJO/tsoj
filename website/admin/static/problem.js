@@ -18,6 +18,7 @@ function add_field() {
     sample_checkbox.name = 'sample' + testcases_count
     sample_checkbox.id = 'sample' + testcases_count
     if (document.getElementById('auto-generate-answer-checkbox').checked === true) {
+        answer_node.innerHTML = 'Press "Generate answers" to generate answers.'
         answer_node.readOnly = true
     }
     let testcase_container = document.getElementById('testcase-container')
@@ -58,7 +59,18 @@ function remove_field(node) {
     }
 }
 
+let completed_requests = 0
+
 function generate_answers() {
+    // Disable buttons.
+    $('#add-testcase-btn').prop('disabled', true)
+    $('.remove-testcase-btn').each(function() {
+        $(this).prop('disabled', true)
+    })
+    $('#gen-answer-button').prop('disabled', true)
+    $('#gen-answer-button').html(
+        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (0/' + testcases_count + ')'
+    )
     for (let i = 1; i <= testcases_count; i++) {
         var payload = {
             generatorCode: $('#generator-code').val(),
@@ -87,6 +99,23 @@ function generate_answers() {
                         '</div>'
                     ].join('')
                     placeholder.append(wrapper)
+                }
+                completed_requests++
+                $('#gen-answer-button').html(
+                    '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (' + completed_requests + '/' + testcases_count + ')'
+                )
+                if (completed_requests == testcases_count) {
+                    // All requests done.
+                    // Renable buttons.
+                    $('#add-testcase-btn').prop('disabled', false)
+                    $('.remove-testcase-btn').each(function() {
+                        $(this).prop('disabled', false)
+                    })
+                    $('#gen-answer-button').prop('disabled', false)
+                    $('#gen-answer-button').html(
+                        'Generate answers'
+                    )
+                    completed_requests = 0
                 }
             })
     }

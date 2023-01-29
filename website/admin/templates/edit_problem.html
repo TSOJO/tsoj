@@ -64,7 +64,7 @@
                        required />
                 <div class="invalid-feedback">This field is required.</div>
             </div>
-            <div class="row mb-3">
+            <div class="row g-3 mb-3">
                 <div class="col-lg-6">
                     <div class="form-group">
                         <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
@@ -93,7 +93,7 @@
             </div>
             <label class="form-label">Testcases</label>
             <div class="border p-4 mb-3">
-                <button type="button" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
+                <button type="button" id="add-testcase-btn" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
                 <div id="rem-alert-placeholder"></div>
                 <!-- dummy testcase -->
                 <div id="testcase-div" style="display: none" class="border p-4">
@@ -108,7 +108,7 @@
                             </div>
                             <div class="my-auto">
                                 <button type="button"
-                                        class="btn btn-danger"
+                                        class="btn btn-danger remove-testcase-btn"
                                         onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">
                                     Remove
                                 </button>
