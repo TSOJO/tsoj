@@ -64,7 +64,7 @@ let completed_requests = 0
 function generate_answers() {
     // Disable buttons.
     $('#add-testcase-btn').prop('disabled', true)
-    $('.remove-testcase-btn').each(function() {
+    $('.remove-testcase-btn').each(function () {
         $(this).prop('disabled', true)
     })
     $('#gen-answer-button').prop('disabled', true)
@@ -91,14 +91,53 @@ function generate_answers() {
                     $('#answer' + i).val(data['answer'])
                 } else {
                     const wrapper = document.createElement('div')
-                    let message = data['message'] ? ', possibly due to ' + data['message'] : ''
-                    wrapper.innerHTML = [
-                        '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
-                        '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + message + '</div>',
-                        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                        '</div>'
-                    ].join('')
-                    placeholder.append(wrapper)
+                    let message = data['message']
+                    if (message) {
+                        wrapper.innerHTML = [
+                            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
+                            '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + '</div>',
+                            '   <div>',
+                            '       <a data-bs-toggle="modal" data-bs-target="#detail' + i + '-modal" href="#" class="text-decoration-none">Details</a>',
+                            '       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                            '   </div>',
+                            '</div>'
+                        ].join('')
+                        const modal = document.createElement('div')
+                        modal.innerHTML = [
+                            '<div class="modal fade" id="detail'+i+'-modal" tabindex="-1"',
+                            'aria-labelledby="detail'+i+'-modal-label" aria-hidden="true">',
+                            '    <div class="modal-dialog">',
+                            '        <div class="modal-content">',
+                            '            <div class="modal-header">',
+                            '                <h1 class="modal-title fs-5" id="detail'+i+'-modal-label">Error message',
+                            '                </h1>',
+                            '                <button type="button" class="btn-close" data-bs-dismiss="modal"',
+                            '                    aria-label="Close"></button>',
+                            '            </div>',
+                            '            <div class="modal-body">',
+                            '                <div style="white-space:pre-line;" class="consolas">',
+                            '                    '+message+'',
+                            '                </div>',
+                            '            </div>',
+                            '            <div class="modal-footer">',
+                            '                <button type="button" class="btn btn-secondary"',
+                            '                    data-bs-dismiss="modal">Close</button>',
+                            '            </div>',
+                            '        </div>',
+                            '    </div>',
+                            '</div>',].join('')
+                        placeholder.append(modal)
+                        placeholder.append(wrapper)
+                    }
+                    else {
+                        wrapper.innerHTML = [
+                            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
+                            '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + message + '</div>',
+                            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                            '</div>'
+                        ].join('')
+                        placeholder.append(wrapper)
+                    }
                 }
                 completed_requests++
                 $('#gen-answer-button').html(
@@ -108,7 +147,7 @@ function generate_answers() {
                     // All requests done.
                     // Renable buttons.
                     $('#add-testcase-btn').prop('disabled', false)
-                    $('.remove-testcase-btn').each(function() {
+                    $('.remove-testcase-btn').each(function () {
                         $(this).prop('disabled', false)
                     })
                     $('#gen-answer-button').prop('disabled', false)
@@ -145,7 +184,7 @@ id_field.addEventListener('blur', () => {
         })
         .then(response => response['status'])
         .then(status => {
-            if(status === 200) {
+            if (status === 200) {
                 id_field.setCustomValidity('A problem with that ID already exists.')
                 id_invalid_feedback.innerText = 'A problem with that ID already exists.'
             } else {
@@ -160,7 +199,7 @@ window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
     }
-    
+
     // Initialise code editor.
     let editor = ace.edit('editor')
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')

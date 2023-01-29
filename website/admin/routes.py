@@ -202,6 +202,8 @@ def rejudge_submission(id: int):
     if problem is None:
         flash(f'Unable to rejudge submission {id}: problem not found.', 'error')
         return redirect(url_for('submission_bp.submission', id=id))
+    submission.create_empty_results(len(problem.testcases))
+    submission.save(replace=True, wait=True)
     judge.delay(submission.code, submission.cast_to_document(), submission.problem_id)
     flash('Rejudging...')
     return redirect(url_for('submission_bp.submission', id=id))

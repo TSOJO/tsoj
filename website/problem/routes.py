@@ -27,6 +27,8 @@ def problem_submit(id: str):
 
     user_code = request.form.get('user_code')
     new_submission = Submission(user_id=user_id, problem_id=id, code=user_code)
+    problem = Problem.find_one({'id': id})
+    new_submission.create_empty_results(len(problem.testcases))
     submission_id = new_submission.save(wait=True).id
     judge.delay(
         user_code=user_code,

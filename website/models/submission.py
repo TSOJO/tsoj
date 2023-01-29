@@ -37,11 +37,12 @@ class Submission:
 
     def create_empty_results(self, num_results):
         self.results = []
+        self.final_verdict = Verdict.WJ
         for _ in range(num_results):
-            self.results.append(Result(verdict=Verdict.WJ, time=-1, memory=-1))
+            self.results.append(Result.empty())
 
-    def update_result(self, result_index, verdict, time, memory):
-        self.results[result_index] = Result(verdict=verdict, time=time, memory=memory)
+    def update_result(self, result_index, result: Result):
+        self.results[result_index] = result
         self.final_verdict = IsolateSandbox.decide_final_verdict(
             [r.verdict for r in self.results]
         )

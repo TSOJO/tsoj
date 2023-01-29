@@ -23,7 +23,7 @@ def judge(user_code: str, submission_dict, problem_id):
             user_code, problem.testcases, problem.time_limit, problem.memory_limit
         )
     ):
-        submission.update_result(i, result.verdict, result.time, result.memory)
+        submission.update_result(i, result)
     return 'done'
 
 

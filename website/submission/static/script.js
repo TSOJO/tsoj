@@ -62,24 +62,51 @@ function update_results(results) {
         let verdict_node = $(`#verdict${(i + 1)}`)
         let time_node = $(`#time${(i + 1)}`)
         let memory_node = $(`#memory${(i + 1)}`)
-        if (verdict_node.length == 0) {
-            // Create a new row for this testcase.
-            let new_row = document.createElement('tr')
-            new_row.innerHTML = [
-                `<td>${i + 1}</td>`,
-                `<td id="verdict${i + 1}"></td>`,
-                `<td id="time${i + 1}"></td>`,
-                `<td id="memory${i + 1}"></td>`,
-            ].join('')
-            $('#results-table-body').append(new_row)
-            verdict_node = $(`#verdict${(i + 1)}`)
-            time_node = $(`#time${(i + 1)}`)
-            memory_node = $(`#memory${(i + 1)}`)
-        }
+        let details_node = $(`#details${(i + 1)}`)
+        // if (verdict_node.length == 0) {
+        //     // Create a new row for this testcase.
+        //     let new_row = document.createElement('tr')
+        //     new_row.innerHTML = [
+        //         `<td>${i + 1}</td>`,
+        //         `<td id="verdict${i + 1}"></td>`,
+        //         `<td id="time${i + 1}"></td>`,
+        //         `<td id="memory${i + 1}"></td>`,
+        //     ].join('')
+        //     $('#results-table-body').append(new_row)
+        //     verdict_node = $(`#verdict${(i + 1)}`)
+        //     time_node = $(`#time${(i + 1)}`)
+        //     memory_node = $(`#memory${(i + 1)}`)
+        // }
         verdict_node.html(verdict_to_html(results[i].verdict))
         if (results[i].verdict.verdict !== 'WJ') {
             time_node.html(results[i].time + 'ms')
             memory_node.html(results[i].memory + ' KB')
+        }
+        if (results[i].message) {
+            details_node.html(['<a data-bs-toggle="modal" data-bs-target="#detail' + (i+1) + '-modal" href="#"',
+                '    class="text-decoration-none">Details</a>',
+                '<div class="modal fade" id="detail' + (i+1) + '-modal" tabindex="-1"',
+                '    aria-labelledby="detail' + (i+1) + '-modal-label" aria-hidden="true">',
+                '    <div class="modal-dialog">',
+                '        <div class="modal-content">',
+                '            <div class="modal-header">',
+                '                <h1 class="modal-title fs-5" id="detail' + (i+1) + '-modal-label">Error message',
+                '                </h1>',
+                '                <button type="button" class="btn-close" data-bs-dismiss="modal"',
+                '                    aria-label="Close"></button>',
+                '            </div>',
+                '            <div class="modal-body">',
+                '                <div style="white-space:pre-line;" class="consolas">',
+                '                    '+results[i].message+'',
+                '                </div>',
+                '            </div>',
+                '            <div class="modal-footer">',
+                '                <button type="button" class="btn btn-secondary"',
+                '                    data-bs-dismiss="modal">Close</button>',
+                '            </div>',
+                '        </div>',
+                '    </div>',
+                '</div>',].join(''))
         }
     }
 }
@@ -92,9 +119,10 @@ window.onpageshow = () => {
     editor.setTheme("ace/theme/textmate")
     editor.session.setMode("ace/mode/python")
     editor.session.setUseWrapMode(true)
-    editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, maxLines: Infinity})
+    editor.setOptions({ readOnly: true, highlightActiveLine: false, highlightGutterLine: false, maxLines: Infinity })
     editor.renderer.$cursorLayer.element.style.display = "none"
     if ($('#final-verdict-verdict').html() === 'WJ') {
+        // setTimeout(() => { location.reload() }, 500)
         make_request()
     }
 }
