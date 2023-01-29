@@ -45,13 +45,14 @@ def generate_answer():
     except ValueError:
         abort(400, description='Invalid parameters')
 
-    answer, verdict = IsolateSandbox().generate_answer(
+    answer, verdict, message = IsolateSandbox().generate_answer(
         code, input_, time_limit, memory_limit
     )
     return jsonify(
         {
             'answer': answer,
             'verdict': verdict.cast_to_document(),
+            'message': message,
         }
     )
 

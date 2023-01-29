@@ -79,9 +79,10 @@ function generate_answers() {
                     $('#answer' + i).val(data['answer'])
                 } else {
                     const wrapper = document.createElement('div')
+                    let message = data['message'] ? ', possibly due to ' + data['message'] : ''
                     wrapper.innerHTML = [
                         '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
-                        '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + '</div>',
+                        '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + message + '</div>',
                         '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
                         '</div>'
                     ].join('')
