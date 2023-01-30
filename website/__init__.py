@@ -5,6 +5,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
+from isolate_wrapper import IsolateSandbox
+
 celery = Celery(
     __name__,
     broker=CELERY_BROKER_URL,
@@ -39,6 +41,8 @@ def init_app() -> Flask:
     login_manager.init_app(app)
     login_manager.login_view = 'user_bp.login'
     login_manager.login_message_category = "error"
+
+    IsolateSandbox.cleanup_all()
 
     from website.models import Assignment, Problem, Submission, User, UserGroup, Token
 
