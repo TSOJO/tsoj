@@ -34,7 +34,7 @@ let tests_completed = 0
 function make_request() {
     var payload = {
         id: submission_id,
-        testsCompleted: tests_completed
+        tests_completed: tests_completed
     }
 
     // Long poll for submission change.
@@ -45,10 +45,10 @@ function make_request() {
         })
         .then(response => response.json())
         .then(data => {
-            tests_completed = data['testsCompleted']
+            tests_completed = data['tests_completed']
             update_results(data['results'])
-            if (data['finalVerdict'].verdict !== "WJ") {
-                $('#final-verdict').html(verdict_to_html(data['finalVerdict']))
+            if (data['final_verdict'].verdict !== "WJ") {
+                $('#final-verdict').html(verdict_to_html(data['final_verdict']))
             } else {
                 // For problems with only fast testcases, give judge some time so we don't DDOS it
                 // (a request will be sent after every testcase has finished).

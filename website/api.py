@@ -53,7 +53,7 @@ def capture_submission_change():
     # Long poll for submission change.
     req_json = json.loads(request.data)
     submission_id = req_json.get('id')
-    tests_completed = req_json.get('testsCompleted')
+    tests_completed = req_json.get('tests_completed')
 
     try:
         submission_id = int(submission_id)
@@ -69,8 +69,8 @@ def capture_submission_change():
     def submission_as_json():
         return jsonify(
             {
-                'finalVerdict': submission.final_verdict.cast_to_document(),
-                'testsCompleted': submission.tests_completed(),
+                'final_verdict': submission.final_verdict.cast_to_document(),
+                'tests_completed': submission.tests_completed(),
                 'results': [r.cast_to_document() for r in submission.results],
             }
         )
