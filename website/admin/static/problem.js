@@ -94,9 +94,9 @@ function generate_answers() {
                     let message = data['message']
                     if (message) {
                         wrapper.innerHTML = [
-                            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
+                            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" style="gap:10px;" role="alert">',
                             '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + '</div>',
-                            '   <div>',
+                            '   <div class="d-flex align-items-center" style="gap:10px;">',
                             '       <a data-bs-toggle="modal" data-bs-target="#detail' + i + '-modal" href="#" class="text-decoration-none">Details</a>',
                             '       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
                             '   </div>',
@@ -116,7 +116,7 @@ function generate_answers() {
                             '            </div>',
                             '            <div class="modal-body">',
                             '                <div style="white-space:pre-wrap;" class="consolas">',
-                            '                    '+message+'',
+                                                 message,
                             '                </div>',
                             '            </div>',
                             '            <div class="modal-footer">',
