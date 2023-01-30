@@ -12,7 +12,7 @@ from email.message import EmailMessage
 from config import GMAIL_APP_PWD, GMAIL_EMAIL
 
 
-@celery.task(name='judge')
+@celery.task(name='judge', ignore_result=True)
 def judge(user_code: str, submission_dict, problem_id):
     submission = models.Submission.cast_from_document(submission_dict)
     problem = models.Problem.find_one({'id': problem_id})
@@ -27,7 +27,7 @@ def judge(user_code: str, submission_dict, problem_id):
     return 'done'
 
 
-@celery.task(name='insert')
+@celery.task(name='insert', ignore_result=True)
 def add_to_db(collection_name: str, document: Dict[str, Any], replace: bool):
     if not replace:
         try:
@@ -42,13 +42,13 @@ def add_to_db(collection_name: str, document: Dict[str, Any], replace: bool):
     return 'done'
 
 
-@celery.task(name='delete')
+@celery.task(name='delete', ignore_result=True)
 def delete_from_db(collection_name: str, document: Dict[str, Any]):
     db[collection_name].delete_one({'_id': document['_id']})
     return 'done'
 
 
-@celery.task(name='send_email')
+@celery.task(name='send_email', ignore_result=True)
 def send_email(subject: str, body: str, to_email: str):
     from_email = GMAIL_EMAIL
     pwd = GMAIL_APP_PWD
