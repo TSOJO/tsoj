@@ -90,7 +90,7 @@ function update_results(results) {
                 '            </div>',
                 '            <div class="modal-body">',
                 '                <div style="white-space:pre-wrap;" class="consolas">',
-                '                    '+results[i].message+'',
+                                     results[i].message,
                 '                </div>',
                 '            </div>',
                 '            <div class="modal-footer">',
