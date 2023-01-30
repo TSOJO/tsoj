@@ -64,7 +64,6 @@ function update_results(results) {
             continue
         let time_node = $(`#time${(i + 1)}`)
         let memory_node = $(`#memory${(i + 1)}`)
-        let details_node = $(`#details${(i + 1)}`)
         verdict_node.html(verdict_to_html(results[i].verdict))
         if (results[i].verdict.verdict !== 'WJ') {
             time_node.html(results[i].time + 'ms')
