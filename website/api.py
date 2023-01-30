@@ -22,10 +22,10 @@ def check_problem_exists(id):
 @api_bp.route('/generate-answer', methods=['POST'])
 def generate_answer():
     req_json = json.loads(request.data)
-    code = req_json.get('generatorCode')
+    code = req_json.get('generator_code')
     input_ = req_json.get('input')
-    time_limit = req_json.get('timeLimit')
-    memory_limit = req_json.get('memoryLimit')
+    time_limit = req_json.get('time_limit')
+    memory_limit = req_json.get('memory_limit')
 
     if any(param is None for param in (code, input_, time_limit, memory_limit)):
         abort(400, description='Invalid parameters')

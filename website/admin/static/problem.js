@@ -73,10 +73,10 @@ function generate_answers() {
     )
     for (let i = 1; i <= testcases_count; i++) {
         var payload = {
-            generatorCode: $('#generator-code').val(),
+            generator_code: $('#generator-code').val(),
             input: $('#input' + i).val(),
-            timeLimit: $('#time-limit').val(),
-            memoryLimit: $('#memory-limit').val()
+            time_limit: $('#time-limit').val(),
+            memory_limit: $('#memory-limit').val()
         }
 
         const placeholder = document.getElementById('gen-alert-placeholder')
