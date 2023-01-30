@@ -140,7 +140,7 @@
                 <th scope="row">
                     {{ loop.index }}
                 </th>
-                <td id="verdict{{ loop.index }}">
+                <td id="verdict{{ loop.index }}" class="d-flex align-items-center" style="gap:10px;">
                     {% if result.verdict.is_ac() %}
                     <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -179,21 +179,14 @@
                         &nbsp;{{ result.verdict.value }}
                     </span>
                     {% endif %}
-                </td>
-                <td id="time{{ loop.index }}">
-                    {% if not result.verdict.is_wj() %}
-                    {{ result.time }}ms
-                    {% endif %}
-                </td>
-                <td id="memory{{ loop.index }}">
-                    {% if not result.verdict.is_wj() %}
-                    {{ result.memory }} KB
-                    {% endif %}
-                </td>
-                <td id="details{{ loop.index }}">
                     {% if result.message != '' %}
                     <a data-bs-toggle="modal" data-bs-target="#detail{{ loop.index }}-modal" href="#"
-                        class="text-decoration-none">Details</a>
+                       class="text-decoration-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6a00" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                        </svg>
+                    </a>
                     <div class="modal fade" id="detail{{ loop.index }}-modal" tabindex="-1"
                         aria-labelledby="detail{{ loop.index }}-modal-label" aria-hidden="true">
                         <div class="modal-dialog">
@@ -216,6 +209,16 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
+                </td>
+                <td id="time{{ loop.index }}">
+                    {% if not result.verdict.is_wj() %}
+                    {{ result.time }}ms
+                    {% endif %}
+                </td>
+                <td id="memory{{ loop.index }}">
+                    {% if not result.verdict.is_wj() %}
+                    {{ result.memory }} KB
                     {% endif %}
                 </td>
             </tr>
