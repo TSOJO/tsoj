@@ -131,7 +131,6 @@
                 <th scope="col">
                     Memory used
                 </th>
-                <th scope="col"></th>
             </tr>
         </thead>
         <tbody id="results-table-body">
@@ -212,12 +211,12 @@
                     {% endif %}
                 </td>
                 <td id="time{{ loop.index }}">
-                    {% if not result.verdict.is_wj() %}
+                    {% if result.time != -1 %}
                     {{ result.time }}ms
                     {% endif %}
                 </td>
                 <td id="memory{{ loop.index }}">
-                    {% if not result.verdict.is_wj() %}
+                    {% if result.memory != -1 %}
                     {{ result.memory }} KB
                     {% endif %}
                 </td>
