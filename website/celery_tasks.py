@@ -1,15 +1,15 @@
 from typing import Dict, Optional, Any
-
-import website.models as models
-from isolate_wrapper import IsolateSandbox
-from website import celery
-from website.db import db
-from pymongo.errors import DuplicateKeyError
 import logging
 import smtplib
 import ssl
 from email.message import EmailMessage
+from pymongo.errors import DuplicateKeyError
+
 from config import GMAIL_APP_PWD, GMAIL_EMAIL
+from isolate_wrapper import IsolateSandbox, SourceCode
+import website.models as models
+from website import celery
+from website.db import db
 
 
 @celery.task(name='judge', ignore_result=True)
@@ -18,9 +18,10 @@ def judge(user_code: str, submission_dict, problem_id):
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()
     submission.create_empty_results(len(problem.testcases))
+    source_code = SourceCode(user_code, 'cpp')
     for i, result in enumerate(
         sandbox.judge(
-            user_code, problem.testcases, problem.time_limit, problem.memory_limit
+            source_code, problem.testcases, problem.time_limit, problem.memory_limit
         )
     ):
         submission.update_result(i, result)
