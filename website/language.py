@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 
 class Language(Enum):
+	# https://stackoverflow.com/questions/12680080/python-enums-with-attributes
 	def __new__(cls, *args, **kwds):
 		value = len(cls.__members__) + 1
 		obj = object.__new__(cls)

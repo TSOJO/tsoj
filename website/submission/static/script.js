@@ -65,7 +65,7 @@ function update_results(results) {
         let time_node = $(`#time${(i + 1)}`)
         let memory_node = $(`#memory${(i + 1)}`)
         verdict_node.html(verdict_to_html(results[i].verdict))
-        if (results[i].verdict.verdict !== 'WJ') {
+        if (results[i].time !== -1 && results[i].memory !== -1) {
             time_node.html(results[i].time + 'ms')
             memory_node.html(results[i].memory + ' KB')
         }
