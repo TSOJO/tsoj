@@ -189,7 +189,7 @@ def _rejudge_problem(id: str):
         return
     submissions = Submission.find_all({'problem_id': id})
     for submission in submissions:
-        judge.delay(submission.code, submission.cast_to_document(), id)
+        judge.delay(submission.code, submission.language.file_extension, submission.cast_to_document(), id)
     flash(f'Rejudging all submissions to problem {id}...')
 
 
@@ -204,7 +204,7 @@ def rejudge_submission(id: int):
         return redirect(url_for('submission_bp.submission', id=id))
     submission.create_empty_results(len(problem.testcases))
     submission.save(replace=True, wait=True)
-    judge.delay(submission.code, submission.cast_to_document(), submission.problem_id)
+    judge.delay(submission.code, submission.language.file_extension, submission.cast_to_document(), submission.problem_id)
     flash('Rejudging...')
     return redirect(url_for('submission_bp.submission', id=id))
 

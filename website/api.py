@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, abort, request
 from website.models import Problem, Submission, User, Assignment, DBModel
-from isolate_wrapper import IsolateSandbox, Verdict
+from isolate_wrapper import IsolateSandbox, Verdict, SourceCode
 import json
 import time
 
@@ -23,11 +23,13 @@ def check_problem_exists(id):
 def generate_answer():
     req_json = json.loads(request.data)
     code = req_json.get('generator_code')
+    # language = req_json.get('language')
+    language = 'cpp'
     input_ = req_json.get('input')
     time_limit = req_json.get('time_limit')
     memory_limit = req_json.get('memory_limit')
 
-    if any(param is None for param in (code, input_, time_limit, memory_limit)):
+    if any(param is None for param in (code, language, input_, time_limit, memory_limit)):
         abort(400, description='Invalid parameters')
 
     try:
@@ -37,7 +39,7 @@ def generate_answer():
         abort(400, description='Invalid parameters')
 
     answer, verdict, message = IsolateSandbox().generate_answer(
-        code, input_, time_limit, memory_limit
+        SourceCode(code, language), input_, time_limit, memory_limit
     )
     return jsonify(
         {

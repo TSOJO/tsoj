@@ -10,6 +10,7 @@ from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 from website.models.user import User
 from website.models.problem import Problem
+from website.language import Language
 
 
 class Submission:
@@ -21,6 +22,7 @@ class Submission:
         user_id: str,
         problem_id: int,
         code: str,
+        language: Language,
         final_verdict: Optional[Verdict] = None,
         results: Optional[List[Result]] = None,
         id: Optional[int] = None,
@@ -30,6 +32,7 @@ class Submission:
         self.user_id = user_id
         self.problem_id = problem_id
         self.code = code
+        self.language = language
         self.final_verdict = Verdict.WJ if final_verdict is None else final_verdict
         self.results = [] if results is None else results
         self.id: Optional[int] = id
@@ -75,6 +78,7 @@ class Submission:
             user_id=document['user_id'],
             problem_id=document['problem_id'],
             code=document['code'],
+            language=Language.cast_from_document(document['language']),
             final_verdict=Verdict.cast_from_document(document['final_verdict']),
             results=[
                 Result.cast_from_document(result) for result in document['results']
@@ -92,6 +96,7 @@ class Submission:
             'user_id': self.user_id,
             'problem_id': self.problem_id,
             'code': self.code,
+            'language': self.language.cast_to_document(),
             'final_verdict': self.final_verdict.cast_to_document(),
             'results': [result.cast_to_document() for result in self.results],
             'submission_time': self.submission_time.strftime('%Y-%m-%dT%H:%M:%S.%f'),

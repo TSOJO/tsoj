@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, abort
 from flask_login import current_user
 
 from website.models import Submission, User, Problem
-from isolate_wrapper import Verdict, Result
 
 submission_bp = Blueprint(
     'submission_bp', __name__, template_folder='templates', static_folder='static'
