@@ -129,12 +129,13 @@ def add_initial_admin(app):
 def debug_db(app):
     from isolate_wrapper import Testcase
     from website.models import Assignment, Problem, Submission, User, UserGroup
+    from website.language import Language
 
     problems_list = [
         {
             'id': 'A1',
             'name': 'Sum',
-            'description': 'Given two numbers, print their sum.',
+            'description': 'Given two numbers, print their sum. C++ only.',
             'time_limit': 1000,
             'memory_limit': 1024 * 64,
             'testcases': [
@@ -149,6 +150,7 @@ def debug_db(app):
                 Testcase('100000000\n200000000\n', '300000000\n'),
             ],
             'is_public': True,
+            'allowed_languages': Language.CPLUSPLUS,
         },
         {
             'id': 'A2',
