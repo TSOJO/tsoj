@@ -127,9 +127,9 @@ def add_initial_admin(app):
 
 
 def debug_db(app):
-    from isolate_wrapper import Testcase
+    from isolate_wrapper import Testcase, Language
+    from isolate_wrapper.config import SUPPORTED_LANGUAGES
     from website.models import Assignment, Problem, Submission, User, UserGroup
-    from website.language import Language
 
     problems_list = [
         {
@@ -150,7 +150,7 @@ def debug_db(app):
                 Testcase('100000000\n200000000\n', '300000000\n'),
             ],
             'is_public': True,
-            'allowed_languages': Language.CPLUSPLUS,
+            'allowed_languages': [SUPPORTED_LANGUAGES['cpp']],
         },
         {
             'id': 'A2',

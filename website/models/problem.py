@@ -30,7 +30,7 @@ class Problem(DBModel):
         self.memory_limit = memory_limit
         self.testcases = testcases
         self.hints = [] if hints is None else hints
-        self.allowed_languages = allowed_languages
+        self.allowed_languages = [] if allowed_languages is None else allowed_languages
         self.num_solves = num_solves
         self.is_public = is_public
 

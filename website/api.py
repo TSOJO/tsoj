@@ -24,6 +24,7 @@ def generate_answer():
     req_json = json.loads(request.data)
     code = req_json.get('generator_code')
     # language = req_json.get('language')
+    # ! HARCODED
     language = 'cpp'
     input_ = req_json.get('input')
     time_limit = req_json.get('time_limit')

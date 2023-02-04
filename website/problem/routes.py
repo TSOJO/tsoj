@@ -3,7 +3,8 @@ from flask_login import current_user
 
 from website.celery_tasks import judge
 from website.models import Problem, Submission
-from website.language import Language
+from isolate_wrapper.custom_types import Language
+from isolate_wrapper.config import SUPPORTED_LANGUAGES
 
 
 problem_bp = Blueprint(
@@ -28,7 +29,8 @@ def problem_submit(id: str):
 
     user_code = request.form.get('user_code')
     # language = request.form.get('language')
-    language = Language.CPLUSPLUS
+    # ! HARDCODED
+    language = SUPPORTED_LANGUAGES['cpp']
     new_submission = Submission(user_id=user_id, problem_id=id, code=user_code, language=language)
     problem = Problem.find_one({'id': id})
     new_submission.create_empty_results(len(problem.testcases))
