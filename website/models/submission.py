@@ -3,14 +3,13 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, Mapping, List, Optional, cast
 
-from isolate_wrapper.custom_types import Result, Verdict
+from isolate_wrapper.custom_types import Result, Verdict, Language
 from isolate_wrapper import IsolateSandbox
 
 from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 from website.models.user import User
 from website.models.problem import Problem
-from website.language import Language
 
 
 class Submission:

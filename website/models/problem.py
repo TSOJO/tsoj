@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from isolate_wrapper.custom_types import Testcase
+from isolate_wrapper.custom_types import Testcase, Language
 from website.db import db
 from website.celery_tasks import add_to_db, delete_from_db
 from website.models.db_model import DBModel
-from website.language import Language
 
 
 class Problem(DBModel):
@@ -49,9 +48,9 @@ class Problem(DBModel):
             description=document['description'],
             time_limit=document['time_limit'],
             memory_limit=document['memory_limit'],
-            testcases=[Testcase(**testcase) for testcase in document['testcases']],
+            testcases=[Testcase.cast_from_document(testcase) for testcase in document['testcases']],
             hints=document['hints'],
-            allowed_languages=document['allowed_languages'],
+            allowed_languages=[Language.cast_from_document(language) for language in document['allowed_languages']],
             num_solves=document['num_solves'],
             is_public=document['is_public'],
         )
@@ -64,9 +63,9 @@ class Problem(DBModel):
             'description': self.description,
             'time_limit': self.time_limit,
             'memory_limit': self.memory_limit,
-            'testcases': [testcase.__dict__ for testcase in self.testcases],
+            'testcases': [testcase.cast_to_document() for testcase in self.testcases],
             'hints': self.hints,
-            'allowed_languages': self.allowed_languages,
+            'allowed_languages': [language.cast_to_document() for language in self.allowed_languages],
             'num_solves': self.num_solves,
             'is_public': self.is_public,
         }
