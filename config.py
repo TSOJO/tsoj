@@ -28,7 +28,7 @@ else:
     MONGO_PASSWORD = environ.get('MONGO_PASSWORD')
     MONGO_HOSTNAME_PORT = environ.get('MONGO_HOSTNAME_PORT')
     MONGO_DB = environ.get('MONGO_DB')
-    MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOSTNAME_PORT}/{MONGO_DB}?authSource=admin'
+    MONGO_URI = f'mongodb://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOSTNAME_PORT}/{MONGO_DB}?authSource=admin&connectTimeoutMS=2000'
     
     REDIS_PASSWORD = environ.get('REDIS_PASSWORD')
     REDIS_HOSTNAME_PORT = environ.get('REDIS_HOSTNAME_PORT')
