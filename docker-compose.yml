@@ -33,6 +33,7 @@ services:
     privileged: true
     depends_on:
       - redis
+      - mongo
 
   redis:
     image: redis:7.0
