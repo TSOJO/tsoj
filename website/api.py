@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, abort, request
 from website.models import Problem, Submission, User, Assignment, DBModel
-from isolate_wrapper import IsolateSandbox, Verdict, SourceCode
+from isolate_wrapper import IsolateSandbox, Verdict, SourceCode, Language
 import json
 import time
 
@@ -24,8 +24,7 @@ def generate_answer():
     req_json = json.loads(request.data)
     code = req_json.get('generator_code')
     # language = req_json.get('language')
-    # ! HARCODED
-    language = 'cpp'
+    language = Language.CPLUSPLUS
     input_ = req_json.get('input')
     time_limit = req_json.get('time_limit')
     memory_limit = req_json.get('memory_limit')
