@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from isolate_wrapper.custom_types import Testcase, Language
+from isolate_wrapper import Testcase, Language, SourceCode
 from website.db import db
 from website.celery_tasks import add_to_db, delete_from_db
 from website.models.db_model import DBModel
@@ -19,6 +19,7 @@ class Problem(DBModel):
         testcases: List[Testcase],
         hints: Optional[List[str]] = None,
         allowed_languages: Optional[List[Language]] = None,
+        grader_source_code: Optional[SourceCode] = None,
         num_solves: int = 0,
         is_public: bool = False,
     ):
@@ -31,6 +32,7 @@ class Problem(DBModel):
         self.testcases = testcases
         self.hints = [] if hints is None else hints
         self.allowed_languages = allowed_languages if allowed_languages is not None else list(Language)
+        self.grader_source_code = grader_source_code
         self.num_solves = num_solves
         self.is_public = is_public
 
@@ -51,6 +53,7 @@ class Problem(DBModel):
             testcases=[Testcase.cast_from_document(testcase) for testcase in document['testcases']],
             hints=document['hints'],
             allowed_languages=[Language.cast_from_document(language) for language in document['allowed_languages']],
+            grader_source_code=SourceCode.cast_from_document(document['grader_source_code']) if document['grader_source_code'] is not None else None,
             num_solves=document['num_solves'],
             is_public=document['is_public'],
         )
@@ -66,6 +69,7 @@ class Problem(DBModel):
             'testcases': [testcase.cast_to_document() for testcase in self.testcases],
             'hints': self.hints,
             'allowed_languages': [language.cast_to_document() for language in self.allowed_languages],
+            'grader_source_code': self.grader_source_code.cast_to_document() if self.grader_source_code is not None else None,
             'num_solves': self.num_solves,
             'is_public': self.is_public,
         }

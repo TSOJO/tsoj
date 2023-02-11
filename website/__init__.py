@@ -5,7 +5,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
-from isolate_wrapper import IsolateSandbox, Language
+from isolate_wrapper import IsolateSandbox, Language, SourceCode
 
 celery = Celery(
     __name__,
@@ -164,6 +164,20 @@ def debug_db(app):
             ],
             'is_public': True,
         },
+        {
+            'id': 'A3',
+            'name': 'Div K',
+            'description': 'Given a number $K$, print any multiple of $K$.',
+            'time_limit': 1000,
+            'memory_limit': 1024 * 64,
+            'testcases': [
+                Testcase('3\n', '69\n', 0),
+                Testcase('10\n', '420\n', 0),
+                Testcase('452\n', '0\n', 0),
+            ],
+            'is_public': True,
+            'grader_source_code': SourceCode('k = int(input())\ninput()\na = int(input())\nif a % k == 0:\n    print("AC")\nelse:\n    print("WA")', Language.PYTHON),
+        }
     ]
     for problem_raw in problems_list:
         problem = Problem(**problem_raw)

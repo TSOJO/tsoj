@@ -202,23 +202,50 @@ $('#language-select').change(() => {
     editor.session.setMode("ace/mode/" + getAceMode($('#language-select').val()))
 })
 
+$('#grader-language-select').change(() => {
+    let editor = ace.edit('grader-editor')
+    editor.session.setMode("ace/mode/" + getAceMode($('#grader-language-select').val()))
+})
+
+function judgeMethodOnChange() {
+    switch ($('#judge-method-select').val()) {
+        case 'compare-output':
+            $('#compare-output-div').show()
+            $('#grader-div').hide()
+            break
+        case 'grader':
+            $('#compare-output-div').hide()
+            $('#grader-div').show()
+            break
+    }
+}
+$('#judge-method-select').change(judgeMethodOnChange)
+
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
     }
 
     // Initialise code editor.
-    let editor = ace.edit('editor')
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')
+    let editor = ace.edit('editor')
     editor.setTheme('ace/theme/textmate')
     editor.session.setMode('ace/mode/' + getAceMode($('#language-select').val()))
     editor.setOptions({ minLines: 10, maxLines: 20 })
     // editor.session.setUseWrapMode(true)
-
     editor.getSession().on('change', function () {
         $('textarea[name="generator-code"]').val(editor.getValue())
     })
 
+    // Initialise grader code editor.
+    let grader_editor = ace.edit('grader-editor')
+    grader_editor.setTheme('ace/theme/textmate')
+    grader_editor.session.setMode('ace/mode/' + getAceMode($('#grader-language-select').val()))
+    grader_editor.setOptions({ minLines: 10, maxLines: 20 })
+    // grader_editor.session.setUseWrapMode(true)
+    grader_editor.getSession().on('change', function () {
+        $('textarea[name="grader-code"]').val(grader_editor.getValue())
+    })
     $('#description-md')[0].mdContent = $('#description').val()
 
     // Checkbox on changed
@@ -240,6 +267,8 @@ window.onpageshow = function (event) {
             }
         }
     })
+
+    judgeMethodOnChange()
 }
 
 $('#description').on('input', function (e) {

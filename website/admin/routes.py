@@ -3,8 +3,9 @@ from typing import List
 from flask_login import login_required, current_user
 
 from website.models import Problem, Assignment, Submission, User, UserGroup
-from isolate_wrapper import Testcase, Language
+from isolate_wrapper import Testcase, Language, SourceCode
 from website.celery_tasks import judge
+from website.utils import to_input_format
 
 admin_bp = Blueprint(
     'admin_bp', __name__, template_folder='templates', static_folder='static'
@@ -43,18 +44,24 @@ def create_problem():
             'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
             'is_public': 'is_public' in request.form,
         }
-        testcases: List[Testcase] = []
 
+        testcases: List[Testcase] = []
         testcases_count = int(request.form['testcases-count'])
         for i in range(testcases_count):
             sample = f'sample{i+1}' in request.form
             testcases.append(
                 Testcase(
-                    request.form[f'input{i+1}'],
+                    to_input_format(request.form[f'input{i+1}']),
                     request.form[f'answer{i+1}'],
                     0 if sample else 1,
                 )
             )
+
+        judge_method = request.form.get('judge-method')
+        if judge_method == 'grader':
+            grader_code = request.form['grader-code']
+            grader_language = Language.cast_from_document(request.form['grader-language'])
+            problem_info['grader_source_code'] = SourceCode(grader_code, grader_language)
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(wait=True)
@@ -76,18 +83,24 @@ def edit_problem(id: str):
             'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
             'is_public': 'is_public' in request.form,
         }
-        testcases: List[Testcase] = []
 
+        testcases: List[Testcase] = []
         testcases_count = int(request.form['testcases-count'])
         for i in range(testcases_count):
             sample = f'sample{i+1}' in request.form
             testcases.append(
                 Testcase(
-                    request.form[f'input{i+1}'],
+                    to_input_format(request.form[f'input{i+1}']),
                     request.form[f'answer{i+1}'],
                     0 if sample else 1,
                 )
             )
+
+        judge_method = request.form.get('judge-method')
+        if judge_method == 'grader':
+            grader_code = request.form['grader-code']
+            grader_language = Language.cast_from_document(request.form['grader-language'])
+            problem_info['grader_source_code'] = SourceCode(grader_code, grader_language)
 
         problem = Problem(**problem_info, testcases=testcases)
         problem.save(replace=True, wait=True)
@@ -188,8 +201,9 @@ def _rejudge_problem(id: str):
         flash(f'Unable to rejudge problem {id}: problem not found.', 'error')
         return
     submissions = Submission.find_all({'problem_id': id})
+    grader_source_code_dict = problem.grader_source_code.cast_to_document() if problem.grader_source_code is not None else None
     for submission in submissions:
-        judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), id)
+        judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), id, grader_source_code_dict)
     flash(f'Rejudging all submissions to problem {id}...')
 
 
@@ -204,7 +218,8 @@ def rejudge_submission(id: int):
         return redirect(url_for('submission_bp.submission', id=id))
     submission.create_empty_results(len(problem.testcases))
     submission.save(replace=True, wait=True)
-    judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), submission.problem_id)
+    grader_source_code_dict = problem.grader_source_code.cast_to_document() if problem.grader_source_code is not None else None
+    judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), submission.problem_id, grader_source_code_dict)
     flash('Rejudging...')
     return redirect(url_for('submission_bp.submission', id=id))
 

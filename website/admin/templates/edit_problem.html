@@ -1,115 +1,123 @@
 {% extends "base.html" %}
 {% block title %}Edit Problem{% endblock title %}
 {% block content %}
-    <div class="modal fade"
-         id="delete-confirm-modal"
-         tabindex="-1"
-         aria-labelledby="delete-confirm-modal-label"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="delete-confirm-modal-label">Confirm deletion</h1>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">Are you sure you want to delete this problem?</div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="{{ url_for('admin_bp.delete_problem', id=problem.id) }}"
-                       class="btn btn-danger align-self-center">Delete</a>
-                </div>
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="delete-confirm-modal-label"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="delete-confirm-modal-label">Confirm deletion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">Are you sure you want to delete this problem?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{{ url_for('admin_bp.delete_problem', id=problem.id) }}"
+                    class="btn btn-danger align-self-center">Delete</a>
             </div>
         </div>
     </div>
-    <div class="d-flex justify-content-between">
-        <h1>Edit Problem</h1>
-        <a data-bs-toggle="modal"
-           data-bs-target="#delete-confirm-modal"
-           class="btn btn-danger align-self-center">Delete</a>
-    </div>
-    <div>
-        <form method="post" class="needs-validation" novalidate>
-            <div class="form-group mb-3">
-                <label for="id" class="form-label">ID</label>
-                <input type="text"
-                       class="form-control"
-                       name="id"
-                       id="id"
-                       placeholder="Enter problem ID"
-                       value="{{ problem.id }}"
-                       readonly
-                       disabled />
-            </div>
-            <div class="form-group mb-3">
-                <input class="form-check-input is-public-checkbox"
-                       type="checkbox"
-                       name="is_public"
-                       {% if problem.is_public -%}
-                       checked
-                       {%- endif %}
-                       id="is-public" />
-                <label class="form-check-label" for="is-public">Public</label>
-            </div>
-            <div class="form-group mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text"
-                       class="form-control"
-                       name="name"
-                       id="name"
-                       placeholder="Enter problem name"
-                       value="{{ problem.name }}"
-                       required />
-                <div class="invalid-feedback">This field is required.</div>
-            </div>
-            <div class="row g-3 mb-3">
-                <div class="col-lg-6">
-                    <div class="form-group">
-                        <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
-                        <textarea class="form-control"
-                                  name="description"
-                                  id="description"
-                                  rows="10"
-                                  placeholder="Enter problem description"
-                                  style="white-space: pre-line"
-                                  required>{{problem.description}}</textarea>
-                        <div class="invalid-feedback">This field is required.</div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <label for="description-md" class="form-label">Preview</label>
-                    <div class="card">
-                        <md-block id="description-md">{{ problem.description }}</md-block>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-3">
+</div>
+<div class="d-flex justify-content-between">
+    <h1>Edit Problem</h1>
+    <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" class="btn btn-danger align-self-center">Delete</a>
+</div>
+<div>
+    <form method="post" class="needs-validation" novalidate>
+        <div class="form-group mb-3">
+            <label for="id" class="form-label">ID</label>
+            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID"
+                value="{{ problem.id }}" readonly disabled />
+        </div>
+        <div class="form-group mb-3">
+            <input class="form-check-input is-public-checkbox" type="checkbox" name="is_public" {% if problem.is_public
+                -%} checked {%- endif %} id="is-public" />
+            <label class="form-check-label" for="is-public">Public</label>
+        </div>
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" id="name" placeholder="Enter problem name"
+                value="{{ problem.name }}" required />
+            <div class="invalid-feedback">This field is required.</div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-lg-6">
                 <div class="form-group">
-                    <label for="hints" class="form-label">Hints (each hint should be on its own line))</label>
-                    <textarea class="form-control" name="hints" id="hints" rows="5">{{problem.hints | join('\n')}}</textarea>
+                    <label for="description" class="form-label">Description (supports Markdown and MathJax)</label>
+                    <textarea class="form-control" name="description" id="description" rows="10"
+                        placeholder="Enter problem description" style="white-space: pre-line"
+                        required>{{problem.description}}</textarea>
+                    <div class="invalid-feedback">This field is required.</div>
                 </div>
             </div>
-            <label class="form-label">Testcases</label>
-            <div class="border p-4 mb-3">
-                <button type="button" id="add-testcase-btn" class="btn btn-primary mb-3" onclick="add_field()">Add testcase</button>
-                <div id="rem-alert-placeholder"></div>
-                <!-- dummy testcase -->
-                <div id="testcase-div" style="display: none" class="border p-4">
+            <div class="col-lg-6">
+                <label for="description-md" class="form-label">Preview</label>
+                <div class="card">
+                    <md-block id="description-md">{{ problem.description }}</md-block>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="form-group">
+                <label for="hints" class="form-label">Hints (each hint should be on its own line))</label>
+                <textarea class="form-control" name="hints" id="hints"
+                    rows="5">{{problem.hints | join('\n')}}</textarea>
+            </div>
+        </div>
+        <label class="form-label">Testcases</label>
+        <div class="border p-4 mb-3">
+            <button type="button" id="add-testcase-btn" class="btn btn-primary mb-3" onclick="add_field()">Add
+                testcase</button>
+            <div id="rem-alert-placeholder"></div>
+            <!-- dummy testcase -->
+            <div id="testcase-div" style="display: none" class="border p-4">
+                <div class="container">
+                    <div class="d-flex">
+                        <div class="me-auto my-auto">
+                            <h5 class="testcase-number my-0"></h5>
+                        </div>
+                        <div class="my-auto px-4">
+                            <input class="form-check-input testcase-sample" type="checkbox" value="" />
+                            <label class="form-check-label">Sample case</label>
+                        </div>
+                        <div class="my-auto">
+                            <button type="button" class="btn btn-danger remove-testcase-btn"
+                                onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group mb-3 col-sm-6">
+                            <label class="form-label">Input</label>
+                            <textarea class="form-control testcase-input" rows="3"></textarea>
+                        </div>
+                        <div class="form-group mb-3 col-sm-6">
+                            <label class="form-label">Answer</label>
+                            <textarea class="form-control testcase-answer" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="testcase-container" class="overflow-auto bg-light mb-3" style="max-height:760px">
+                {%- for testcase in problem.testcases -%}
+                <div style="display: block" class="border p-4">
                     <div class="container">
                         <div class="d-flex">
                             <div class="me-auto my-auto">
-                                <h5 class="testcase-number my-0"></h5>
+                                <h5 class="testcase-number my-0">Testcase {{ loop.index }}</h5>
                             </div>
                             <div class="my-auto px-4">
-                                <input class="form-check-input testcase-sample" type="checkbox" value="" />
+                                <input class="form-check-input testcase-sample" type="checkbox" {% if
+                                    testcase.batch_number==0 -%} checked {%- endif %} id="sample{{ loop.index }}"
+                                    name="sample{{ loop.index }}" />
                                 <label class="form-check-label">Sample case</label>
                             </div>
                             <div class="my-auto">
-                                <button type="button"
-                                        class="btn btn-danger remove-testcase-btn"
-                                        onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">
+                                <button type="button" class="btn btn-danger"
+                                    onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">
                                     Remove
                                 </button>
                             </div>
@@ -118,151 +126,109 @@
                     <div class="container">
                         <div class="row">
                             <div class="form-group mb-3 col-sm-6">
-                                <label class="form-label">Input</label>
-                                <textarea class="form-control testcase-input" rows="3"></textarea>
+                                <label class="form-label">
+                                    Input
+                                </label>
+                                <textarea class="form-control testcase-input" rows="3" id="input{{loop.index}}"
+                                    name="input{{loop.index}}">{{testcase.input}}</textarea>
                             </div>
                             <div class="form-group mb-3 col-sm-6">
-                                <label class="form-label">Answer</label>
-                                <textarea class="form-control testcase-answer" rows="3"></textarea>
+                                <label class="form-label">
+                                    Answer
+                                </label>
+                                <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index}}"
+                                    name="answer{{loop.index}}">{{testcase.answer}}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="testcase-container"
-                     class="overflow-auto bg-light mb-3"
-                     style="max-height:760px">
-                    {%- for testcase in problem.testcases -%}
-                        <div style="display: block" class="border p-4">
-                            <div class="container">
-                                <div class="d-flex">
-                                    <div class="me-auto my-auto">
-                                        <h5 class="testcase-number my-0">Testcase {{ loop.index }}</h5>
-                                    </div>
-                                    <div class="my-auto px-4">
-                                        <input class="form-check-input testcase-sample"
-                                               type="checkbox"
-                                               {% if testcase.batch_number==0 -%}
-                                               checked
-                                               {%- endif %}
-                                               id="sample{{ loop.index }}"
-                                               name="sample{{ loop.index }}" />
-                                        <label class="form-check-label">Sample case</label>
-                                    </div>
-                                    <div class="my-auto">
-                                        <button type="button"
-                                                class="btn btn-danger"
-                                                onclick="remove_field(this.parentNode.parentNode.parentNode.parentNode)">
-                                            Remove
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="form-group mb-3 col-sm-6">
-                                        <label class="form-label">
-                                            Input
-                                        </label>
-                                        <textarea class="form-control testcase-input"
-                                                  rows="3"
-                                                  id="input{{loop.index}}"
-                                                  name="input{{loop.index}}">{{testcase.input}}</textarea>
-                                    </div>
-                                    <div class="form-group mb-3 col-sm-6">
-                                        <label class="form-label">
-                                            Answer
-                                        </label>
-                                        <textarea class="form-control testcase-answer"
-                                                  rows="3"
-                                                  id="answer{{loop.index}}"
-                                                  name="answer{{loop.index}}">{{testcase.answer}}</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {%- endfor -%}
+                {%- endfor -%}
+            </div>
+            <input id="testcases-count" name="testcases-count" type="text" value="{{ problem.testcases| length }}"
+                hidden />
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="card-title">Judge Method</h5>
                 </div>
-                <input id="testcases-count"
-                       name="testcases-count"
-                       type="text"
-                       value="{{ problem.testcases| length }}"
-                       hidden />
-                <div class="form-check">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           value=""
-                           id="auto-generate-answer-checkbox"
-                           name="generator-checkbox" />
-                    <label class="form-check-label" for="auto-generate-answer-checkbox">
-                        Auto-generate answers
-                    </label>
-                </div>
-                <div class="mt-3" id="editor-group" style="display:none">
-                    <div class="mb-3">
-                        <select class="form-select" id="language-select" style="width:auto;" name="language">
-                            {% for language in all_languages %}
+                <select id="judge-method-select" name="judge-method" class="form-select" style="width:auto;">
+                    <option value="compare-output">Compare Output</option>
+                    <option value="grader" {% if problem.grader_source_code %} selected {% endif %}>Grader</option>
+                </select>
+                <div id="compare-output-div" style="display: none;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
+                            name="generator-checkbox" />
+                        <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate
+                            answers</label>
+                    </div>
+                    <div class="mt-3" id="editor-group" style="display: none;">
+                        <div class="mb-3">
+                            <select class="form-select" id="language-select" style="width:auto;" name="language">
+                                {% for language in all_languages %}
                                 <option value="{{ language.name }}">{{ language.ui_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <textarea name="generator-code" id="generator-code" hidden></textarea>
-                    <div id="editor" class="mb-3">
-                    </div>
-                    <button type="button"
-                            class="btn btn-primary"
-                            id="gen-answer-button"
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <textarea name="generator-code" id="generator-code" hidden></textarea>
+                        <div id="editor" class="mb-3"></div>
+                        <button type="button" class="btn btn-primary" id="gen-answer-button"
                             onclick="generate_answers()">
-                        Generate answers
-                    </button>
-                    <div id="gen-alert-placeholder">
+                            Generate answers
+                        </button>
+                        <div id="gen-alert-placeholder"></div>
+                    </div>
+                </div>
+                <div id="grader-div" style="display: none;">
+                    <div class="mt-3" id="grader-editor-group">
+                        <div class="mb-3">
+                            <select class="form-select" id="grader-language-select" style="width:auto;"
+                                name="grader-language">
+                                {% for language in all_languages %}
+                                <option value="{{ language.name }}" {% if problem.grader_source_code.language==language
+                                    %} selected {% endif %}>{{ language.ui_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <textarea name="grader-code" id="grader-code" hidden></textarea>
+                        <div id="grader-editor" class="mb-3">{{ problem.grader_source_code.code }}</div>
                     </div>
                 </div>
             </div>
-            <label for="time-limit" class="form-label">
-                Time limit
-            </label>
-            <div class="input-group mb-3">
-                <input type="text"
-                       class="form-control"
-                       name="time-limit"
-                       id="time-limit"
-                       value="1.0"
-                       required />
-                <span class="input-group-text">seconds (recommended: 1-10)</span>
-                <div class="invalid-feedback">
-                    This field is required.
-                </div>
+        </div>
+        <label for="time-limit" class="form-label">
+            Time limit
+        </label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="time-limit" id="time-limit" value="1.0" required />
+            <span class="input-group-text">seconds (recommended: 1-10)</span>
+            <div class="invalid-feedback">
+                This field is required.
             </div>
-            <label for="memory-limit" class="form-label">
-                Memory limit
-            </label>
-            <div class="input-group mb-3">
-                <input type="text"
-                       class="form-control"
-                       name="memory-limit"
-                       id="memory-limit"
-                       value="128"
-                       required />
-                <span class="input-group-text">MB (recommended: 64-512)</span>
-                <div class="invalid-feedback">
-                    This field is required.
-                </div>
+        </div>
+        <label for="memory-limit" class="form-label">
+            Memory limit
+        </label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="128" required />
+            <span class="input-group-text">MB (recommended: 64-512)</span>
+            <div class="invalid-feedback">
+                This field is required.
             </div>
-            <div class="d-flex align-items-center" style="gap:20px;">
-                <button type="submit" class="btn btn-primary">
-                    Save
-                </button>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="rejudge" name="rejudge" />
-                    <label class="form-check-label" for="rejudge">
-                        Rejudge all current submissions to this problem
-                    </label>
-                </div>
+        </div>
+        <div class="d-flex align-items-center" style="gap:20px;">
+            <button type="submit" class="btn btn-primary">
+                Save
+            </button>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="rejudge" name="rejudge" />
+                <label class="form-check-label" for="rejudge">
+                    Rejudge all current submissions to this problem
+                </label>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+</div>
 {% endblock content %}
 {% block scripts %}
-    <script type="text/javascript"
-            src="{{url_for('.static', filename='problem.js')}}"></script>
+<script type="text/javascript" src="{{url_for('.static', filename='problem.js')}}"></script>
 {% endblock scripts %}

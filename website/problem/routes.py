@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from website.celery_tasks import judge
 from website.models import Problem, Submission
-from isolate_wrapper import Language
+from isolate_wrapper import Language, SourceCode
 
 
 problem_bp = Blueprint(
@@ -32,7 +32,8 @@ def problem_submit(id: str):
     problem = Problem.find_one({'id': id})
     new_submission.create_empty_results(len(problem.testcases))
     submission_id = new_submission.save(wait=True).id
+    grader_source_code_dict = problem.grader_source_code.cast_to_document() if problem.grader_source_code is not None else None
     judge.delay(
-        user_code, language.cast_to_document(), new_submission.cast_to_document(), id,
+        user_code, language.cast_to_document(), new_submission.cast_to_document(), id, grader_source_code_dict
     )
     return redirect(url_for('submission_bp.submission', id=submission_id))
