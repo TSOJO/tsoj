@@ -48,6 +48,10 @@ def generate_answer():
         }
     )
 
+@api_bp.route('/test-grader', methods=['POST'])
+def test_grader():
+    pass
+
 
 @api_bp.route('/capture-submission-change/', methods=['POST'])
 def capture_submission_change():

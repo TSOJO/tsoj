@@ -99,28 +99,10 @@ Enter input constraints</textarea>
                 <option value="grader">Grader</option>
             </select>
             <div id="compare-output-div">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
-                        name="generator-checkbox" />
-                    <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
-                </div>
-                <div class="mt-3" id="editor-group" style="display: none;">
-                    <div class="mb-3">
-                        <select class="form-select" id="language-select" style="width:auto;" name="language">
-                            {% for language in all_languages %}
-                            <option value="{{ language.name }}">{{ language.ui_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <textarea name="generator-code" id="generator-code" hidden></textarea>
-                    <div id="editor" class="mb-3"></div>
-                    <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generate_answers()">
-                        Generate answers
-                    </button>
-                    <div id="gen-alert-placeholder"></div>
-                </div>
+                Enter answers for each testcase. If the output of the program matches the answer, it will be accepted.
             </div>
             <div id="grader-div" style="display: none;">
+                <h5>Enter grader code</h5>
                 <div class="mt-3" id="grader-editor-group">
                     <div class="mb-3">
                         <select class="form-select" id="grader-language-select" style="width:auto;" name="grader-language">
@@ -132,6 +114,26 @@ Enter input constraints</textarea>
                     <textarea name="grader-code" id="grader-code" hidden></textarea>
                     <div id="grader-editor" class="mb-3"></div>
                 </div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
+                    name="generator-checkbox" />
+                <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
+            </div>
+            <div class="mt-3" id="editor-group" style="display: none;">
+                <div class="mb-3">
+                    <select class="form-select" id="language-select" style="width:auto;" name="language">
+                        {% for language in all_languages %}
+                        <option value="{{ language.name }}">{{ language.ui_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <textarea name="generator-code" id="generator-code" hidden></textarea>
+                <div id="editor" class="mb-3"></div>
+                <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generate_answers()">
+                    Generate answers
+                </button>
+                <div id="gen-alert-placeholder"></div>
             </div>
         </div>
         <label for="time-limit" class="form-label">Time limit</label>
