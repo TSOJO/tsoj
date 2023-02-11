@@ -146,36 +146,8 @@
             </div>
             <input id="testcases-count" name="testcases-count" type="text" value="{{ problem.testcases| length }}"
                 hidden />
-            <div class="card mb-3">
-                <div class="card-header">
-                    <h5 class="card-title">Judge Method</h5>
-                </div>
-                <select id="judge-method-select" name="judge-method" class="form-select" style="width:auto;">
-                    <option value="compare-output">Compare Output</option>
-                    <option value="grader" {% if problem.grader_source_code %} selected {% endif %}>Grader</option>
-                </select>
-                <div id="compare-output-div" style="display: none;">
-                    Enter answers for each testcase. If the output of the program matches the answer, it will be accepted.
-                </div>
-                <div id="grader-div" style="display: none;">
-                    <h5>Enter grader code</h5>
-                    <div class="mt-3" id="grader-editor-group">
-                        <div class="mb-3">
-                            <select class="form-select" id="grader-language-select" style="width:auto;"
-                            name="grader-language">
-                            {% for language in all_languages %}
-                            <option value="{{ language.name }}" {% if problem.grader_source_code.language==language
-                                %} selected {% endif %}>{{ language.ui_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <textarea name="grader-code" id="grader-code" hidden></textarea>
-                        <div id="grader-editor" class="mb-3">{{ problem.grader_source_code.code }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="auto-generate-answer-checkbox"
                     name="generator-checkbox" />
                 <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate
                     answers</label>
@@ -190,12 +162,46 @@
                 </div>
                 <textarea name="generator-code" id="generator-code" hidden></textarea>
                 <div id="editor" class="mb-3"></div>
-                <button type="button" class="btn btn-primary" id="gen-answer-button"
-                    onclick="generate_answers()">
+                <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generate_answers()">
                     Generate answers
                 </button>
                 <div id="gen-alert-placeholder"></div>
             </div>
+        </div>
+        Judge Method
+        <div class="card mb-3">
+            <select id="judge-method-select" name="judge-method" class="form-select" style="width:auto;">
+                <option value="compare-output">Compare Output</option>
+                <option value="grader" {% if problem.grader_source_code %} selected {% endif %}>Grader</option>
+            </select>
+            <div id="compare-output-div" style="display: none;">
+                Enter answers for each testcase. If the output of the program matches the answer, it will be
+                accepted.
+            </div>
+            <div id="grader-div" style="display: none;">
+                <h5>Enter grader code</h5>
+                <div class="mt-3" id="grader-editor-group">
+                    <div class="mb-3">
+                        <select class="form-select" id="grader-language-select" style="width:auto;"
+                            name="grader-language">
+                            {% for language in all_languages %}
+                            <option value="{{ language.name }}" {% if problem.grader_source_code.language==language
+                                %} selected {% endif %}>{{ language.ui_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <textarea name="grader-code" id="grader-code" hidden></textarea>
+                    <div id="grader-editor" class="mb-3">{{ problem.grader_source_code.code }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="allowed-languages" class="form-label">Allowed languages</label>
+            <select class="form-select" id="allowed-languages" name="allowed-languages" multiple>
+                {% for language in all_languages %}
+                <option value="{{ language.name }}" {% if language in problem.allowed_languages %} selected {% endif %}>{{ language.ui_name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <label for="time-limit" class="form-label">
             Time limit
