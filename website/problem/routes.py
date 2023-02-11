@@ -27,16 +27,12 @@ def problem_submit(id: str):
     user_id = current_user.id
 
     user_code = request.form.get('user_code')
-    # language = request.form.get('language')
-    language = Language.CPLUSPLUS
+    language = Language.cast_from_document(request.form.get('language'))
     new_submission = Submission(user_id=user_id, problem_id=id, code=user_code, language=language)
     problem = Problem.find_one({'id': id})
     new_submission.create_empty_results(len(problem.testcases))
     submission_id = new_submission.save(wait=True).id
     judge.delay(
-        user_code=user_code,
-        language=language.file_extension,
-        submission_dict=new_submission.cast_to_document(),
-        problem_id=id,
+        user_code, language.cast_to_document(), new_submission.cast_to_document(), id,
     )
     return redirect(url_for('submission_bp.submission', id=submission_id))

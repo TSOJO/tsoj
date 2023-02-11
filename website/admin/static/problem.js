@@ -71,9 +71,11 @@ function generate_answers() {
     $('#gen-answer-button').html(
         '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (0/' + testcases_count + ')'
     )
+    $('#gen-alert-placeholder').empty()
     for (let i = 1; i <= testcases_count; i++) {
         var payload = {
             generator_code: $('#generator-code').val(),
+            language: $('#language-select').val(),
             input: $('#input' + i).val(),
             time_limit: $('#time-limit').val(),
             memory_limit: $('#memory-limit').val()
@@ -102,6 +104,7 @@ function generate_answers() {
                             '   </div>',
                             '</div>'
                         ].join('')
+                        $('#detail' + i + '-modal').remove()
                         const modal = document.createElement('div')
                         modal.innerHTML = [
                             '<div class="modal fade" id="detail'+i+'-modal" tabindex="-1"',
@@ -194,6 +197,10 @@ id_field.addEventListener('blur', () => {
         })
 })
 
+$('#language-select').change(() => {
+    let editor = ace.edit('editor')
+    editor.session.setMode("ace/mode/" + getAceMode($('#language-select').val()))
+})
 
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
@@ -204,7 +211,7 @@ window.onpageshow = function (event) {
     let editor = ace.edit('editor')
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')
     editor.setTheme('ace/theme/textmate')
-    editor.session.setMode('ace/mode/python')
+    editor.session.setMode('ace/mode/' + getAceMode($('#language-select').val()))
     editor.setOptions({ minLines: 10, maxLines: 20 })
     // editor.session.setUseWrapMode(true)
 

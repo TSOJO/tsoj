@@ -30,7 +30,7 @@ class Problem(DBModel):
         self.memory_limit = memory_limit
         self.testcases = testcases
         self.hints = [] if hints is None else hints
-        self.allowed_languages = allowed_languages
+        self.allowed_languages = allowed_languages if allowed_languages is not None else list(Language)
         self.num_solves = num_solves
         self.is_public = is_public
 
@@ -50,7 +50,7 @@ class Problem(DBModel):
             memory_limit=document['memory_limit'],
             testcases=[Testcase.cast_from_document(testcase) for testcase in document['testcases']],
             hints=document['hints'],
-            allowed_languages=[Language.cast_from_document(language) for language in document['allowed_languages']] if document['allowed_languages'] is not None else None,
+            allowed_languages=[Language.cast_from_document(language) for language in document['allowed_languages']],
             num_solves=document['num_solves'],
             is_public=document['is_public'],
         )
@@ -65,7 +65,7 @@ class Problem(DBModel):
             'memory_limit': self.memory_limit,
             'testcases': [testcase.cast_to_document() for testcase in self.testcases],
             'hints': self.hints,
-            'allowed_languages': [language.cast_to_document() for language in self.allowed_languages] if self.allowed_languages is not None else None,
+            'allowed_languages': [language.cast_to_document() for language in self.allowed_languages],
             'num_solves': self.num_solves,
             'is_public': self.is_public,
         }

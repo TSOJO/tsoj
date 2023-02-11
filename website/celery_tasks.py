@@ -6,19 +6,19 @@ from email.message import EmailMessage
 from pymongo.errors import DuplicateKeyError
 
 from config import GMAIL_APP_PWD, GMAIL_EMAIL
-from isolate_wrapper import IsolateSandbox, SourceCode
+from isolate_wrapper import IsolateSandbox, SourceCode, Language
 import website.models as models
 from website import celery
 from website.db import db
 
 
 @celery.task(name='judge', ignore_result=True)
-def judge(user_code: str, language: str, submission_dict, problem_id):
+def judge(user_code: str, language_dict, submission_dict, problem_id):
     submission = models.Submission.cast_from_document(submission_dict)
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()
     submission.create_empty_results(len(problem.testcases))
-    source_code = SourceCode(user_code, language)
+    source_code = SourceCode(user_code, Language.cast_from_document(language_dict))
     for i, result in enumerate(
         sandbox.judge(
             source_code, problem.testcases, problem.time_limit, problem.memory_limit

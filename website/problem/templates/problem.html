@@ -132,8 +132,15 @@
             </div>
             <div class="mb-3">
                 <form method="post"
-                      action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}"
-                      id="codeForm">
+                action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}"
+                id="codeForm">
+                    <div class="mb-3">
+                        <select class="form-select" id="language-select" style="width:auto;" name="language">
+                            {% for language in problem.allowed_languages %}
+                                <option value="{{ language.name }}">{{ language.ui_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     <input type="hidden" name="problem_id" value="{{ problem.id }}" />
                     <div class="mb-3">
                         <textarea name="user_code"></textarea>

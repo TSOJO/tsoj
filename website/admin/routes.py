@@ -3,7 +3,7 @@ from typing import List
 from flask_login import login_required, current_user
 
 from website.models import Problem, Assignment, Submission, User, UserGroup
-from isolate_wrapper import Testcase
+from isolate_wrapper import Testcase, Language
 from website.celery_tasks import judge
 
 admin_bp = Blueprint(
@@ -61,7 +61,7 @@ def create_problem():
 
         flash('Problem created', 'success')
         return redirect(url_for('problem_bp.problem', id=problem.id))
-    return render_template('create_problem.html')
+    return render_template('create_problem.html', all_languages=list(Language))
 
 
 @admin_bp.route('/edit/problem/<id>', methods=['GET', 'POST'])
@@ -97,7 +97,7 @@ def edit_problem(id: str):
         flash('Problem saved', 'success')
         return redirect(url_for('problem_bp.problem', id=problem.id))
     problem = Problem.find_one({'id': id})
-    return render_template('edit_problem.html', problem=problem)
+    return render_template('edit_problem.html', problem=problem, all_languages=list(Language))
 
 
 @admin_bp.route('/delete/problem/<id>')
@@ -189,7 +189,7 @@ def _rejudge_problem(id: str):
         return
     submissions = Submission.find_all({'problem_id': id})
     for submission in submissions:
-        judge.delay(submission.code, submission.language.file_extension, submission.cast_to_document(), id)
+        judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), id)
     flash(f'Rejudging all submissions to problem {id}...')
 
 
@@ -204,7 +204,7 @@ def rejudge_submission(id: int):
         return redirect(url_for('submission_bp.submission', id=id))
     submission.create_empty_results(len(problem.testcases))
     submission.save(replace=True, wait=True)
-    judge.delay(submission.code, submission.language.file_extension, submission.cast_to_document(), submission.problem_id)
+    judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), submission.problem_id)
     flash('Rejudging...')
     return redirect(url_for('submission_bp.submission', id=id))
 

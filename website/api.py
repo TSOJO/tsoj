@@ -23,8 +23,7 @@ def check_problem_exists(id):
 def generate_answer():
     req_json = json.loads(request.data)
     code = req_json.get('generator_code')
-    # language = req_json.get('language')
-    language = Language.CPLUSPLUS
+    language = Language.cast_from_document(req_json.get('language'))
     input_ = req_json.get('input')
     time_limit = req_json.get('time_limit')
     memory_limit = req_json.get('memory_limit')
@@ -41,6 +40,7 @@ def generate_answer():
     answer, verdict, message = IsolateSandbox().generate_answer(
         SourceCode(code, language), input_, time_limit, memory_limit
     )
+    print(f'message: {message}')
     return jsonify(
         {
             'answer': answer,

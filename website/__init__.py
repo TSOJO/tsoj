@@ -5,7 +5,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
-from isolate_wrapper import IsolateSandbox
+from isolate_wrapper import IsolateSandbox, Language
 
 celery = Celery(
     __name__,

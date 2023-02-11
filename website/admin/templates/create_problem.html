@@ -117,6 +117,13 @@ Enter input constraints</textarea>
                 <label class="form-check-label" for="auto-generate-answer-checkbox">Auto-generate answers</label>
             </div>
             <div class="mt-3" id="editor-group" style="display:none">
+                <div class="mb-3">
+                    <select class="form-select" id="language-select" style="width:auto;" name="language">
+                        {% for language in all_languages %}
+                            <option value="{{ language.name }}">{{ language.ui_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <textarea name="generator-code" id="generator-code" hidden></textarea>
                 <div id="editor" class="mb-3"></div>
                 <button type="button"
