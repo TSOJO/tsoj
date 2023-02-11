@@ -72,6 +72,10 @@
                 <td class="text-center">{{ submission.submission_time.strftime('%H:%M:%S %d-%m-%Y')}}</td>
             </tr>
             <tr>
+                <th class="col">Language</th>
+                <td class="text-center">{{ submission.language.ui_name }}</td>
+            </tr>
+            <tr>
                 <th class="col">Final verdict</th>
                 <a id="final-verdict-verdict" hidden>{{ submission.final_verdict.name }}</a>
                 <td class="text-center" id="final-verdict">
@@ -126,7 +130,7 @@
                     Verdict
                 </th>
                 <th scope="col">
-                    Exec. time
+                    Time used
                 </th>
                 <th scope="col">
                     Memory used

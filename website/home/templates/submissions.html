@@ -15,6 +15,7 @@
                 <th>Time</th>
                 <th>Username</th>
                 <th>Problem</th>
+                <th>Language</th>
                 <th>Verdict</th>
                 <th></th>
             </tr>
@@ -44,6 +45,7 @@
                                class="text-decoration-none">{{
                             submission.problem_id }}</a>
                         </td>
+                        <td>{{ submission.language.ui_name }}</td>
                         <td>
                             {% if submission.final_verdict.is_ac() %}
                                 <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
