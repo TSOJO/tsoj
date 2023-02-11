@@ -40,7 +40,6 @@ def generate_answer():
     answer, verdict, message = IsolateSandbox().generate_answer(
         SourceCode(code, language), input_, time_limit, memory_limit
     )
-    print(f'message: {message}')
     return jsonify(
         {
             'answer': answer,

@@ -32,7 +32,6 @@ class Token(DBModel):
         if hashed_token is None:
             self.plaintext_token = secrets.token_urlsafe(16)
             self.hashed_token = hashlib.md5(self.plaintext_token.encode('utf-8')).hexdigest()
-            print(self.hashed_token)
         else:
             self.hashed_token = hashed_token
             
