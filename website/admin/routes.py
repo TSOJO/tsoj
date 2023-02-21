@@ -295,5 +295,5 @@ def edit_privileges():
             if new_privilege != user.privilege:
                 user.privilege = new_privilege
                 user.save(replace=True, wait=True)
-        flash('Privileges updated', 'success')
+        flash('Privileges saved', 'success')
     return render_template('edit_privileges.html', users=users)

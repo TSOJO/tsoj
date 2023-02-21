@@ -26,7 +26,7 @@
                         <p class="card-text">{{ user_group.name }}</p>
                     </div>
                 {% else %}
-                    {% if not user.is_admin() and not user.is_contributor() %}
+                    {% if not user.is_admin() and not user.is_contributor() and not user.id in developers %}
                         <p>No groups found.</p>
                     {% endif %}
                 {% endfor %}
