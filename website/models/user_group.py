@@ -16,8 +16,21 @@ class UserGroup(DBModel):
         self, name: str, id: int = None, user_ids: Optional[List[int]] = None
     ) -> None:
         self.name = name
-        self.id = id
+        self._id = id
         self._user_ids = [] if user_ids is None else user_ids
+
+    @property
+    def id(self):
+        if self._id is None:
+            try:
+                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
+            except IndexError:
+                # collection is empty
+                max_id = 0
+            else:
+                max_id = max_id_doc['id']
+            self._id = max_id + 1
+        return self._id
 
     @property
     def user_ids(self) -> List[int]:
@@ -74,9 +87,6 @@ class UserGroup(DBModel):
         return user_groups
 
     def save(self, replace=False, wait=False) -> UserGroup:
-        if self.id is None:
-            UserGroup._max_id += 1
-            self.id = UserGroup._max_id
         doc = self.cast_to_document()
         if wait:
             add_to_db('user_groups', doc, replace)
@@ -93,10 +103,5 @@ class UserGroup(DBModel):
 
     @classmethod
     def init(cls) -> None:
-        # Get and store max ID for incrementation.
-        all_user_groups = cls.find_all()
-        if len(all_user_groups) == 0:
-            cls._max_id = 0
-        else:
-            all_ids = [cast(int, a.id) for a in all_user_groups]
-            cls._max_id = max(all_ids)
+        # Create index for fast max_id query.
+        db.submissions.create_index([("id", -1)])
