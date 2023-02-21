@@ -127,10 +127,6 @@ class Submission:
         return submissions
 
     def save(self, replace=False, wait=False) -> Submission:
-        if self.id is None:
-            # Generate new incremented ID
-            Submission._max_id += 1
-            self.id = Submission._max_id
         doc = self.cast_to_document()
         if wait:
             add_to_db('submissions', doc, replace)

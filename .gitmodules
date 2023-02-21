@@ -1,3 +1,6 @@
 [submodule "isolate_wrapper"]
 	path = isolate_wrapper
 	url = https://github.com/TSOJO/isolate-wrapper
+[submodule "AQA_Assembly_Interpreter"]
+	path = AQA_Assembly_Interpreter
+	url = https://github.com/L3ungj/AQA-Assembly-Interpreter

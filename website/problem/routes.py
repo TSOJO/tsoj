@@ -3,7 +3,7 @@ from flask_login import current_user
 
 from website.celery_tasks import judge
 from website.models import Problem, Submission
-from isolate_wrapper import Language, SourceCode
+from isolate_wrapper import Language
 
 
 problem_bp = Blueprint(
@@ -19,13 +19,13 @@ def problem(id: str) -> str:
     if not current_user.is_contributor() and not problem.is_public:
         abort(403, 'Problem is not public')
     example_testcases = [testcase for testcase in problem.testcases if testcase.batch_number == 0]
-    return render_template('problem.html', problem=problem, example_testcases=example_testcases)
+    allowed_languages=problem.allowed_languages if problem.allowed_languages is not None else list(Language)
+    return render_template('problem.html', problem=problem, example_testcases=example_testcases, allowed_languages=allowed_languages)
 
 
 @problem_bp.route('/<id>/submit', methods=['POST'])
 def problem_submit(id: str):
     user_id = current_user.id
-
     user_code = request.form.get('user_code')
     language = Language.cast_from_document(request.form.get('language'))
     new_submission = Submission(user_id=user_id, problem_id=id, code=user_code, language=language)

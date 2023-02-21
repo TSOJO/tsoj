@@ -70,7 +70,6 @@ def edit_problem(id: str):
             'time_limit': int(round(float(request.form['time-limit']) * 1000)),
             'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
             'is_public': 'is_public' in request.form,
-            'allowed_languages': [Language.cast_from_document(lang) for lang in request.form.getlist('allowed-languages')],
         }
 
         testcases: List[Testcase] = []
@@ -91,7 +90,11 @@ def edit_problem(id: str):
             grader_language = Language.cast_from_document(request.form['grader-language'])
             problem_info['grader_source_code'] = SourceCode(grader_code, grader_language)
 
-        problem = Problem(**problem_info, testcases=testcases)
+        allowed_languages = [Language.cast_from_document(lang) for lang in request.form.getlist('allowed-languages')]
+        if allowed_languages == []:
+            allowed_languages = list(Language)
+
+        problem = Problem(**problem_info, testcases=testcases, allowed_languages=allowed_languages)
         problem.save(replace=True, wait=True)
 
         if 'rejudge' in request.form:
