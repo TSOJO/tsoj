@@ -77,11 +77,11 @@ Enter input constraints</textarea>
             </div>
             <div class="container">
                 <div class="row">
-                    <div class="form-group mb-3 col-sm-6">
+                    <div class="form-group mb-3 col-lg-6">
                         <label class="form-label">Input</label>
                         <textarea class="form-control testcase-input" rows="3"></textarea>
                     </div>
-                    <div class="form-group mb-3 col-sm-6">
+                    <div class="form-group mb-3 col-lg-6">
                         <label class="form-label">Answer</label>
                         <textarea class="form-control testcase-answer" rows="3"></textarea>
                     </div>
@@ -112,7 +112,7 @@ Enter input constraints</textarea>
         </div>
     </div>
     <label class="form-label">Judge strategy</label>
-    <div class="card mb-3">
+    <div class="border p-3 mb-3">
         <select class="selectpicker" id="judge-method-select" name="judge-method" data-width="auto">
             <option value="compare-output" data-subtext="Compare output of program to testcase answer">Compare output</option>
             <option value="grader" data-subtext="Judge output using custom grader program">Grader</option>
@@ -127,7 +127,8 @@ Enter input constraints</textarea>
                     </select>
                 </div>
                 <textarea name="grader-code" id="grader-code" hidden></textarea>
-                <div id="grader-editor"></div>
+                <div id="grader-editor" class="mb-3"></div>
+                <p>The grader program should input the submission's output, and output <strong>AC</strong> for correct outputs and <strong>WA</strong> otherwise. Any other outputs from the grader will result in <strong>SE</strong> (System Error) in the testcase.</p>
             </div>
         </div>
     </div>
