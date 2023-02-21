@@ -34,7 +34,7 @@ class Assignment(DBModel):
     def id(self):
         if self._id is None:
             try:
-                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1).limit(1)[0]
+                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
             except IndexError:
                 # collection is empty
                 max_id = 0
