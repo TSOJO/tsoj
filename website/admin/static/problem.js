@@ -178,25 +178,6 @@ function generate_answers() {
     }, false)
 })()
 
-const id_field = document.getElementById('id')
-const id_invalid_feedback = document.getElementById('id-invalid-feedback')
-id_field.addEventListener('blur', () => {
-    fetch('/api/db/problem/' + id_field.value,
-        {
-            method: 'HEAD',
-        })
-        .then(response => response['status'])
-        .then(status => {
-            if (status === 200) {
-                id_field.setCustomValidity('A problem with that ID already exists.')
-                id_invalid_feedback.innerText = 'A problem with that ID already exists.'
-            } else {
-                id_field.setCustomValidity('')
-                id_invalid_feedback.innerText = 'This field is required.'
-            }
-        })
-})
-
 $('#language-select').change(() => {
     let editor = ace.edit('editor')
     editor.session.setMode("ace/mode/" + getAceMode($('#language-select').val()))
