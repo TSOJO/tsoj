@@ -125,7 +125,7 @@
                 <div class="d-flex align-items-center mb-2" style="gap:10px;">
                     <div class="flex-grow-1">
                         <select class="selectpicker" id="language-select" data-width="auto" name="language">
-                            {% for language in problem.allowed_languages %}
+                            {% for language in allowed_languages %}
                                 <option value="{{ language.name }}">{{ language.ui_name }}</option>
                             {% endfor %}
                         </select>
