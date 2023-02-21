@@ -210,11 +210,9 @@ $('#grader-language-select').change(() => {
 function judgeMethodOnChange() {
     switch ($('#judge-method-select').val()) {
         case 'compare-output':
-            $('#compare-output-div').show()
             $('#grader-div').hide()
             break
         case 'grader':
-            $('#compare-output-div').hide()
             $('#grader-div').show()
             break
     }

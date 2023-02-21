@@ -111,35 +111,32 @@ Enter input constraints</textarea>
             <div id="gen-alert-placeholder"></div>
         </div>
     </div>
-    Judge Method
+    <label class="form-label">Judge strategy</label>
     <div class="card mb-3">
-        <select id="judge-method-select" name="judge-method" class="form-select" style="width:auto;">
-            <option value="compare-output">Compare Output</option>
-            <option value="grader">Grader</option>
+        <select class="selectpicker" id="judge-method-select" name="judge-method" data-width="auto">
+            <option value="compare-output" data-subtext="Compare output of program to testcase answer">Compare output</option>
+            <option value="grader" data-subtext="Judge output using custom grader program">Grader</option>
         </select>
-        <div id="compare-output-div">
-            Enter answers for each testcase. If the output of the program matches the answer, it will be accepted.
-        </div>
-        <div id="grader-div" style="display: none;">
-            <h5>Enter grader code</h5>
+        <div id="grader-div">
             <div class="mt-3" id="grader-editor-group">
                 <div class="mb-3">
-                    <select class="form-select" id="grader-language-select" style="width:auto;" name="grader-language">
+                    <select class="selectpicker" id="grader-language-select" data-width="auto" name="grader-language">
                         {% for language in all_languages %}
                         <option value="{{ language.name }}">{{ language.ui_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <textarea name="grader-code" id="grader-code" hidden></textarea>
-                <div id="grader-editor" class="mb-3"></div>
+                <div id="grader-editor"></div>
             </div>
         </div>
     </div>
     <div class="mb-3">
         <label for="allowed-languages" class="form-label">Allowed languages</label>
-        <select class="form-select" id="allowed-languages" name="allowed-languages" multiple>
+        <br />
+        <select class="selectpicker" id="allowed-languages" name="allowed-languages" multiple data-actions-box="true" data-width="auto">
             {% for language in all_languages %}
-            <option value="{{ language.name }}">{{ language.ui_name }}</option>
+            <option value="{{ language.name }}" selected>{{ language.ui_name }}</option>
             {% endfor %}
         </select>
     </div>
