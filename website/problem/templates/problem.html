@@ -119,36 +119,33 @@
             {% endif %}
         </div>
         <div class="col-lg-6">
-            <div class="d-flex align-items-center mb-2" style="gap:10px;">
-                <div class="flex-grow-1">
-                    <h4 class="my-0">Your code</h4>
-                </div>
-                <div>
-                    <small class="my-0"><b>Time limit: </b>{{ problem.time_limit / 1000 }}s</small>
-                </div>
-                <div>
-                    <small class="my-0"><b>Memory limit: </b>{{ problem.memory_limit / 1024 }}MB</small>
-                </div>
-            </div>
-            <div class="mb-3">
-                <form method="post"
-                action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}"
-                id="codeForm">
-                    <div class="mb-3">
-                        <select class="form-select" id="language-select" style="width:auto;" name="language">
+            <form method="post"
+            action="{{ url_for('problem_bp.problem_submit', id=problem.id) }}"
+            id="codeForm">
+                <div class="d-flex align-items-center mb-2" style="gap:10px;">
+                    <div class="flex-grow-1">
+                        <select class="selectpicker" id="language-select" data-width="auto" name="language">
                             {% for language in problem.allowed_languages %}
                                 <option value="{{ language.name }}">{{ language.ui_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
+                    <div>
+                        <small class="my-0"><b>Time limit: </b>{{ problem.time_limit / 1000 }}s</small>
+                    </div>
+                    <div>
+                        <small class="my-0"><b>Memory limit: </b>{{ problem.memory_limit / 1024 }}MB</small>
+                    </div>
+                </div>
+                <div class="mb-3">
                     <input type="hidden" name="problem_id" value="{{ problem.id }}" />
                     <div class="mb-3">
                         <textarea name="user_code"></textarea>
                         <div id="editor"></div>
                     </div>
                     <button type="submit" class="btn btn-primary mb-3" id="submitButton"></button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock content %}
