@@ -32,45 +32,32 @@ def unauthorised():
 # Problem
 
 
-@admin_bp.route('/create/problem', methods=['GET', 'POST'])
+@admin_bp.route('/create/problem', methods=['POST'])
 def create_problem():
-    if request.method == 'POST':
-        problem_info = {
-            'id': request.form['id'],
-            'name': request.form['name'],
-            'description': request.form['description'],
-            'hints': [hint.strip() for hint in request.form['hints'].split('\n') if hint.strip() != ''],
-            'time_limit': int(round(float(request.form['time-limit']) * 1000)),
-            'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
-            'is_public': 'is_public' in request.form,
-            'allowed_languages': [Language.cast_from_document(lang) for lang in request.form.getlist('allowed-languages')],
-        }
+    problem = Problem(
+        id=request.form['id'],
+        name='',
+        description='''
+Enter description
 
-        testcases: List[Testcase] = []
-        testcases_count = int(request.form['testcases-count'])
-        for i in range(testcases_count):
-            sample = f'sample{i+1}' in request.form
-            testcases.append(
-                Testcase(
-                    to_input_format(request.form[f'input{i+1}']),
-                    request.form[f'answer{i+1}'],
-                    0 if sample else 1,
-                )
-            )
+##### Input
+Enter input format
 
-        judge_method = request.form.get('judge-method')
-        if judge_method == 'grader':
-            grader_code = request.form['grader-code']
-            grader_language = Language.cast_from_document(request.form['grader-language'])
-            problem_info['grader_source_code'] = SourceCode(grader_code, grader_language)
+##### Output
+Enter output format
 
-        problem = Problem(**problem_info, testcases=testcases)
-        problem.save(wait=True)
-
-        flash('Problem created', 'success')
-        return redirect(url_for('problem_bp.problem', id=problem.id))
-    return render_template('create_problem.html', all_languages=list(Language))
-
+##### Constraints
+Enter input constraints''',
+        hints=[],
+        time_limit=1000,
+        memory_limit=64*1024,
+        is_public=False,
+        allowed_languages=list(Language),
+        testcases=[Testcase(input='', answer='')]
+    )
+    problem.save(wait=True)
+    flash('Problem created', 'success')
+    return redirect(url_for('admin_bp.edit_problem', id=problem.id))
 
 @admin_bp.route('/edit/problem/<id>', methods=['GET', 'POST'])
 def edit_problem(id: str):

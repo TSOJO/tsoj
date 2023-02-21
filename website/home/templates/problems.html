@@ -4,8 +4,9 @@
     <div class="d-flex justify-content-between">
         <h1>Problems</h1>
         {% if current_user.is_contributor() %}
-            <a href="{{ url_for('admin_bp.create_problem') }}"
-               class="btn btn-success align-self-center">Create</a>
+            <a class="btn btn-success align-self-center"
+               data-bs-toggle="modal"
+               data-bs-target="#create-modal">Create</a>
         {% endif %}
     </div>
     <table class="table table-striped table-bordered table-responsive-xl align-middle"

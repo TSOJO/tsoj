@@ -59,7 +59,7 @@
         </div>
         <div class="row mb-3">
             <div class="form-group">
-                <label for="hints" class="form-label">Hints (each hint should be on its own line))</label>
+                <label for="hints" class="form-label">Hints (each hint should be on its own line)</label>
                 <textarea class="form-control" name="hints" id="hints"
                     rows="5">{{problem.hints | join('\n')}}</textarea>
             </div>
@@ -154,7 +154,7 @@
             </div>
             <div class="mt-3" id="editor-group" style="display: none;">
                 <div class="mb-3">
-                    <select class="form-select" id="language-select" style="width:auto;" name="language">
+                    <select class="selectpicker" id="language-select" name="language" data-width="auto">
                         {% for language in all_languages %}
                         <option value="{{ language.name }}">{{ language.ui_name }}</option>
                         {% endfor %}
@@ -168,46 +168,44 @@
                 <div id="gen-alert-placeholder"></div>
             </div>
         </div>
-        Judge Method
-        <div class="card mb-3">
-            <select id="judge-method-select" name="judge-method" class="form-select" style="width:auto;">
-                <option value="compare-output">Compare Output</option>
-                <option value="grader" {% if problem.grader_source_code %} selected {% endif %}>Grader</option>
+
+        <label class="form-label">Judge method</label>
+        <div class="border p-3 mb-3">
+            <select class="selectpicker" id="judge-method-select" name="judge-method" data-width="auto">
+                <option value="compare-output" data-subtext="Compare output of program to testcase answer" {%- if not problem.grader_source_code -%} selected {%- endif -%}>Compare output</option>
+                <option value="grader" data-subtext="Judge output using custom grader program" {%- if problem.grader_source_code -%} selected {%- endif -%}>Grader</option>
             </select>
-            <div id="compare-output-div" style="display: none;">
-                Enter answers for each testcase. If the output of the program matches the answer, it will be
-                accepted.
-            </div>
-            <div id="grader-div" style="display: none;">
-                <h5>Enter grader code</h5>
+            <div id="grader-div">
                 <div class="mt-3" id="grader-editor-group">
                     <div class="mb-3">
-                        <select class="form-select" id="grader-language-select" style="width:auto;"
-                            name="grader-language">
+                        <select class="selectpicker" id="grader-language-select" data-width="auto" name="grader-language">
                             {% for language in all_languages %}
-                            <option value="{{ language.name }}" {% if problem.grader_source_code.language==language
-                                %} selected {% endif %}>{{ language.ui_name }}</option>
+                            <option value="{{ language.name }}" {%- if problem.grader_source_code.language==language -%} selected {%- endif -%}>{{ language.ui_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <textarea name="grader-code" id="grader-code" hidden></textarea>
-                    <div id="grader-editor" class="mb-3">{{ problem.grader_source_code.code }}</div>
+                    <div id="grader-editor" class="mb-3"></div>
+                    <p>The grader program should input the submission's output, and output <strong>AC</strong> for correct outputs and <strong>WA</strong> otherwise. Any other outputs from the grader will result in <strong>SE</strong> (System Error) in the testcase.</p>
                 </div>
             </div>
         </div>
+        
         <div class="mb-3">
             <label for="allowed-languages" class="form-label">Allowed languages</label>
-            <select class="form-select" id="allowed-languages" name="allowed-languages" multiple>
+            <br />
+            <select class="selectpicker" id="allowed-languages" name="allowed-languages" multiple data-actions-box="true" data-width="100%">
                 {% for language in all_languages %}
-                <option value="{{ language.name }}" {% if language in problem.allowed_languages %} selected {% endif %}>{{ language.ui_name }}</option>
+                <option value="{{ language.name }}" {%- if language in problem.allowed_languages -%} selected {%- endif -%}>{{ language.ui_name }}</option>
                 {% endfor %}
             </select>
         </div>
+
         <label for="time-limit" class="form-label">
             Time limit
         </label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="time-limit" id="time-limit" value="1.0" required />
+            <input type="text" class="form-control" name="time-limit" id="time-limit" value="{{ problem.time_limit / 1000 }}" required />
             <span class="input-group-text">seconds (recommended: 1-10)</span>
             <div class="invalid-feedback">
                 This field is required.
@@ -217,7 +215,7 @@
             Memory limit
         </label>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="128" required />
+            <input type="text" class="form-control" name="memory-limit" id="memory-limit" value="{{ problem.memory_limit / 1024 }}" required />
             <span class="input-group-text">MB (recommended: 64-512)</span>
             <div class="invalid-feedback">
                 This field is required.
@@ -230,7 +228,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="rejudge" name="rejudge" />
                 <label class="form-check-label" for="rejudge">
-                    Rejudge all current submissions to this problem
+                    Rejudge all submissions to this problem
                 </label>
             </div>
         </div>
