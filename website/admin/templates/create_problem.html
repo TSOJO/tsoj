@@ -134,7 +134,7 @@ Enter input constraints</textarea>
     <div class="mb-3">
         <label for="allowed-languages" class="form-label">Allowed languages</label>
         <br />
-        <select class="selectpicker" id="allowed-languages" name="allowed-languages" multiple data-actions-box="true" data-width="auto">
+        <select class="selectpicker" id="allowed-languages" name="allowed-languages" multiple data-actions-box="true" data-width="100%">
             {% for language in all_languages %}
             <option value="{{ language.name }}" selected>{{ language.ui_name }}</option>
             {% endfor %}
