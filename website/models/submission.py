@@ -34,8 +34,21 @@ class Submission:
         self.language = language
         self.final_verdict = Verdict.WJ if final_verdict is None else final_verdict
         self.results = [] if results is None else results
-        self.id: Optional[int] = id
+        self._id: Optional[int] = id
         self.submission_time = datetime.utcnow() if submission_time is None else submission_time
+
+    @property
+    def id(self):
+        if self._id is None:
+            try:
+                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
+            except IndexError:
+                # collection is empty
+                max_id = 0
+            else:
+                max_id = max_id_doc['id']
+            self._id = max_id + 1
+        return self._id
 
     def create_empty_results(self, num_results):
         self.results = []
@@ -136,10 +149,6 @@ class Submission:
 
     @classmethod
     def init(cls) -> None:
-        # Get and store max ID for incrementation.
-        all_submissions = cls.find_all()
-        if len(all_submissions) == 0:
-            cls._max_id = 0
-        else:
-            all_ids = [cast(int, a.id) for a in all_submissions]
-            cls._max_id = max(all_ids)
+        # Create index for fast max_id query.
+        db.submissions.create_index([("id", -1)])
+        

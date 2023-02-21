@@ -22,7 +22,7 @@ class Token(DBModel):
         ttl: int = 3
     ):
         self.token_data = token_data
-        self.id = id
+        self._id = id
         
         if action is None:
             self.action = ''
@@ -40,6 +40,19 @@ class Token(DBModel):
         else:
             self.expiration = expiration
     
+    @property
+    def id(self):
+        if self._id is None:
+            try:
+                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
+            except IndexError:
+                # collection is empty
+                max_id = 0
+            else:
+                max_id = max_id_doc['id']
+            self._id = max_id + 1
+        return self._id
+
     def is_valid(self):
         return self.expiration > datetime.utcnow()
     
@@ -98,10 +111,6 @@ class Token(DBModel):
         return [cls.cast_from_document(result) for result in results]
     
     def save(self, replace=False, wait=False):
-        if self.id is None:
-            # Generate new incremented ID
-            Token._max_id += 1
-            self.id = Token._max_id
         doc = self.cast_to_document()
         if wait:
             add_to_db('tokens', doc, replace)
@@ -117,10 +126,5 @@ class Token(DBModel):
     
     @classmethod
     def init(cls) -> None:
-        # Get and store max ID for incrementation.
-        all_tokens = cls.find_all()
-        if len(all_tokens) == 0:
-            cls._max_id = 0
-        else:
-            all_ids = [cast(int, t.id) for t in all_tokens]
-            cls._max_id = max(all_ids)
+        # Create index for fast max_id query.
+        db.submissions.create_index([("id", -1)])

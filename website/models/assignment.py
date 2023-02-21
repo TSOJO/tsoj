@@ -23,12 +23,25 @@ class Assignment(DBModel):
         set_time: datetime = None,
     ):
         # Public properties.
-        self.id: Optional[int] = id
+        self._id: Optional[int] = id
         self.problem_ids = [] if problem_ids is None else problem_ids
         self.user_group_ids = [] if user_group_ids is None else user_group_ids
         self.creator = creator
         self.archived = archived
         self.set_time = datetime.utcnow() if set_time is None else set_time
+
+    @property
+    def id(self):
+        if self._id is None:
+            try:
+                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
+            except IndexError:
+                # collection is empty
+                max_id = 0
+            else:
+                max_id = max_id_doc['id']
+            self._id = max_id + 1
+        return self._id
 
     def add_problems(self, *problem_ids):
         self.problem_ids.extend(problem_ids)
@@ -80,9 +93,6 @@ class Assignment(DBModel):
         return assignments
 
     def save(self, replace=False, wait=False) -> Assignment:
-        if self.id is None:
-            Assignment._max_id += 1
-            self.id = Assignment._max_id
         doc = self.cast_to_document()
         if wait:
             add_to_db('assignments', doc, replace)
@@ -98,10 +108,5 @@ class Assignment(DBModel):
 
     @classmethod
     def init(cls) -> None:
-        # Get and store max ID for incrementation.
-        all_assignments = cls.find_all()
-        if len(all_assignments) == 0:
-            cls._max_id = 0
-        else:
-            all_ids = [cast(int, a.id) for a in all_assignments]
-            cls._max_id = max(all_ids)
+        # Create index for fast max_id query.
+        db.submissions.create_index([("id", -1)])
