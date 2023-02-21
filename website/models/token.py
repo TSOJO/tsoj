@@ -9,9 +9,6 @@ from website.models.db_model import DBModel
 
 
 class Token(DBModel):
-    
-    _max_id: int = 0
-    
     def __init__(
         self,
         token_data: Dict,
@@ -44,7 +41,7 @@ class Token(DBModel):
     def id(self):
         if self._id is None:
             try:
-                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
+                max_id_doc = db.tokens.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
             except IndexError:
                 # collection is empty
                 max_id = 0
@@ -127,4 +124,4 @@ class Token(DBModel):
     @classmethod
     def init(cls) -> None:
         # Create index for fast max_id query.
-        db.submissions.create_index([("id", -1)])
+        db.tokens.create_index([("id", -1)])

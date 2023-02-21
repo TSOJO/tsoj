@@ -9,9 +9,6 @@ from website.db import db
 
 
 class UserGroup(DBModel):
-
-    _max_id: int = 0
-
     def __init__(
         self, name: str, id: int = None, user_ids: Optional[List[int]] = None
     ) -> None:
@@ -23,7 +20,7 @@ class UserGroup(DBModel):
     def id(self):
         if self._id is None:
             try:
-                max_id_doc = db.submissions.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
+                max_id_doc = db.user_groups.find(projection={"id": 1, "_id":0}).sort("id", -1)[0]
             except IndexError:
                 # collection is empty
                 max_id = 0
@@ -104,4 +101,4 @@ class UserGroup(DBModel):
     @classmethod
     def init(cls) -> None:
         # Create index for fast max_id query.
-        db.submissions.create_index([("id", -1)])
+        db.user_groups.create_index([("id", -1)])

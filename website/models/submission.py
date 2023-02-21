@@ -13,9 +13,6 @@ from website.models.problem import Problem
 
 
 class Submission:
-
-    _max_id: int = 0
-
     def __init__(
         self,
         user_id: str,
