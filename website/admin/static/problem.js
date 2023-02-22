@@ -200,6 +200,15 @@ function judgeMethodOnChange() {
 }
 $('#judge-method-select').change(judgeMethodOnChange)
 
+function toggleAllowedLangSelect() {
+    if ($('#restrict-langs').is(':checked')) {
+        $('#allowed-languages-wrapper').show()
+    } else {
+        $('#allowed-languages-wrapper').hide()
+    }
+}
+$('#restrict-langs').change(toggleAllowedLangSelect)
+
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
@@ -246,9 +255,12 @@ window.onpageshow = function (event) {
             }
         }
     })
-
-    judgeMethodOnChange()
 }
+
+$(document).ready(() => {
+    judgeMethodOnChange()
+    toggleAllowedLangSelect()
+})
 
 $('#description').on('input', function (e) {
     $('#description-md')[0].mdContent = $('#description').val()
