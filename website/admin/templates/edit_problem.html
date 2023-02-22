@@ -196,7 +196,7 @@
             <br />
             <select class="selectpicker" id="allowed-languages" name="allowed-languages" multiple data-actions-box="true" data-width="100%">
                 {% for language in all_languages %}
-                <option value="{{ language.name }}" {%- if language in problem.allowed_languages -%} selected {%- endif -%}>{{ language.ui_name }}</option>
+                <option value="{{ language.name }}" {%- if not problem.allowed_languages or language in problem.allowed_languages -%} selected {%- endif -%}>{{ language.ui_name }}</option>
                 {% endfor %}
             </select>
         </div>
