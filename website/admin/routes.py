@@ -70,6 +70,8 @@ def edit_problem(id: str):
             'time_limit': int(round(float(request.form['time-limit']) * 1000)),
             'memory_limit': int(round(float(request.form['memory-limit']) * 1024)),
             'is_public': 'is_public' in request.form,
+            'aqaasm_inputs': [address.strip() for address in request.form['input-address'].split('\n') if address.strip() != ''],
+            'aqaasm_outputs': [address.strip() for address in request.form['output-address'].split('\n') if address.strip() != ''],
         }
 
         testcases: List[Testcase] = []

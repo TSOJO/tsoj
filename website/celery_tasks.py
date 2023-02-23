@@ -18,7 +18,7 @@ def judge(user_code: str, language_dict, submission_dict, problem_id, grader_sou
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()
     submission.create_empty_results(len(problem.testcases))
-    source_code = SourceCode(user_code, Language.cast_from_document(language_dict))
+    source_code = SourceCode(user_code, Language.cast_from_document(language_dict), aqaasm_inputs=problem.aqaasm_inputs, aqaasm_outputs=problem.aqaasm_outputs)
     grader_source_code = SourceCode.cast_from_document(grader_source_code_dict) if grader_source_code_dict is not None else None
     for i, result in enumerate(
         sandbox.judge(
