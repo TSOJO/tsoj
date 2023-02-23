@@ -89,10 +89,11 @@ def edit_problem(id: str):
             grader_code = request.form['grader-code']
             grader_language = Language.cast_from_document(request.form['grader-language'])
             problem_info['grader_source_code'] = SourceCode(grader_code, grader_language)
-
-        allowed_languages = [Language.cast_from_document(lang) for lang in request.form.getlist('allowed-languages')]
-        if allowed_languages == []:
-            allowed_languages = list(Language)
+        
+        if 'restrict-langs' in request.form:
+            allowed_languages = [Language.cast_from_document(lang) for lang in request.form.getlist('allowed-languages')]
+        else:
+            allowed_languages = None
 
         problem = Problem(**problem_info, testcases=testcases, allowed_languages=allowed_languages)
         problem.save(replace=True, wait=True)
