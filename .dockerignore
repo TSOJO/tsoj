@@ -4,3 +4,5 @@
 !config.py
 !.env
 !requirements.txt
+!AQA_Assembly_Interpreter
+!migrate.py
