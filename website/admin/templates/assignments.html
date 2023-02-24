@@ -11,7 +11,8 @@
            data-toggle="table"
            data-search="true"
            data-pagination="true"
-           data-pagination-loop="false">
+           data-pagination-loop="false"
+           data-custom-search="assignment_searcher">
         <thead>
             <tr>
                 <th scope="col">ID</th>
@@ -23,17 +24,25 @@
         </thead>
         <tbody>
             {% for assignment in assignments %}
-                <tr>
+                <tr data-id="{{ assignment.id }}"
+                    data-time="{{ assignment.set_time.strftime('%d/%m/%y %H:%M') }}"
+                    data-creator="{{ assignment.creator }}"
+                    data-problems="{{ assignment.problem_ids|join(', ') }}"
+                    data-groups="
+                        {%- for group_id in assignment.user_group_ids -%}
+                            {{- user_group_names[group_id] -}}
+                            {%- if not loop.last -%}, {% endif %}
+                        {%- endfor -%}">
                     <th scope="row">{{ assignment.id }}</th>
-                    <td>{{ assignment.set_time.strftime("%d/%m/%y %H:%M")}}</td>
+                    <td>{{ assignment.set_time.strftime("%d/%m/%y %H:%M") }}</td>
                     <td>{{ assignment.creator }}</td>
-                    <td>{{ assignment.problem_ids|join(', ')}}</td>
-                    <td class="d-flex align-items-center justify-content-between">
+                    <td>{{ assignment.problem_ids|join(', ') }}</td>
+                    <td class="d-flex justify-content-between">
                         <div>
-                            {% for group_id in assignment.user_group_ids %}
-                                {{ user_group_names[group_id] }}
-                                {% if not loop.last %},{% endif %}
-                            {% endfor %}
+                            {%- for group_id in assignment.user_group_ids -%}
+                                {{- user_group_names[group_id] -}}
+                                {%- if not loop.last -%}, {% endif %}
+                            {%- endfor -%}
                         </div>
                         <div>
                             <a href="{{ url_for('admin_bp.assignment_results', id=assignment.id)}}"

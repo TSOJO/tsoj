@@ -50,23 +50,30 @@
                data-pagination="true"
                data-pagination-loop="false"
                data-click-to-select="true"
-               data-maintain-meta-data="true">
+               data-maintain-meta-data="true"
+               data-custom-search="edit_group_searcher">
             <thead>
                 <tr>
                     <th data-field="state" data-checkbox="true"></th>
-                    <th data-field="name" scope="col">Name</th>
+                    <th data-field="id_vis" scope="col">ID</th>
                     <th data-field="id" data-visible="false" scope="col">ID</th>
+                    <th data-field="name" scope="col">Full name</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
-                    <tr>
+                    <tr data-id="{{ user.id }}"
+                        data-name="{{ user.full_name }}">
                         <td></td>
+                        <td>
+                            <a href="{{ url_for('user_bp.profile', id=user.id)}}"
+                               class="text-decoration-none">{{ user.id }}</a>
+                        </td>
+                        <td>{{ user.id }}</td>
                         <td>
                             <a href="{{ url_for('user_bp.profile', id=user.id)}}"
                                class="text-decoration-none">{{ user.full_name }}</a>
                         </td>
-                        <td>{{ user.id }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

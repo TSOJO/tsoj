@@ -10,7 +10,8 @@
            data-pagination="true"
            data-pagination-loop="false"
            data-page-size="10"
-           data-sort-reset="true">
+           data-sort-reset="true"
+           data-custom-search="assignment_searcher">
         <thead>
             <tr>
                 <th scope="col">Set</th>
@@ -21,15 +22,16 @@
         </thead>
         <tbody>
             {% for assignment in assignments %}
-            <tr>
-                <td>{{ assignment.set_time.strftime("%d/%m/%y") }}</td>
+            {% set num_solved_problems = problems[assignment.id] | selectattr('id', 'in', solved_problem_ids) | list | count %}
+            {% set num_problems = problems[assignment.id] | count %}
+            <tr data-time="{{ assignment.set_time.strftime('%d/%m/%y %H:%M') }}"
+                data-creator="{{ assignment.creator }}"
+                data-solved="{{ num_solved_problems }} / {{ num_problems }}">
+                <td>{{ assignment.set_time.strftime("%d/%m/%y %H:%M") }}</td>
                 <td>{{ assignment.creator }}</td>
                 <td>
                     <div class="d-flex align-items-center justify-content-between">
-
                         <div>
-                            {% set num_solved_problems = problems[assignment.id] | selectattr('id', 'in', solved_problem_ids) | list | count %}
-                            {% set num_problems = problems[assignment.id] | count %}
                             {{ num_solved_problems }} / {{ num_problems }}
                         </div>
                         {% if num_solved_problems == num_problems %}

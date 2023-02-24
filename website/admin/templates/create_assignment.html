@@ -26,7 +26,8 @@
                    data-pagination="true"
                    data-pagination-loop="false"
                    data-click-to-select="true"
-                   data-maintain-meta-data="true">
+                   data-maintain-meta-data="true"
+                   data-custom-search="create_assignment_searcher">
                 <thead>
                     <tr>
                         <th data-field="state" data-checkbox="true" scope="col"></th>
@@ -37,7 +38,8 @@
                 </thead>
                 <tbody>
                     {% for problem in problems %}
-                        <tr>
+                        <tr data-id="{{ problem.id }}"
+                            data-name="{{ problem.name }}">
                             <td></td>
                             <td>
                                 <div class="d-flex justify-content-between align-items-center flex-wrap">
@@ -75,19 +77,31 @@
                    data-pagination="true"
                    data-pagination-loop="false"
                    data-click-to-select="true"
-                   data-maintain-meta-data="true">
+                   data-maintain-meta-data="true"
+                   data-custom-search="create_assignment_searcher">
                 <thead>
                     <tr>
                         <th data-field="state" data-checkbox="true" scope="col"></th>
-                        <th data-field="id" scope="col">ID</th>
-                        <th data-field="name" scope="col">Name</th>
+                        <th data-field="id_vis" data-visible="false" scope="col">ID</th>
+                        <th data-field="id" scope="col"></th>
+                        <th data-field="name_vis" scope="col">Name</th>
+                        <th data-field="name" data-visible="false" scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for user_group in user_groups %}
-                        <tr>
+                        <tr data-id="{{ user_group.id }}"
+                            data-name="{{ user_group.name }}">
                             <td></td>
+                            <td>
+                                <a href="{{ url_for('admin_bp.edit_user_group', id=user_group.id) }}"
+                                   class="text-decoration-none">{{ user_group.id }}</a>
+                            </td>
                             <td>{{ user_group.id }}</td>
+                            <td>
+                                <a href="{{ url_for('admin_bp.edit_user_group', id=user_group.id) }}"
+                                   class="text-decoration-none">{{ user_group.name }}</a>
+                            </td>
                             <td>{{ user_group.name }}</td>
                         </tr>
                     {% endfor %}
@@ -98,5 +112,5 @@
 {% endblock content %}
 {% block scripts %}
     <script type="text/javascript"
-            src="{{url_for('.static', filename='create_assignment.js')}}"></script>
+            src="{{ url_for('.static', filename='create_assignment.js') }}"></script>
 {% endblock scripts %}
