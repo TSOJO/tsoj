@@ -163,21 +163,6 @@ function generate_answers() {
     }
 }
 
-// Form validation. (https://getbootstrap.com/docs/5.2/forms/validation/)
-(() => {
-    'use strict'
-
-    const form = document.querySelector('.needs-validation')
-    form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-        }
-
-        form.classList.add('was-validated')
-    }, false)
-})()
-
 $('#language-select').change(() => {
     let editor = ace.edit('editor')
     editor.session.setMode("ace/mode/" + getAceMode($('#language-select').val()))

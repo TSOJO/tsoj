@@ -41,7 +41,24 @@ async function validate_id() {
         }
         form.classList.add('was-validated')
     }, false)
-})()
+})();
+
+(() => {
+    'use strict'
+  
+    const forms = document.querySelectorAll('.needs-validation')
+  
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+    
+            form.classList.add('was-validated')
+        }, false)
+    })
+})();
 
 const id_field = document.getElementById('problem_id')
 const id_invalid_feedback = document.getElementById('id-invalid-feedback')
