@@ -5,11 +5,11 @@
         <h1>Submissions</h1>
     </div>
     <table class="table table-striped table-bordered"
-           class="table table-bordered"
            data-toggle="table"
            data-search="true"
            data-pagination="true"
-           data-pagination-loop="false">
+           data-pagination-loop="false"
+           data-custom-search="submission_searcher">
         <thead>
             <tr>
                 <th>Time</th>
@@ -23,7 +23,17 @@
         <tbody>
             {% for submission in submissions %}
                 {% if current_user.is_contributor() or problems[submission.problem_id].is_public %}
-                    <tr>
+                    <tr data-time="{{ submission.submission_time.strftime('%d/%m/%Y %H:%M:%S') }}"
+                        data-username="
+                            {%- if not current_user.is_admin() and current_user.id != submission.user_id and
+                                users[submission.user_id].hide_name -%}
+                                Hidden
+                            {% else %}
+                                {{- users[submission.user_id].username -}}
+                            {% endif %}"
+                        data-problem="{{ submission.problem_id }}"
+                        data-language="{{ submission.language.ui_name }}"
+                        data-verdict="{{ submission.final_verdict.value }}">
                         <td>
                             <a href="{{ url_for('submission_bp.submission', id=submission.id)}}"
                                class="text-decoration-none">
@@ -36,14 +46,12 @@
                                 <a class="text-decoration-none" style="color: gray;"><i>Hidden</i></a>
                             {% else %}
                                 <a href="{{ url_for('user_bp.profile', id=submission.user_id)}}"
-                                   class="text-decoration-none">{{
-                                users[submission.user_id].username }}</a>
+                                   class="text-decoration-none">{{ users[submission.user_id].username }}</a>
                             {% endif %}
                         </td>
                         <td>
                             <a href="{{ url_for('problem_bp.problem', id=submission.problem_id)}}"
-                               class="text-decoration-none">{{
-                            submission.problem_id }}</a>
+                               class="text-decoration-none">{{ submission.problem_id }}</a>
                         </td>
                         <td>{{ submission.language.ui_name }}</td>
                         <td>
