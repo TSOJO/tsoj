@@ -65,3 +65,21 @@ const id_invalid_feedback = document.getElementById('id-invalid-feedback')
 id_field.addEventListener('blur', () => {
     validate_id()
 })
+
+function contains(object, keys, text) {
+    lowered_text = text.toLowerCase()
+    for (const key of keys) {
+        if (object[key].toString().toLowerCase().includes(lowered_text)) {
+            return true
+        }
+    }
+    return false
+}
+
+function custom_searcher(keys) {
+    return function(data, text) {
+        return data.filter(row => {
+            return contains(row._data, keys, text)
+        })
+    }
+}
