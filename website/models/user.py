@@ -43,7 +43,7 @@ class User(UserMixin, DBModel):
 
         # Private properties
         plaintext_password = '' if plaintext_password is None else plaintext_password
-        self._hashed_password = generate_password_hash(plaintext_password)
+        self._hashed_password = generate_password_hash(plaintext_password) if plaintext_password else ''
 
     def __eq__(self, other):
         return self.id == other.id
