@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from isolate_wrapper import Testcase, Language, SourceCode
+from isolate_wrapper import Testcase, Language, SourceCode, Verdict
 from website.db import db
 from website.celery_tasks import add_to_db, delete_from_db
 from website.models.db_model import DBModel
@@ -110,3 +110,9 @@ class Problem(DBModel):
             delete_from_db('problems', self.cast_to_document())
         else:
             delete_from_db.delay('problems', self.cast_to_document())
+    
+    @classmethod
+    def init(cls):
+        for problem in cls.find_all():
+            problem.num_solves = len(db.submissions.find({'problem_id': problem.id, 'final_verdict': Verdict.AC.cast_to_document()}).distinct('user_id'))
+            problem.save(replace=True)
