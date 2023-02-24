@@ -123,7 +123,7 @@ def add_initial_admin(app):
     )
     
     with app.app_context():
-        admin.save(replace=True)
+        admin.save()
 
 
 def debug_db(app):
