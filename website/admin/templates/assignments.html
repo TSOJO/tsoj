@@ -36,13 +36,24 @@
                     <th scope="row">{{ assignment.id }}</th>
                     <td>{{ assignment.set_time.strftime("%d/%m/%y %H:%M") }}</td>
                     <td>{{ assignment.creator }}</td>
-                    <td>{{ assignment.problem_ids|join(', ') }}</td>
+                    <td>
+                        {% for problem_id in assignment.problem_ids %}
+                        <a href="{{ url_for('problem_bp.problem', id=problem_id) }}"
+                           class="text-decoration-none">
+                            {{- problem_id -}}
+                        </a>
+                        {%- if not loop.last %}, {% endif -%}
+                        {% endfor %}
+                    </td>
                     <td class="d-flex justify-content-between">
                         <div>
-                            {%- for group_id in assignment.user_group_ids -%}
-                                {{- user_group_names[group_id] -}}
-                                {%- if not loop.last -%}, {% endif %}
-                            {%- endfor -%}
+                            {% for group_id in assignment.user_group_ids %}
+                            <a href="{{ url_for('admin_bp.edit_user_group', id=group_id) }}"
+                               class="text-decoration-none">
+                               {{- user_group_names[group_id] -}}
+                            </a>
+                            {%- if not loop.last %}, {% endif -%}
+                            {% endfor %}
                         </div>
                         <div>
                             <a href="{{ url_for('admin_bp.assignment_results', id=assignment.id)}}"
