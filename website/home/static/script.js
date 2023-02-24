@@ -3,6 +3,6 @@ function problem_searcher(data, text) {
     return data.filter(row => {
         return row._data.id.toString().toLowerCase().includes(lowered_text) ||
                row._data.name.toString().toLowerCase().includes(lowered_text) ||
-               row._data.solved.toString().toLowerCase().includes(lowered_text)
+               row._data.solves.toString().toLowerCase().includes(lowered_text)
     })
 }
