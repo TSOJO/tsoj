@@ -151,6 +151,8 @@ def debug_db(app):
             ],
             'is_public': True,
             'allowed_languages': [Language.CPLUSPLUS],
+            'aqaasm_inputs': None,
+            'aqaasm_outputs': None,
         },
         {
             'id': 'A2',
@@ -163,6 +165,8 @@ def debug_db(app):
                 Testcase('10\n20\n', '-10\n', 0),
             ],
             'is_public': True,
+            'aqaasm_inputs': None,
+            'aqaasm_outputs': None,
         },
         {
             'id': 'A3',
@@ -177,6 +181,8 @@ def debug_db(app):
             ],
             'is_public': True,
             'grader_source_code': SourceCode('k = int(input())\ninput()\na = int(input())\nif a % k == 0:\n    print("AC")\nelse:\n    print("WA")', Language.PYTHON),
+            'aqaasm_inputs': None,
+            'aqaasm_outputs': None,
         }
     ]
     for problem_raw in problems_list:
