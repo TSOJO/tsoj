@@ -17,7 +17,7 @@ function add_field() {
     let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
     sample_checkbox.name = 'sample' + testcases_count
     sample_checkbox.id = 'sample' + testcases_count
-    if (document.getElementById('auto-generate-answer-checkbox').checked === true) {
+    if (document.getElementById('generate-answer-checkbox').checked === true) {
         answer_node.innerHTML = 'Press "Generate answers" to generate answers.'
         answer_node.readOnly = true
     }
