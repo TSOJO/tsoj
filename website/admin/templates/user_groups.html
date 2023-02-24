@@ -1,10 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Groups{% endblock title %}
 {% block content %}
+    <div class="modal fade"
+         id="create-group-modal"
+         tabindex="-1"
+         aria-labelledby="create-group-modal-label"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="create-group-modal-label">Create group</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <form action="{{ url_for('admin_bp.create_user_group') }}" method="post" class="needs-validation" novalidate>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="group_name" id="group_name" placeholder="Enter group name" required />
+                            <div class="invalid-feedback">This field is required.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="d-flex justify-content-between mb-3">
         <h1>Groups</h1>
-        <a href="{{ url_for('admin_bp.create_user_group')}}"
-           class="btn btn-success align-self-center">Create</a>
+        <a class="btn btn-success align-self-center"
+           data-bs-toggle="modal"
+           data-bs-target="#create-group-modal">Create</a>
     </div>
     {% for user_group in user_groups %}
         <div class="modal fade"

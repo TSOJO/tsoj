@@ -229,19 +229,12 @@ def user_groups():
     return render_template('user_groups.html', user_groups=user_groups, users=users)
 
 
-@admin_bp.route('/create/group', methods=['GET', 'POST'])
+@admin_bp.route('/create/group', methods=['POST'])
 def create_user_group():
-    if request.method == 'POST':
-        user_ids_raw = request.form.get('selected_user_ids')
-        user_group = UserGroup(name=request.form['name'])
-        if user_ids_raw:
-            user_ids = user_ids_raw.split(',')
-            user_group.user_ids = user_ids
-        user_group.save(replace=True, wait=True)
-        flash('Group created', 'success')
-        return redirect(url_for('admin_bp.user_groups'))
-    users = User.find_all()
-    return render_template('create_user_group.html', users=users)
+    user_group = UserGroup(name=request.form['group_name'])
+    user_group.save(wait=True)
+    flash('Group created', 'success')
+    return redirect(url_for('admin_bp.edit_user_group', id=user_group.id))
 
 
 @admin_bp.route('/edit/group/<int:id>', methods=['GET', 'POST'])
