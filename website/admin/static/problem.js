@@ -59,14 +59,80 @@ function remove_field(node) {
     }
 }
 
-let completed_requests = 0
+function getAlert(message, i, withDetails, isGrader, type='danger') {
+    let alert = document.createElement('div')
+    let target = isGrader ? 'grader-detail' + i + '-modal' : 'detail' + i + '-modal'
+    if (withDetails) {
+        alert.innerHTML = [
+            '<div class="alert alert-' + type + ' alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
+            '   <div class="flex-grow-1">' + message + '</div>',
+            '   <div class="d-flex align-items-center" style="gap:10px;">',
+            '       <a data-bs-toggle="modal" data-bs-target="#' + target + '" href="#" class="text-decoration-none">Details</a>',
+            '       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '   </div>',
+            '</div>'
+        ].join('')
+    }
+    else {
+        alert.innerHTML = [
+            '<div class="alert alert-' + type + ' alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
+            '   <div class="flex-grow-1">' + message + '</div>',
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('')
+    }
+    return alert
+}
 
-function generate_answers() {
-    // Disable buttons.
+function getModal(message, i, isGrader, header='Error message') {
+    let modal = document.createElement('div')
+    let name = isGrader ? 'grader-detail' + i  : 'detail' + i 
+    modal.innerHTML = [
+        '<div class="modal fade" id="'+name+'-modal" tabindex="-1"',
+        'aria-labelledby="'+name+'-modal-label" aria-hidden="true">',
+        '    <div class="modal-dialog">',
+        '        <div class="modal-content">',
+        '            <div class="modal-header">',
+        '                <h1 class="modal-title fs-5" id="'+name+'-modal-label">' + header,
+        '                </h1>',
+        '                <button type="button" class="btn-close" data-bs-dismiss="modal"',
+        '                    aria-label="Close"></button>',
+        '            </div>',
+        '            <div class="modal-body">',
+        '                <div style="white-space:pre-wrap;" class="consolas">',
+                             message,
+        '                </div>',
+        '            </div>',
+        '            <div class="modal-footer">',
+        '                <button type="button" class="btn btn-secondary"',
+        '                    data-bs-dismiss="modal">Close</button>',
+        '            </div>',
+        '        </div>',
+        '    </div>',
+        '</div>'
+    ].join('')
+    return modal
+}
+
+function disableTestcaseButtons() {
     $('#add-testcase-btn').prop('disabled', true)
     $('.remove-testcase-btn').each(function () {
         $(this).prop('disabled', true)
     })
+}
+
+function enableTestcaseButtons() {
+    $('#add-testcase-btn').prop('disabled', false)
+    $('.remove-testcase-btn').each(function () {
+        $(this).prop('disabled', false)
+    })
+}
+
+function generateAnswers() {
+    let completed_requests = 0
+    let ac_count = 0
+    // Disable buttons.
+    disableTestcaseButtons()
     $('#gen-answer-button').prop('disabled', true)
     $('#gen-answer-button').html(
         '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (0/' + testcases_count + ')'
@@ -91,55 +157,19 @@ function generate_answers() {
             .then(data => {
                 if (data['verdict'].verdict === 'AC') {
                     $('#answer' + i).val(data['answer'])
+                    ac_count++
                 } else {
-                    const wrapper = document.createElement('div')
                     let message = data['message']
                     if (message) {
-                        wrapper.innerHTML = [
-                            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" style="gap:10px;" role="alert">',
-                            '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + '</div>',
-                            '   <div class="d-flex align-items-center" style="gap:10px;">',
-                            '       <a data-bs-toggle="modal" data-bs-target="#detail' + i + '-modal" href="#" class="text-decoration-none">Details</a>',
-                            '       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                            '   </div>',
-                            '</div>'
-                        ].join('')
                         $('#detail' + i + '-modal').remove()
-                        const modal = document.createElement('div')
-                        modal.innerHTML = [
-                            '<div class="modal fade" id="detail'+i+'-modal" tabindex="-1"',
-                            'aria-labelledby="detail'+i+'-modal-label" aria-hidden="true">',
-                            '    <div class="modal-dialog">',
-                            '        <div class="modal-content">',
-                            '            <div class="modal-header">',
-                            '                <h1 class="modal-title fs-5" id="detail'+i+'-modal-label">Error message',
-                            '                </h1>',
-                            '                <button type="button" class="btn-close" data-bs-dismiss="modal"',
-                            '                    aria-label="Close"></button>',
-                            '            </div>',
-                            '            <div class="modal-body">',
-                            '                <div style="white-space:pre-wrap;" class="consolas">',
-                                                 message,
-                            '                </div>',
-                            '            </div>',
-                            '            <div class="modal-footer">',
-                            '                <button type="button" class="btn btn-secondary"',
-                            '                    data-bs-dismiss="modal">Close</button>',
-                            '            </div>',
-                            '        </div>',
-                            '    </div>',
-                            '</div>',].join('')
+                        const alert = getAlert('Oops... ' + data['verdict'].verdict_long + ' on Input ' + i, i, true, false)
+                        const modal = getModal(message, i, false)
                         placeholder.append(modal)
-                        placeholder.append(wrapper)
+                        placeholder.append(alert)
                     }
                     else {
-                        wrapper.innerHTML = [
-                            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center mt-3" role="alert">',
-                            '   <div class="flex-grow-1">Oops... ' + data['verdict'].verdict_long + ' on Input ' + i + message + '</div>',
-                            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                            '</div>'
-                        ].join('')
-                        placeholder.append(wrapper)
+                        const alert = getAlertHTML('Oops... ' + data['verdict'].verdict_long + ' on Input ' + i, i, false, false)
+                        placeholder.append(alert)
                     }
                 }
                 completed_requests++
@@ -147,17 +177,87 @@ function generate_answers() {
                     '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (' + completed_requests + '/' + testcases_count + ')'
                 )
                 if (completed_requests == testcases_count) {
-                    // All requests done.
+                    if(ac_count == testcases_count) {
+                        const alert = getAlert('All answers generated successfully!', 0, false, false, 'success')
+                        placeholder.append(alert)
+                    }
                     // Renable buttons.
-                    $('#add-testcase-btn').prop('disabled', false)
-                    $('.remove-testcase-btn').each(function () {
-                        $(this).prop('disabled', false)
-                    })
+                    enableTestcaseButtons()
                     $('#gen-answer-button').prop('disabled', false)
                     $('#gen-answer-button').html(
                         'Generate answers'
                     )
-                    completed_requests = 0
+                }
+            })
+    }
+}
+
+function testGrader() {
+    let completed_requests = 0
+    let ac_count = 0
+    // Disable buttons.
+    disableTestcaseButtons()
+    $('#test-grader-button').prop('disabled', true)
+    $('#test-grader-button').html(
+        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Testing grader... (0/' + testcases_count + ')'
+    )
+    $('#grader-alert-placeholder').empty()
+    for (let i = 1; i <= testcases_count; i++) {
+        var payload = {
+            grader_code: $('#grader-code').val(),
+            language: $('#grader-language-select').val(),
+            input: $('#input' + i).val(),
+            output: $('#answer' + i).val(),
+            time_limit: $('#time-limit').val(),
+            memory_limit: $('#memory-limit').val()
+        }
+        const placeholder = $('#grader-alert-placeholder')
+        fetch('/api/test-grader',
+            {
+                method: 'POST',
+                body: JSON.stringify(payload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data['verdict'].verdict === 'AC') {
+                    if(data['output'].trim() === 'AC') {
+                        ac_count++
+                    }
+                    else {
+                        const alert = getAlert('Oops... Grader outputted non-AC on testcase ' + i, i, true, true)
+                        const modal = getModal(data['output'], i, true, header='Grader output')
+                        placeholder.append(alert)
+                        placeholder.append(modal)
+                    }
+                } else {
+                    let message = data['message']
+                    if (message) {
+                        $('#grader-detail' + i + '-modal').remove()
+                        const alert = getAlert('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + i, i, true, true)
+                        const modal = getModal(message, i, true)
+                        placeholder.append(modal)
+                        placeholder.append(alert)
+                    }
+                    else {
+                        const alert = getAlertHTML('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + i, i, false, true)
+                        placeholder.append(alert)
+                    }
+                }
+                completed_requests++
+                $('#test-grader-button').html(
+                    '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Testing grader... (' + completed_requests + '/' + testcases_count + ')'
+                )
+                if (completed_requests == testcases_count) {
+                    if(ac_count == testcases_count) {
+                        const alert = getAlert('All testcase passed with grader!', 0, false, true, 'success')
+                        placeholder.append(alert)
+                    }
+                    // Renable buttons.
+                    enableTestcaseButtons()
+                    $('#test-grader-button').prop('disabled', false)
+                    $('#test-grader-button').html(
+                        'Test grader'
+                    )
                 }
             })
     }
@@ -185,14 +285,14 @@ function judgeMethodOnChange() {
 }
 $('#judge-method-select').change(judgeMethodOnChange)
 
-function toggleAllowedLangSelect() {
+function restrictLangOnChange() {
     if ($('#restrict-langs').is(':checked')) {
         $('#allowed-languages-wrapper').show()
     } else {
         $('#allowed-languages-wrapper').hide()
     }
 }
-$('#restrict-langs').change(toggleAllowedLangSelect)
+$('#restrict-langs').change(restrictLangOnChange)
 
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
@@ -219,6 +319,7 @@ window.onpageshow = function (event) {
     grader_editor.getSession().on('change', function () {
         $('textarea[name="grader-code"]').val(grader_editor.getValue())
     })
+    $('textarea[name="grader-code"]').val(grader_editor.getValue())
     $('#description-md')[0].mdContent = $('#description').val()
 
     // Checkbox on changed
@@ -244,7 +345,7 @@ window.onpageshow = function (event) {
 
 $(document).ready(() => {
     judgeMethodOnChange()
-    toggleAllowedLangSelect()
+    restrictLangOnChange()
 })
 
 $('#description').on('input', function (e) {

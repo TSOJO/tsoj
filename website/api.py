@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, abort, request
-from website.models import Problem, Submission, User, Assignment, DBModel
-from isolate_wrapper import IsolateSandbox, Verdict, SourceCode, Language
 import json
 import time
+
+from website.models import Problem, Submission, User, Assignment, DBModel
+from isolate_wrapper import IsolateSandbox, Verdict, SourceCode, Language
+from website.utils import to_input_format
 
 api_bp = Blueprint('api_bp', __name__)
 
@@ -37,7 +39,7 @@ def generate_answer():
     except ValueError:
         abort(400, description='Invalid parameters')
 
-    answer, verdict, message = IsolateSandbox().generate_answer(
+    answer, verdict, message = IsolateSandbox().get_output(
         SourceCode(code, language), input_, time_limit, memory_limit
     )
     return jsonify(
@@ -50,7 +52,35 @@ def generate_answer():
 
 @api_bp.route('/test-grader', methods=['POST'])
 def test_grader():
-    pass
+    req_json = json.loads(request.data)
+    grader_code = req_json.get('grader_code')
+    language = Language.cast_from_document(req_json.get('language'))
+    input_ = req_json.get('input')
+    output = req_json.get('output')
+    time_limit = req_json.get('time_limit')
+    memory_limit = req_json.get('memory_limit')
+
+    if any(param is None for param in (grader_code, language, input_, output, time_limit, memory_limit)):
+        abort(400, description='Invalid parameters')
+    
+    try:
+        time_limit = int(float(time_limit) * 1000)
+        memory_limit = int(float(memory_limit) * 1024)
+    except ValueError:
+        abort(400, description='Invalid parameters')
+
+    new_input = to_input_format(input_) + '\n' + output
+    print(new_input)
+    grader_output, verdict, message = IsolateSandbox().get_output(
+        SourceCode(grader_code, language), new_input, time_limit, memory_limit
+    )
+    return jsonify(
+        {
+            'output': grader_output,
+            'verdict': verdict.cast_to_document(),
+            'message': message,
+        }
+    )
 
 
 @api_bp.route('/capture-submission-change/', methods=['POST'])

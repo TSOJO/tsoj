@@ -162,7 +162,7 @@
                 </div>
                 <textarea name="generator-code" id="generator-code" hidden></textarea>
                 <div id="editor" class="mb-3"></div>
-                <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generate_answers()">
+                <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generateAnswers()">
                     Generate answers
                 </button>
                 <div id="gen-alert-placeholder"></div>
@@ -185,9 +185,13 @@
                         </select>
                     </div>
                     <textarea name="grader-code" id="grader-code" hidden></textarea>
-                    <div id="grader-editor" class="mb-3"></div>
-                    <p>The grader program should input the submission's output, and output <strong>AC</strong> for correct outputs and <strong>WA</strong> otherwise. Any other outputs from the grader will result in <strong>SE</strong> (System Error) in the testcase.</p>
+                    <div id="grader-editor" class="mb-3">{{problem.grader_source_code.code}}</div>
                 </div>
+                <p>The grader program should input the submission's output, and output <strong>AC</strong> for correct outputs and <strong>WA</strong> otherwise. Any other outputs from the grader will result in <strong>SE</strong> (System Error) in the testcase.</p>
+                <button type="button" class="btn btn-primary" id="test-grader-button" onclick="testGrader()">
+                    Test grader
+                </button>
+                <div id="grader-alert-placeholder"></div>
             </div>
         </div>
         
