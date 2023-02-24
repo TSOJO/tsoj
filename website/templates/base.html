@@ -69,14 +69,14 @@
                     </ul>
                     {% if current_user.is_admin() or current_user.is_contributor() %}
                     <div class="modal fade"
-                        id="create-modal"
+                        id="create-problem-modal"
                         tabindex="-1"
-                        aria-labelledby="create-modal-label"
+                        aria-labelledby="create-problem-modal-label"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="create-modal-label">Create problem</h1>
+                                    <h1 class="modal-title fs-5" id="create-problem-modal-label">Create problem</h1>
                                     <button type="button"
                                             class="btn-close"
                                             data-bs-dismiss="modal"
@@ -85,7 +85,7 @@
                                 <form action="{{ url_for('admin_bp.create_problem') }}" method="post" class="needs-id-validation" novalidate>
                                     <div class="modal-body">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" required />
+                                            <input type="text" class="form-control" name="problem_id" id="problem_id" placeholder="Enter problem ID" required />
                                             <div class="invalid-feedback" id="id-invalid-feedback">This field is required.</div>
                                         </div>
                                     </div>
@@ -111,10 +111,9 @@
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#create-modal" style="cursor:pointer;">Create problem</a>
+                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#create-problem-modal" style="cursor:pointer;">Create problem</a>
                                     <a href="{{ url_for('admin_bp.create_assignment')}}"
-                                        class="dropdown-item">Create
-                                    assignment</a>
+                                        class="dropdown-item">Create assignment</a>
                                     <div class="dropdown-divider"></div>
                                     <a href="{{ url_for('admin_bp.assignments')}}" class="dropdown-item">View assignments</a>
                                     <a href="{{ url_for('admin_bp.user_groups')}}" class="dropdown-item">View groups</a>

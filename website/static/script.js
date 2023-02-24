@@ -43,7 +43,7 @@ async function validate_id() {
     }, false)
 })()
 
-const id_field = document.getElementById('id')
+const id_field = document.getElementById('problem_id')
 const id_invalid_feedback = document.getElementById('id-invalid-feedback')
 id_field.addEventListener('blur', () => {
     validate_id()
