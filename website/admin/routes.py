@@ -25,7 +25,7 @@ def unauthorised():
         return
     if current_user.is_contributor() and request.endpoint in allowed_endpoints_for_contributors:
         return
-    abort(403, description='Admin account required to access this page')
+    abort(403, description='Admin or contributor prvileges are required to access this page')
 
 
 

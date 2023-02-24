@@ -67,6 +67,37 @@
                             <a class="nav-link" href="{{ url_for('home_bp.submissions')}}">Submissions</a>
                         </li>
                     </ul>
+                    {% if current_user.is_admin() or current_user.is_contributor() %}
+                    <div class="modal fade"
+                        id="create-modal"
+                        tabindex="-1"
+                        aria-labelledby="create-modal-label"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="create-modal-label">Create problem</h1>
+                                    <button type="button"
+                                            class="btn-close"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <form action="{{ url_for('admin_bp.create_problem') }}" method="post" class="needs-id-validation" novalidate>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" required />
+                                            <div class="invalid-feedback" id="id-invalid-feedback">This field is required.</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                     <ul class="navbar-nav">
                         {% if config['DEV'] %}
                             <li class="nav-item">
@@ -77,35 +108,6 @@
                             </li>
                         {% endif %}
                         {% if current_user.is_admin() %}
-                        <div class="modal fade"
-                            id="create-modal"
-                            tabindex="-1"
-                            aria-labelledby="create-modal-label"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="create-modal-label">Create problem</h1>
-                                        <button type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <form action="{{ url_for('admin_bp.create_problem') }}" method="post" class="needs-id-validation" novalidate>
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID" required />
-                                                <div class="invalid-feedback" id="id-invalid-feedback">This field is required.</div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-success">Create</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
                                 <div class="dropdown-menu">
