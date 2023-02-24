@@ -10,12 +10,14 @@
         {% endif %}
     </div>
     <table class="table table-striped table-bordered table-responsive-xl align-middle"
+           id="problem-table"
            data-toggle="table"
            data-search="true"
            data-pagination="true"
            data-pagination-loop="false"
            data-page-size="15"
-           data-sort-reset="true">
+           data-sort-reset="true"
+           data-custom-search="problem_searcher">
         <thead>
             <tr class="d-flex">
                 <th class="col-3" scope="row">ID</th>
@@ -35,7 +37,7 @@
         <tbody>
             {% for problem in problems %}
                 {% if current_user.is_contributor() or problem.is_public %}
-                    <tr class="d-flex">
+                    <tr class="d-flex" data-id="{{ problem.id }}" data-name="{{ problem.name }}" data-solves="{{ problem.num_solves }}">
                         <td class="col-3" scope="col">
                             <div class="d-flex justify-content-between align-items-center flex-wrap">
                                 <a href="{{ url_for('problem_bp.problem', id=problem.id)}}"
