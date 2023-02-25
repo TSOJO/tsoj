@@ -249,7 +249,7 @@ function testGrader() {
                 )
                 if (completed_requests == testcases_count) {
                     if(ac_count == testcases_count) {
-                        const alert = getAlert('All testcase passed with grader!', 0, false, true, 'success')
+                        const alert = getAlert('All testcases passed with grader!', 0, false, true, 'success')
                         placeholder.append(alert)
                     }
                     // Renable buttons.
