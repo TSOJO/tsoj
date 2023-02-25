@@ -46,7 +46,13 @@ class Problem(DBModel):
         self.save(replace=True)
     
     def update_num_solves(self):
-        self.num_solves = len(db.submissions.find({'problem_id': self.id, 'final_verdict': Verdict.AC.cast_to_document()}).distinct('user_id'))
+        self.num_solves = len(db.submissions.distinct(
+            'user_id',
+            {
+                'problem_id': self.id,
+                'final_verdict': Verdict.AC.cast_to_document()
+            }
+        ))
         self.save(replace=True)
 
     """Database Wrapper Methods"""
