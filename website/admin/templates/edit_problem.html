@@ -205,27 +205,29 @@
             <div id="allowed-languages-wrapper">
                 <select class="selectpicker" id="allowed-languages" name="allowed-languages" multiple data-actions-box="true" data-width="100%">
                     {% for language in all_languages %}
-                    <option value="{{ language.name }}" {%- if problem.allowed_languages and language in problem.allowed_languages -%} selected {%- endif -%}>{{ language.ui_name }}</option>
+                    <option value="{{ language.name }}" id="{{ language.name }}" {%- if problem.allowed_languages and language in problem.allowed_languages %} selected{% endif -%}>{{ language.ui_name }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
 
-        <label class="form-label">Memory addresses of inputs and outputs for AQA Assembly Language (each address should be on its own line)</label>
-        <div class="container card">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="input-address" class="form-label">Input</label>
-                        <textarea class="form-control" name="input-address" id="input-address"
-                            rows="5">{{problem.aqaasm_inputs | join('\n')}}</textarea>
+        <div id="aqa-addresses-wrapper">
+            <label class="form-label">Memory addresses of inputs and outputs for AQA Assembly (each address should be on its own line)</label>
+            <div class="border p-3 mb-3">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="input-address" class="form-label">Input</label>
+                            <textarea class="form-control" name="input-address" id="input-address"
+                                rows="5">{{problem.aqaasm_inputs | join('\n')}}</textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="output-address" class="form-label">Output</label>
-                        <textarea class="form-control" name="output-address" id="output-address"
-                            rows="5">{{problem.aqaasm_outputs | join('\n')}}</textarea>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="output-address" class="form-label">Output</label>
+                            <textarea class="form-control" name="output-address" id="output-address"
+                                rows="5">{{problem.aqaasm_outputs | join('\n')}}</textarea>
+                        </div>
                     </div>
                 </div>
             </div>

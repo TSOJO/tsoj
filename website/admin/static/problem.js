@@ -294,6 +294,15 @@ function restrictLangOnChange() {
 }
 $('#restrict-langs').change(restrictLangOnChange)
 
+function aqaAddressesOnChange() {
+    if ($('#AQAASM').is(':selected')) {
+        $('#aqa-addresses-wrapper').show()
+    } else {
+        $('#aqa-addresses-wrapper').hide()
+    }
+}
+$('#allowed-languages').change(aqaAddressesOnChange)
+
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
@@ -346,6 +355,7 @@ window.onpageshow = function (event) {
 $(document).ready(() => {
     judgeMethodOnChange()
     restrictLangOnChange()
+    aqaAddressesOnChange()
 })
 
 $('#description').on('input', function (e) {
