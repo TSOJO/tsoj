@@ -13,12 +13,12 @@ user_bp = Blueprint(
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email').lower()
+        email_or_id = request.form.get('email_or_id').lower()
         password = request.form.get('password')
-        user = User.find_one({'email': email})
+        user = User.find_one({'$or': [{'email': email_or_id}, {'id': email_or_id}]})
 
         if not user or not user.check_password(password):
-            flash('Invalid email or password', 'error')
+            flash('Invalid email/ID or password', 'error')
             return redirect(url_for('user_bp.login'))
 
         login_user(user)

@@ -6,17 +6,16 @@
             <div class="card-body">
                 <h2 class="card-title mb-3">Login</h2>
                 <form method="post"
-                      action="{{ url_for('user_bp.login') }}"
                       class="needs-validation"
                       novalidate>
                     <div class="form-floating mb-3">
-                        <input type="email"
+                        <input type="text"
                                class="form-control"
-                               name="email"
+                               name="email_or_id"
                                id="floatingInput"
-                               placeholder="name@tonbridge-school.org"
+                               placeholder="19DoeJ@tonbridge-school.org or 19DoeJ"
                                required />
-                        <label for="floatingInput">Email address</label>
+                        <label for="floatingInput">Email address or school ID</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password"
