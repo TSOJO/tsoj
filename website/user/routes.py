@@ -10,6 +10,19 @@ user_bp = Blueprint(
 )
 
 
+@user_bp.before_request
+def check_logged_in():
+    restrict_from_logged_in_users = [
+        'user_bp.login',
+        'user_bp.register',
+        'user_bp.reset_password',
+        'user_bp.forgot_password'
+    ]
+    if request.endpoint in restrict_from_logged_in_users:
+        if current_user.is_authenticated:
+            flash('Already logged in!', 'error')
+            return redirect(url_for('home_bp.home'))
+
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
