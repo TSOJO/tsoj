@@ -45,11 +45,9 @@ def register():
         if current_app.config.get('TONBRIDGE') and not email.endswith('@tonbridge-school.org'):
             flash('Please use your school email to register.', 'error')
             return redirect(url_for('user_bp.register'))
-        
-        user = User.find_one({'email': email})
 
-        if user:
-            flash('Email is already registered, please login.', 'error')
+        if User.check_existing(email):
+            flash('Email or school ID is already registered, please login.', 'error')
             return redirect(url_for('user_bp.login'))
         
         full_name = request.form.get('full_name')

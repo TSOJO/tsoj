@@ -34,7 +34,7 @@ class User(UserMixin, DBModel):
     ):
         # Public properties
         self.email = email
-        self.id = email.split('@')[0] if id is None else id
+        self.id = self.get_id_from_email(email) if id is None else id
         self.username = self.id if username is None else username
         self.full_name = '' if full_name is None else full_name
         self._user_group_ids = [] if user_group_ids is None else user_group_ids
@@ -50,6 +50,17 @@ class User(UserMixin, DBModel):
 
     def get_id(self):
         return self.id
+
+    @staticmethod
+    def get_id_from_email(email):
+        return email.split('@')[0]
+
+    @classmethod
+    def check_existing(cls, email):
+        check_id = cls.get_id_from_email(email)
+        if cls.find_one({'$or': [{'id': check_id}, {'email': email}]}):
+            return True
+        return False
 
     def set_password(self, plaintext_password):
         self._hashed_password = generate_password_hash(plaintext_password)
