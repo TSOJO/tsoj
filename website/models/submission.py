@@ -146,4 +146,4 @@ class Submission:
     def init(cls) -> None:
         # Create index for fast max_id query.
         db.submissions.create_index([("id", -1)])
-        
+        db.submissions.create_index([("final_verdict", -1), ("problem_id", -1), ("user_id", -1)])
