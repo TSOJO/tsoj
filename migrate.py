@@ -4,11 +4,12 @@ from pymongo import MongoClient
 db = MongoClient(MONGO_URI).tsoj
 
 def migrate():
-    problems = db.problems.find()
-    for problem in problems:
-        problem['aqaasm_inputs'] = []
-        problem['aqaasm_outputs'] = []
-        db.problems.replace_one({'_id': problem['_id']}, problem)
+    submissions = db.submissions.find()
+    for submission in submissions:
+        try:
+            db.problems.find_one({'id': submission['problem_id']})
+        except:
+            db.submissions.delete_one({'id': submission['id']})
 
 if __name__ == '__main__':
     migrate()
