@@ -60,10 +60,12 @@ class Submission:
         )
         self.save(replace=True, wait=True)
         if self.final_verdict.is_ac():
-            previous_submissions = Submission.find_all({'user_id': self.user_id, 'problem_id': self.problem_id, 'final_verdict': Verdict.AC.cast_to_document()})
-            if previous_submissions and len(previous_submissions) < 2:
-                # User has not solved before
-                self.fetch_problem().increment_num_solves()
+            problem = Problem.find_one({'id': self.problem_id})
+            problem.update_num_solves()
+            # previous_submissions = Submission.find_all({'user_id': self.user_id, 'problem_id': self.problem_id, 'final_verdict': Verdict.AC.cast_to_document()})
+            # if previous_submissions and len(previous_submissions) < 2:
+            #     # User has not solved before
+            #     self.fetch_problem().increment_num_solves()
 
     def tests_completed(self):
         count = 0
@@ -144,4 +146,4 @@ class Submission:
     def init(cls) -> None:
         # Create index for fast max_id query.
         db.submissions.create_index([("id", -1)])
-        
+        db.submissions.create_index([("final_verdict", -1), ("problem_id", -1), ("user_id", -1)])

@@ -41,7 +41,18 @@ class Problem(DBModel):
         self.aqaasm_outputs = [] if aqaasm_outputs is None else aqaasm_outputs
 
     def increment_num_solves(self):
+        # ! Possibly not needed
         self.num_solves += 1
+        self.save(replace=True)
+    
+    def update_num_solves(self):
+        self.num_solves = len(db.submissions.distinct(
+            'user_id',
+            {
+                'problem_id': self.id,
+                'final_verdict': Verdict.AC.cast_to_document()
+            }
+        ))
         self.save(replace=True)
 
     """Database Wrapper Methods"""
@@ -114,5 +125,4 @@ class Problem(DBModel):
     @classmethod
     def init(cls):
         for problem in cls.find_all():
-            problem.num_solves = len(db.submissions.find({'problem_id': problem.id, 'final_verdict': Verdict.AC.cast_to_document()}).distinct('user_id'))
-            problem.save(replace=True)
+            problem.update_num_solves()
