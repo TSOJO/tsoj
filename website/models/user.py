@@ -113,6 +113,7 @@ class User(UserMixin, DBModel):
                     'user_id': self.id,
                 }
             )
+            problem_submissions.sort(key=lambda x: x.id, reverse=True)
             
             for submission in problem_submissions:
                 if submission.final_verdict.is_ac():
