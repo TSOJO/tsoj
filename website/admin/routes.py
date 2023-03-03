@@ -112,6 +112,8 @@ def edit_problem(id: str):
 def delete_problem(id: str):
     problem = Problem.find_one({'id': id})
     problem.delete(wait=True)
+    for submission in Submission.find_all({'problem_id': id}):
+        submission.delete(wait=True)
     flash('Problem deleted', 'success')
     return redirect(url_for('home_bp.problems'))
 
