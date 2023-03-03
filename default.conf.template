@@ -21,8 +21,6 @@ server {
     listen      [::]:80;  # IPv6
     server_name ${NGINX_HOSTNAMES};
 
-    keepalive_timeout 5;
-
     # Website folder. See below.
     root /var/www/;
 
