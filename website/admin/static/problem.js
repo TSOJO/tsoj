@@ -168,7 +168,7 @@ function generateAnswers() {
                         placeholder.append(alert)
                     }
                     else {
-                        const alert = getAlertHTML('Oops... ' + data['verdict'].verdict_long + ' on Input ' + i, i, false, false)
+                        const alert = getAlert('Oops... ' + data['verdict'].verdict_long + ' on Input ' + i, i, false, false)
                         placeholder.append(alert)
                     }
                 }
