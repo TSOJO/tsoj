@@ -21,16 +21,16 @@ def check_problem_exists(id):
     return '', 200
 
 
-@api_bp.route('/generate-answer', methods=['POST'])
-def generate_answer():
+@api_bp.route('/generate-answers', methods=['POST'])
+def generate_answers():
     req_json = json.loads(request.data)
     code = req_json.get('generator_code')
     language = Language.cast_from_document(req_json.get('language'))
-    input_ = req_json.get('input')
+    inputs = req_json.get('inputs')
     time_limit = req_json.get('time_limit')
     memory_limit = req_json.get('memory_limit')
 
-    if any(param is None for param in (code, language, input_, time_limit, memory_limit)):
+    if any(param is None for param in (code, language, inputs, time_limit, memory_limit)):
         abort(400, description='Invalid parameters')
 
     try:
@@ -39,28 +39,32 @@ def generate_answer():
     except ValueError:
         abort(400, description='Invalid parameters')
 
-    answer, verdict, message = IsolateSandbox().get_output(
-        SourceCode(code, language), input_, time_limit, memory_limit
-    )
-    return jsonify(
-        {
-            'answer': answer,
-            'verdict': verdict.cast_to_document(),
-            'message': message,
-        }
-    )
+    results = []
+    for (answer, verdict, message) in IsolateSandbox().get_outputs(
+        SourceCode(code, language), inputs, time_limit, memory_limit
+    ):
+        results.append(
+            {
+                'answer': answer,
+                'verdict': verdict.cast_to_document(),
+                'message': message,
+            }
+        )
+        if verdict != Verdict.AC:
+            break
+    return jsonify(results)
 
 @api_bp.route('/test-grader', methods=['POST'])
 def test_grader():
     req_json = json.loads(request.data)
     grader_code = req_json.get('grader_code')
     language = Language.cast_from_document(req_json.get('language'))
-    input_ = req_json.get('input')
-    output = req_json.get('output')
+    inputs = req_json.get('inputs')
+    outputs = req_json.get('outputs')
     time_limit = req_json.get('time_limit')
     memory_limit = req_json.get('memory_limit')
 
-    if any(param is None for param in (grader_code, language, input_, output, time_limit, memory_limit)):
+    if any(param is None for param in (grader_code, language, inputs, outputs, time_limit, memory_limit)):
         abort(400, description='Invalid parameters')
     
     try:
@@ -69,16 +73,33 @@ def test_grader():
     except ValueError:
         abort(400, description='Invalid parameters')
 
-    new_input = to_input_format(input_) + '\n' + output
-    print(new_input)
-    grader_output, verdict, message = IsolateSandbox().get_output(
-        SourceCode(grader_code, language), new_input, time_limit, memory_limit
-    )
+    new_inputs = [to_input_format(input) + '\n' + output for (input, output) in zip(inputs, outputs)]
+    for (index, (grader_output, verdict, message)) in enumerate(IsolateSandbox().get_outputs(
+        SourceCode(grader_code, language), new_inputs, time_limit, memory_limit
+    )):
+        if verdict != Verdict.AC:
+            return jsonify(
+                {
+                    'index': index + 1,
+                    'output': grader_output,
+                    'verdict': verdict.cast_to_document(),
+                    'message': message,
+                }
+            )
+        elif grader_output.strip() != 'AC':
+            return jsonify(
+                {
+                    'index': index + 1,
+                    'output': grader_output,
+                    'verdict': Verdict.SE.cast_to_document(),
+                    'message': 'Grader outputted non-AC',
+                }
+            )
     return jsonify(
         {
-            'output': grader_output,
-            'verdict': verdict.cast_to_document(),
-            'message': message,
+            'output': '',
+            'verdict': Verdict.AC.cast_to_document(),
+            'message': '',
         }
     )
 

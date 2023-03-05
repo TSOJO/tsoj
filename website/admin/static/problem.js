@@ -129,138 +129,113 @@ function enableTestcaseButtons() {
 }
 
 function generateAnswers() {
-    let completed_requests = 0
-    let ac_count = 0
     // Disable buttons.
     disableTestcaseButtons()
     $('#gen-answer-button').prop('disabled', true)
     $('#gen-answer-button').html(
-        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (0/' + testcases_count + ')'
+        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers...'
     )
     $('#gen-alert-placeholder').empty()
-    for (let i = 1; i <= testcases_count; i++) {
-        var payload = {
-            generator_code: $('#generator-code').val(),
-            language: $('#language-select').val(),
-            input: $('#input' + i).val(),
-            time_limit: $('#time-limit').val(),
-            memory_limit: $('#memory-limit').val()
-        }
+    var payload = {
+        generator_code: $('#generator-code').val(),
+        language: $('#language-select').val(),
+        inputs: [...Array(testcases_count).keys()].map(i => $('#input' + (i + 1)).val()),
+        time_limit: $('#time-limit').val(),
+        memory_limit: $('#memory-limit').val()
+    }
 
-        const placeholder = document.getElementById('gen-alert-placeholder')
-        fetch('/api/generate-answer',
-            {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data['verdict'].verdict === 'AC') {
-                    $('#answer' + i).val(data['answer'])
-                    ac_count++
+    const placeholder = document.getElementById('gen-alert-placeholder')
+    fetch('/api/generate-answers',
+        {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            all_ok = true
+            for(let [i, result] of Object.entries(data)) {
+                let index = parseInt(i) + 1
+                console.log(result)
+                let verdict = result['verdict']
+                if(verdict['verdict'] === 'AC') {
+                    $('#answer' + index).val(result['answer'])
                 } else {
-                    let message = data['message']
-                    if (message) {
-                        $('#detail' + i + '-modal').remove()
-                        const alert = getAlert('Oops... ' + data['verdict'].verdict_long + ' on Input ' + i, i, true, false)
-                        const modal = getModal(message, i, false)
+                    let message = result['message']
+                    if(message) {
+                        $('#detail' + index + '-modal').remove()
+                        all_ok = false
+                        const alert = getAlert('Oops... ' + verdict['verdict_long'] + ' on Input ' + index, index, true, false)
+                        const modal = getModal(message, index, false)
                         placeholder.append(modal)
                         placeholder.append(alert)
                     }
                     else {
-                        const alert = getAlert('Oops... ' + data['verdict'].verdict_long + ' on Input ' + i, i, false, false)
+                        const alert = getAlert('Oops... ' + verdict['verdict_long'] + ' on Input ' + index, index, false, false)
                         placeholder.append(alert)
                     }
                 }
-                completed_requests++
-                $('#gen-answer-button').html(
-                    '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers... (' + completed_requests + '/' + testcases_count + ')'
-                )
-                if (completed_requests == testcases_count) {
-                    if(ac_count == testcases_count) {
-                        const alert = getAlert('All answers generated successfully!', 0, false, false, 'success')
-                        placeholder.append(alert)
-                    }
-                    // Renable buttons.
-                    enableTestcaseButtons()
-                    $('#gen-answer-button').prop('disabled', false)
-                    $('#gen-answer-button').html(
-                        'Generate answers'
-                    )
+            }
+            if (Object.keys(data).length == testcases_count) {
+                if(all_ok) {
+                    const alert = getAlert('All answers generated successfully!', 0, false, false, 'success')
+                    placeholder.append(alert)
                 }
-            })
-    }
+            }
+            // Renable buttons.
+            enableTestcaseButtons()
+            $('#gen-answer-button').prop('disabled', false)
+            $('#gen-answer-button').html('Generate answers')
+        })
 }
 
 function testGrader() {
-    let completed_requests = 0
-    let ac_count = 0
     // Disable buttons.
     disableTestcaseButtons()
     $('#test-grader-button').prop('disabled', true)
     $('#test-grader-button').html(
-        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Testing grader... (0/' + testcases_count + ')'
+        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Testing grader...'
     )
     $('#grader-alert-placeholder').empty()
-    for (let i = 1; i <= testcases_count; i++) {
-        var payload = {
-            grader_code: $('#grader-code').val(),
-            language: $('#grader-language-select').val(),
-            input: $('#input' + i).val(),
-            output: $('#answer' + i).val(),
-            time_limit: $('#time-limit').val(),
-            memory_limit: $('#memory-limit').val()
-        }
-        const placeholder = $('#grader-alert-placeholder')
-        fetch('/api/test-grader',
-            {
-                method: 'POST',
-                body: JSON.stringify(payload),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data['verdict'].verdict === 'AC') {
-                    if(data['output'].trim() === 'AC') {
-                        ac_count++
-                    }
-                    else {
-                        const alert = getAlert('Oops... Grader outputted non-AC on testcase ' + i, i, true, true)
-                        const modal = getModal(data['output'], i, true, header='Grader output')
-                        placeholder.append(alert)
-                        placeholder.append(modal)
-                    }
-                } else {
-                    let message = data['message']
-                    if (message) {
-                        $('#grader-detail' + i + '-modal').remove()
-                        const alert = getAlert('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + i, i, true, true)
-                        const modal = getModal(message, i, true)
-                        placeholder.append(modal)
-                        placeholder.append(alert)
-                    }
-                    else {
-                        const alert = getAlertHTML('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + i, i, false, true)
-                        placeholder.append(alert)
-                    }
-                }
-                completed_requests++
-                $('#test-grader-button').html(
-                    '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Testing grader... (' + completed_requests + '/' + testcases_count + ')'
-                )
-                if (completed_requests == testcases_count) {
-                    if(ac_count == testcases_count) {
-                        const alert = getAlert('All testcases passed with grader!', 0, false, true, 'success')
-                        placeholder.append(alert)
-                    }
-                    // Renable buttons.
-                    enableTestcaseButtons()
-                    $('#test-grader-button').prop('disabled', false)
-                    $('#test-grader-button').html(
-                        'Test grader'
-                    )
-                }
-            })
+    var payload = {
+        grader_code: $('#grader-code').val(),
+        language: $('#grader-language-select').val(),
+        inputs: [...Array(testcases_count).keys()].map(i => $('#input' + (i + 1)).val()),
+        outputs: [...Array(testcases_count).keys()].map(i => $('#answer' + (i + 1)).val()),
+        time_limit: $('#time-limit').val(),
+        memory_limit: $('#memory-limit').val()
     }
+    const placeholder = $('#grader-alert-placeholder')
+    fetch('/api/test-grader',
+        {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data['verdict'].verdict !== 'AC') {
+                let message = data['message']
+                let index = data['index']
+                if (message) {
+                    $('#grader-detail' + index + '-modal').remove()
+                    const alert = getAlert('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + index, index, true, true)
+                    const modal = getModal(message, index, true)
+                    placeholder.append(modal)
+                    placeholder.append(alert)
+                }
+                else {
+                    const alert = getAlertHTML('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + index, index, false, true)
+                    placeholder.append(alert)
+                }
+            } else {
+                const alert = getAlert('All testcases passed with grader!', 0, false, true, 'success')
+                placeholder.append(alert)
+            }
+            // Renable buttons.
+            enableTestcaseButtons()
+            $('#test-grader-button').prop('disabled', false)
+            $('#test-grader-button').html('Test grader')
+        })
 }
 
 $('#language-select').change(() => {
