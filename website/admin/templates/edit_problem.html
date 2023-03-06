@@ -22,6 +22,31 @@
     <h1>Edit Problem</h1>
     <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" class="btn btn-danger align-self-center">Delete</a>
 </div>
+<div class="card mb-3">
+    <button type="button" class="btn btn-primary mb-3" >Add testcase</button>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="row" style="overflow-y: scroll;" id="testcases-buttons-container">
+                <div>abc</div>
+                <div>abcd</div>
+                <div>abcef</div>
+                <div>abc</div>
+                <div>abcd</div>
+                <div style="background-color: cyan;">abcef</div>
+                <div>abc</div>
+                <div>abcd</div>
+                <div>abcef</div>
+                <div>abc</div>
+                <div>abcd</div>
+                <div>abcef</div>
+                <div>abc</div>
+                <div>abcd</div>
+                <div>abcef</div>
+            </div>
+        </div>
+        
+    </div>
+</div>
 <div>
     <form method="post" class="needs-validation" novalidate>
         <div class="form-group mb-3">
@@ -66,7 +91,7 @@
         </div>
         <label class="form-label">Testcases</label>
         <div class="border p-4 mb-3">
-            <button type="button" id="add-testcase-btn" class="btn btn-primary mb-3" onclick="add_field()">Add
+            <button type="button" class="btn btn-primary mb-3" onclick="add_field()">Add
                 testcase</button>
             <div id="rem-alert-placeholder"></div>
             <!-- dummy testcase -->

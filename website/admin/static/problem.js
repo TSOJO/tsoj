@@ -1,4 +1,39 @@
 let testcases_count = parseInt($('#testcases-count').val())
+let currentTestcaseIndex = 0
+
+function getTestcaseButton(index) {
+    let button = document.createElement('div')
+    button.innerHTML = 'Testcase ' + (index+1)
+}
+
+const testcases_buttons_container = $('#testcases-buttons-container')
+function createTestcase() {
+    testcases_buttons_container.append(getTestcaseButton(testcases_count))
+    testcases_count++
+    $('#testcases-count').val(testcases_count)
+}
+
+function deleteTestcase(index) {
+    if (testcases_count === 1) {
+        const wrapper = document.createElement('div')
+        wrapper.innerHTML = [
+            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
+            '   <div class="flex-grow-1">At least one testcase is required!</div>',
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+            '</div>'
+        ].join('')
+        const placeholder = document.getElementById('rem-alert-placeholder')
+        placeholder.append(wrapper)
+        return
+    }
+    testcases_count--
+    $('#testcases-count').val(testcases_count)
+    let testcase_container = document.getElementById('testcase-container')
+    testcase_container.removeChild(node)
+    // reindex
+    for (let i = 0; i < testcases_count; i++) {
+    }
+}
 
 function add_field() {
     testcases_count++
