@@ -12,3 +12,8 @@
 .testcase-input, .testcase-answer, .consolas {
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
+
+.testcase-input, .testcase-answer {
+    resize: none;
+    height: 150px;
+}

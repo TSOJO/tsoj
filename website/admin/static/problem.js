@@ -2,18 +2,59 @@ let testcases_count = parseInt($('#testcases-count').val())
 let currentTestcaseIndex = 0
 
 function getTestcaseButton(index) {
-    let button = document.createElement('div')
+    let button = document.createElement('button')
     button.innerHTML = 'Testcase ' + (index+1)
+    button.setAttribute('id', 'testcase-button' + index)
+    button.setAttribute('class', 'btn btn-light')
+    button.setAttribute('type', 'button')
+    button.setAttribute('onclick', 'selectTestcase(' + index + ')')
+    return button
+}
+
+function selectTestcase(index) {
+    currentTestcaseIndex = index
+    for (let i = 0; i < testcases_count; i++) {
+        $('#testcase-button' + i).attr('class', 'btn btn-light')
+        $('#testcase-group' + i).css('display', 'none')
+    }
+    $('#testcase-button' + index).attr('class', 'btn btn-primary')
+    $('#testcase-group' + index).css('display', 'block')
+}
+
+function getTestcaseGroup(index) {
+    let group = document.createElement('div')
+    group.innerHTML = [
+        '<div id="testcase-group' + index + '" style="display: none;">',
+        '<div class="d-flex">',
+        '    <div class="me-auto my-auto">',
+        '        <h5 id="testcase-number' + index + '" class="my-0">Testcase ' + (index+1) + '</h5>',
+        '    </div>',
+        '    <div class="my-auto px-4">',
+        '        <input class="form-check-input" type="checkbox" value="" name="sample' + index + '" id="sample' + index + '"/>',
+        '        <label class="form-check-label">Sample case</label>',
+        '    </div>',
+        '</div>',
+        'Input',
+        '<textarea class="form-control" rows="3" id="input' + index + '"',
+        '    name="input' + index + '"></textarea>',
+        'Answer',
+        '<textarea class="form-control" rows="3" id="answer' + index + '"',
+        '    name="answer' + index + '"></textarea>',
+        '</div>',
+    ].join('')
+    return group
 }
 
 const testcases_buttons_container = $('#testcases-buttons-container')
 function createTestcase() {
     testcases_buttons_container.append(getTestcaseButton(testcases_count))
+    console.log(getTestcaseButton(testcases_count))
     testcases_count++
     $('#testcases-count').val(testcases_count)
+    $('#testcase-groups-container').append(getTestcaseGroup(testcases_count-1))
 }
 
-function deleteTestcase(index) {
+function deleteTestcase() {
     if (testcases_count === 1) {
         const wrapper = document.createElement('div')
         wrapper.innerHTML = [
@@ -26,73 +67,89 @@ function deleteTestcase(index) {
         placeholder.append(wrapper)
         return
     }
-    testcases_count--
     $('#testcases-count').val(testcases_count)
-    let testcase_container = document.getElementById('testcase-container')
-    testcase_container.removeChild(node)
+    $('#testcase-button' + currentTestcaseIndex).remove()
+    $('#testcase-group' + currentTestcaseIndex).remove()
     // reindex
-    for (let i = 0; i < testcases_count; i++) {
-    }
-}
-
-function add_field() {
-    testcases_count++
-    $('#testcases-count').val(testcases_count)
-    let testcase_node = document.getElementById('testcase-div').cloneNode(true)
-    testcase_node.id = ''
-    testcase_node.style.display = 'block'
-    let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
-    h5_node.innerHTML = 'Testcase ' + testcases_count
-    let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
-    input_node.name = 'input' + testcases_count
-    input_node.id = 'input' + testcases_count
-    let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
-    answer_node.name = 'answer' + testcases_count
-    answer_node.id = 'answer' + testcases_count
-    let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
-    sample_checkbox.name = 'sample' + testcases_count
-    sample_checkbox.id = 'sample' + testcases_count
-    if (document.getElementById('generate-answer-checkbox').checked === true) {
-        answer_node.innerHTML = 'Press "Generate answers" to generate answers.'
-        answer_node.readOnly = true
-    }
-    let testcase_container = document.getElementById('testcase-container')
-    testcase_container.appendChild(testcase_node)
-}
-
-function remove_field(node) {
-    if (testcases_count === 1) {
-        const wrapper = document.createElement('div')
-        wrapper.innerHTML = [
-            '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
-            '   <div class="flex-grow-1">At least one testcase is required!</div>',
-            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-            '</div>'
-        ].join('')
-        const placeholder = document.getElementById('rem-alert-placeholder')
-        placeholder.append(wrapper)
-        return
+    for (let i = currentTestcaseIndex+1; i < testcases_count; i++) {
+        $('#testcase-button' + i).attr('onclick', 'selectTestcase(' + (i-1) + ')')
+        $('#testcase-button' + i).html('Testcase ' + i)
+        $('#testcase-button' + i).attr('id', 'testcase-button' + (i-1))
+        $('#testcase-group' + i).attr('id', 'testcase-group' + (i-1))
+        $('#input' + i).attr('name', 'input' + (i-1))
+        $('#input' + i).attr('id', 'input' + (i-1))
+        $('#answer' + i).attr('name', 'answer' + (i-1))
+        $('#answer' + i).attr('id', 'answer' + (i-1))
+        $('#sample' + i).attr('name', 'sample' + (i-1))
+        $('#sample' + i).attr('id', 'sample' + (i-1))
+        $('#testcase-number' + i).html('Testcase ' + i)
+        $('#testcase-number' + i).attr('id', 'testcase-number' + (i-1))
     }
     testcases_count--
-    $('#testcases-count').val(testcases_count)
-    let testcase_container = document.getElementById('testcase-container')
-    testcase_container.removeChild(node)
-    // reindex
-    for (let i = 0; i < testcases_count; i++) {
-        let testcase_node = testcase_container.childNodes[i]
-        let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
-        h5_node.innerHTML = 'Testcase ' + (i + 1)
-        let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
-        input_node.name = input_node.name.slice(0, -1) + (i + 1)
-        input_node.id = input_node.id.slice(0, -1) + (i + 1)
-        let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
-        answer_node.name = answer_node.name.slice(0, -1) + (i + 1)
-        answer_node.id = answer_node.id.slice(0, -1) + (i + 1)
-        let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
-        sample_checkbox.name = sample_checkbox.name.slice(0, -1) + (i + 1)
-        sample_checkbox.id = sample_checkbox.id.slice(0, -1) + (i + 1)
+    if (currentTestcaseIndex === testcases_count) {
+        currentTestcaseIndex--
     }
+    selectTestcase(currentTestcaseIndex)
 }
+
+// function add_field() {
+//     testcases_count++
+//     $('#testcases-count').val(testcases_count)
+//     let testcase_node = document.getElementById('testcase-div').cloneNode(true)
+//     testcase_node.id = ''
+//     testcase_node.style.display = 'block'
+//     let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
+//     h5_node.innerHTML = 'Testcase ' + testcases_count
+//     let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
+//     input_node.name = 'input' + testcases_count
+//     input_node.id = 'input' + testcases_count
+//     let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
+//     answer_node.name = 'answer' + testcases_count
+//     answer_node.id = 'answer' + testcases_count
+//     let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
+//     sample_checkbox.name = 'sample' + testcases_count
+//     sample_checkbox.id = 'sample' + testcases_count
+//     if (document.getElementById('generate-answer-checkbox').checked === true) {
+//         answer_node.innerHTML = 'Press "Generate answers" to generate answers.'
+//         answer_node.readOnly = true
+//     }
+//     let testcase_container = document.getElementById('testcase-container')
+//     testcase_container.appendChild(testcase_node)
+// }
+
+// function remove_field(node) {
+//     if (testcases_count === 1) {
+//         const wrapper = document.createElement('div')
+//         wrapper.innerHTML = [
+//             '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
+//             '   <div class="flex-grow-1">At least one testcase is required!</div>',
+//             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+//             '</div>'
+//         ].join('')
+//         const placeholder = document.getElementById('rem-alert-placeholder')
+//         placeholder.append(wrapper)
+//         return
+//     }
+//     testcases_count--
+//     $('#testcases-count').val(testcases_count)
+//     let testcase_container = document.getElementById('testcase-container')
+//     testcase_container.removeChild(node)
+//     // reindex
+//     for (let i = 0; i < testcases_count; i++) {
+//         let testcase_node = testcase_container.childNodes[i]
+//         let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
+//         h5_node.innerHTML = 'Testcase ' + (i + 1)
+//         let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
+//         input_node.name = input_node.name.slice(0, -1) + (i + 1)
+//         input_node.id = input_node.id.slice(0, -1) + (i + 1)
+//         let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
+//         answer_node.name = answer_node.name.slice(0, -1) + (i + 1)
+//         answer_node.id = answer_node.id.slice(0, -1) + (i + 1)
+//         let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
+//         sample_checkbox.name = sample_checkbox.name.slice(0, -1) + (i + 1)
+//         sample_checkbox.id = sample_checkbox.id.slice(0, -1) + (i + 1)
+//     }
+// }
 
 function getAlert(message, i, withDetails, isGrader, type='danger') {
     let alert = document.createElement('div')
@@ -174,7 +231,7 @@ function generateAnswers() {
     var payload = {
         generator_code: $('#generator-code').val(),
         language: $('#language-select').val(),
-        inputs: [...Array(testcases_count).keys()].map(i => $('#input' + (i + 1)).val()),
+        inputs: [...Array(testcases_count).keys()].map(i => $('#input' + i).val()),
         time_limit: $('#time-limit').val(),
         memory_limit: $('#memory-limit').val()
     }
@@ -190,7 +247,7 @@ function generateAnswers() {
             console.log(data)
             all_ok = true
             for(let [i, result] of Object.entries(data)) {
-                let index = parseInt(i) + 1
+                let index = parseInt(i)
                 console.log(result)
                 let verdict = result['verdict']
                 if(verdict === 'AC') {
@@ -235,8 +292,8 @@ function testGrader() {
     var payload = {
         grader_code: $('#grader-code').val(),
         language: $('#grader-language-select').val(),
-        inputs: [...Array(testcases_count).keys()].map(i => $('#input' + (i + 1)).val()),
-        outputs: [...Array(testcases_count).keys()].map(i => $('#answer' + (i + 1)).val()),
+        inputs: [...Array(testcases_count).keys()].map(i => $('#input' + i).val()),
+        outputs: [...Array(testcases_count).keys()].map(i => $('#answer' + i).val()),
         time_limit: $('#time-limit').val(),
         memory_limit: $('#memory-limit').val()
     }
@@ -315,6 +372,26 @@ function aqaAddressesOnChange() {
 }
 $('#allowed-languages').change(aqaAddressesOnChange)
 
+function generatorCheckboxOnChange() {
+    if ($('#generate-answer-checkbox').is(':checked')) {
+        $('#editor-group').show()
+    } else {
+        $('#editor-group').hide()
+    }
+    for (let i = 0; i < testcases_count; i++) {
+        if ($('#generate-answer-checkbox').is(':checked')) {
+            $('#answer' + i).val('Press "Generate answers" to generate answers.')
+            $('#answer' + i).prop('readonly', true)
+        } else {
+            if ($('#answer' + i).val() === 'Press "Generate answers" to generate answers.') {
+                $('#answer' + i).val('')
+            }
+            $('#answer' + i).prop('readonly', false)
+        }
+    }
+}
+$('#generate-answer-checkbox').change(generatorCheckboxOnChange)
+
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
@@ -342,32 +419,13 @@ window.onpageshow = function (event) {
     })
     $('textarea[name="grader-code"]').val(grader_editor.getValue())
     $('#description-md')[0].mdContent = $('#description').val()
-
-    // Checkbox on changed
-    $('input[name="generator-checkbox"]').change(function () {
-        if (this.checked) {
-            $('#editor-group').show()
-        } else {
-            $('#editor-group').hide()
-        }
-        for (let i = 1; i <= testcases_count; i++) {
-            if (this.checked === true) {
-                document.getElementById('answer' + i).value = 'Press "Generate answers" to generate answers.'
-                document.getElementById('answer' + i).readOnly = true
-            } else {
-                if (document.getElementById('answer' + i).value === 'Press "Generate answers" to generate answers.') {
-                    document.getElementById('answer' + i).value = ''
-                }
-                document.getElementById('answer' + i).readOnly = false
-            }
-        }
-    })
 }
 
 $(document).ready(() => {
     judgeMethodOnChange()
     restrictLangOnChange()
     aqaAddressesOnChange()
+    selectTestcase(0)
 })
 
 $('#description').on('input', function (e) {
