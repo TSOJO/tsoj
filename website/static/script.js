@@ -83,3 +83,26 @@ function custom_searcher(keys) {
         })
     }
 }
+
+function getLongVerdict(verdict) {
+    switch (verdict) {
+        case 'AC':
+            return 'Accepted'
+        case 'WA':
+            return 'Wrong Answer'
+        case 'TLE':
+            return 'Time Limit Exceeded'
+        case 'MLE':
+            return 'Memory Limit Exceeded'
+        case 'RE':
+            return 'Runtime Error'
+        case 'CE':
+            return 'Compilation Error'
+        case 'SE':
+            return 'System Error'
+        case 'WJ':
+            return 'Waiting for Judge'
+        default:
+            return 'Unknown Error'
+    }
+}

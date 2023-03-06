@@ -158,20 +158,20 @@ function generateAnswers() {
                 let index = parseInt(i) + 1
                 console.log(result)
                 let verdict = result['verdict']
-                if(verdict['verdict'] === 'AC') {
+                if(verdict === 'AC') {
                     $('#answer' + index).val(result['answer'])
                 } else {
                     let message = result['message']
                     if(message) {
                         $('#detail' + index + '-modal').remove()
                         all_ok = false
-                        const alert = getAlert('Oops... ' + verdict['verdict_long'] + ' on Input ' + index, index, true, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on Input ' + index, index, true, false)
                         const modal = getModal(message, index, false)
                         placeholder.append(modal)
                         placeholder.append(alert)
                     }
                     else {
-                        const alert = getAlert('Oops... ' + verdict['verdict_long'] + ' on Input ' + index, index, false, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on Input ' + index, index, false, false)
                         placeholder.append(alert)
                     }
                 }
@@ -213,18 +213,20 @@ function testGrader() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data['verdict'].verdict !== 'AC') {
+            console.log(data)
+            if (data['verdict'] !== 'AC') {
                 let message = data['message']
                 let index = data['index']
+                let verdict = data['verdict']
                 if (message) {
                     $('#grader-detail' + index + '-modal').remove()
-                    const alert = getAlert('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + index, index, true, true)
+                    const alert = getAlert('Oops... Grader ' + getLongVerdict(verdict) + ' on testcase ' + index, index, true, true)
                     const modal = getModal(message, index, true)
                     placeholder.append(modal)
                     placeholder.append(alert)
                 }
                 else {
-                    const alert = getAlertHTML('Oops... Grader ' + data['verdict'].verdict_long + ' on testcase ' + index, index, false, true)
+                    const alert = getAlertHTML('Oops... Grader ' + getLongVerdict(verdict) + ' on testcase ' + index, index, false, true)
                     placeholder.append(alert)
                 }
             } else {
