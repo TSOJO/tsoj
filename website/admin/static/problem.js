@@ -31,8 +31,8 @@ function getTestcaseGroup(index) {
         '        <h5 id="testcase-number' + index + '">Testcase ' + (index+1) + '</h5>',
         '    </div>',
         '    <div>',
-        '        <input class="form-check-input" type="checkbox" value="" name="sample' + index + '" id="sample' + index + '"/>',
-        '        <label class="form-check-label">Sample case</label>',
+        '        <input class="form-check-input" type="checkbox" value="" name="example' + index + '" id="example' + index + '"/>',
+        '        <label class="form-check-label">Example testcase</label>',
         '    </div>',
         '</div>',
         '<label class="form-label" for="input' + index + '">',
@@ -85,8 +85,8 @@ function deleteTestcase() {
         $('#input' + i).attr('id', 'input' + (i-1))
         $('#answer' + i).attr('name', 'answer' + (i-1))
         $('#answer' + i).attr('id', 'answer' + (i-1))
-        $('#sample' + i).attr('name', 'sample' + (i-1))
-        $('#sample' + i).attr('id', 'sample' + (i-1))
+        $('#example' + i).attr('name', 'example' + (i-1))
+        $('#example' + i).attr('id', 'example' + (i-1))
         $('#testcase-number' + i).html('Testcase ' + i)
         $('#testcase-number' + i).attr('id', 'testcase-number' + (i-1))
     }

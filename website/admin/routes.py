@@ -77,12 +77,12 @@ def edit_problem(id: str):
         testcases: List[Testcase] = []
         testcases_count = int(request.form['testcases-count'])
         for i in range(testcases_count):
-            sample = f'sample{i}' in request.form
+            example = f'example{i}' in request.form
             testcases.append(
                 Testcase(
                     to_input_format(request.form[f'input{i}']),
                     request.form[f'answer{i}'],
-                    0 if sample else 1,
+                    0 if example else 1,
                 )
             )
 
