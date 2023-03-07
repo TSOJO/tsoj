@@ -103,12 +103,12 @@
                             <label class="form-label" for="input{{loop.index0}}">
                                 Input
                             </label>
-                            <textarea class="form-control mb-2" rows="3" id="input{{loop.index0}}"
+                            <textarea class="form-control testcase-input mb-2" rows="3" id="input{{loop.index0}}"
                                 name="input{{loop.index0}}">{{testcase.input}}</textarea>
                             <label class="form-label" for="answer{{loop.index0}}">
                                 Answer
                             </label>
-                            <textarea class="form-control" rows="3" id="answer{{loop.index0}}"
+                            <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index0}}"
                                 name="answer{{loop.index0}}">{{testcase.answer}}</textarea>
                         </div>
                         {%- endfor %}
