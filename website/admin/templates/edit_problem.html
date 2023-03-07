@@ -79,9 +79,9 @@
             <div class="container mb-3">
                 <div class="row gy-3">
                     <div class="col-md-3">
-                        <div style="overflow-y: scroll; max-height: 250px;" id="testcases-buttons-container">
+                        <div class="list-group" id="testcases-buttons-container" style="overflow-y:auto; max-height:400px;">
                             {%- for testcase in problem.testcases %}
-                            <button id="testcase-button{{loop.index0}}" type="button" class="btn btn-light" style="width:100%;" onclick="selectTestcase({{loop.index0}})">
+                            <button id="testcase-button{{loop.index0}}" type="button" class="list-group-item-action" onclick="selectTestcase({{loop.index0}})">
                                 Testcase {{loop.index}}
                             </button>
                             {%- endfor %}
