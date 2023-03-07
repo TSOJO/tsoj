@@ -6,6 +6,7 @@ function getTestcaseButton(index) {
     button.innerHTML = 'Testcase ' + (index+1)
     button.setAttribute('id', 'testcase-button' + index)
     button.setAttribute('class', 'btn btn-light')
+    button.setAttribute('style', 'width:100%;')
     button.setAttribute('type', 'button')
     button.setAttribute('onclick', 'selectTestcase(' + index + ')')
     return button
@@ -25,19 +26,23 @@ function getTestcaseGroup(index) {
     let group = document.createElement('div')
     group.innerHTML = [
         '<div id="testcase-group' + index + '" style="display: none;">',
-        '<div class="d-flex">',
-        '    <div class="me-auto my-auto">',
-        '        <h5 id="testcase-number' + index + '" class="my-0">Testcase ' + (index+1) + '</h5>',
+        '<div class="d-flex justify-content-between">',
+        '    <div>',
+        '        <h5 id="testcase-number' + index + '">Testcase ' + (index+1) + '</h5>',
         '    </div>',
-        '    <div class="my-auto px-4">',
+        '    <div>',
         '        <input class="form-check-input" type="checkbox" value="" name="sample' + index + '" id="sample' + index + '"/>',
         '        <label class="form-check-label">Sample case</label>',
         '    </div>',
         '</div>',
-        'Input',
-        '<textarea class="form-control" rows="3" id="input' + index + '"',
+        '<label class="form-label" for="input' + index + '">',
+            'Input',
+        '</label>',
+        '<textarea class="form-control mb-2" rows="3" id="input' + index + '"',
         '    name="input' + index + '"></textarea>',
-        'Answer',
+        '<label class="form-label" for="answer' + index + '">',
+            'Answer',
+        '</label>',
         '<textarea class="form-control" rows="3" id="answer' + index + '"',
         '    name="answer' + index + '"></textarea>',
         '</div>',
