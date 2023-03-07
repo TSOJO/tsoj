@@ -324,17 +324,6 @@ function generatorCheckboxOnChange() {
     } else {
         $('#editor-group').hide()
     }
-    for (let i = 0; i < testcases_count; i++) {
-        if ($('#generate-answer-checkbox').is(':checked')) {
-            $('#answer' + i).val('Press "Generate answers" to generate answers.')
-            $('#answer' + i).prop('readonly', true)
-        } else {
-            if ($('#answer' + i).val() === 'Press "Generate answers" to generate answers.') {
-                $('#answer' + i).val('')
-            }
-            $('#answer' + i).prop('readonly', false)
-        }
-    }
 }
 $('#generate-answer-checkbox').change(generatorCheckboxOnChange)
 
