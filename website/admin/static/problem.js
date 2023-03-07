@@ -97,65 +97,6 @@ function deleteTestcase() {
     selectTestcase(currentTestcaseIndex)
 }
 
-// function add_field() {
-//     testcases_count++
-//     $('#testcases-count').val(testcases_count)
-//     let testcase_node = document.getElementById('testcase-div').cloneNode(true)
-//     testcase_node.id = ''
-//     testcase_node.style.display = 'block'
-//     let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
-//     h5_node.innerHTML = 'Testcase ' + testcases_count
-//     let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
-//     input_node.name = 'input' + testcases_count
-//     input_node.id = 'input' + testcases_count
-//     let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
-//     answer_node.name = 'answer' + testcases_count
-//     answer_node.id = 'answer' + testcases_count
-//     let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
-//     sample_checkbox.name = 'sample' + testcases_count
-//     sample_checkbox.id = 'sample' + testcases_count
-//     if (document.getElementById('generate-answer-checkbox').checked === true) {
-//         answer_node.innerHTML = 'Press "Generate answers" to generate answers.'
-//         answer_node.readOnly = true
-//     }
-//     let testcase_container = document.getElementById('testcase-container')
-//     testcase_container.appendChild(testcase_node)
-// }
-
-// function remove_field(node) {
-//     if (testcases_count === 1) {
-//         const wrapper = document.createElement('div')
-//         wrapper.innerHTML = [
-//             '<div class="alert alert-danger alert-dismissable d-flex justify-items-between align-items-center" role="alert">',
-//             '   <div class="flex-grow-1">At least one testcase is required!</div>',
-//             '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-//             '</div>'
-//         ].join('')
-//         const placeholder = document.getElementById('rem-alert-placeholder')
-//         placeholder.append(wrapper)
-//         return
-//     }
-//     testcases_count--
-//     $('#testcases-count').val(testcases_count)
-//     let testcase_container = document.getElementById('testcase-container')
-//     testcase_container.removeChild(node)
-//     // reindex
-//     for (let i = 0; i < testcases_count; i++) {
-//         let testcase_node = testcase_container.childNodes[i]
-//         let h5_node = testcase_node.getElementsByClassName('testcase-number')[0]
-//         h5_node.innerHTML = 'Testcase ' + (i + 1)
-//         let input_node = testcase_node.getElementsByClassName('testcase-input')[0]
-//         input_node.name = input_node.name.slice(0, -1) + (i + 1)
-//         input_node.id = input_node.id.slice(0, -1) + (i + 1)
-//         let answer_node = testcase_node.getElementsByClassName('testcase-answer')[0]
-//         answer_node.name = answer_node.name.slice(0, -1) + (i + 1)
-//         answer_node.id = answer_node.id.slice(0, -1) + (i + 1)
-//         let sample_checkbox = testcase_node.getElementsByClassName('testcase-sample')[0]
-//         sample_checkbox.name = sample_checkbox.name.slice(0, -1) + (i + 1)
-//         sample_checkbox.id = sample_checkbox.id.slice(0, -1) + (i + 1)
-//     }
-// }
-
 function getAlert(message, i, withDetails, isGrader, type='danger') {
     let alert = document.createElement('div')
     let target = isGrader ? 'grader-detail' + i + '-modal' : 'detail' + i + '-modal'
