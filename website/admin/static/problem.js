@@ -53,7 +53,6 @@ function getTestcaseGroup(index) {
 const testcases_buttons_container = $('#testcases-buttons-container')
 function createTestcase() {
     testcases_buttons_container.append(getTestcaseButton(testcases_count))
-    console.log(getTestcaseButton(testcases_count))
     testcases_count++
     $('#testcases-count').val(testcases_count)
     $('#testcase-groups-container').append(getTestcaseGroup(testcases_count-1))
@@ -190,11 +189,9 @@ function generateAnswers() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             all_ok = true
             for(let [i, result] of Object.entries(data)) {
                 let index = parseInt(i)
-                console.log(result)
                 let verdict = result['verdict']
                 if(verdict === 'AC') {
                     $('#answer' + index).val(result['answer'])
@@ -251,7 +248,6 @@ function testGrader() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             if (data['verdict'] !== 'AC') {
                 let message = data['message']
                 let index = data['index']
