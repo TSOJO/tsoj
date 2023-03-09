@@ -91,7 +91,7 @@ def profile(id: str):
 @user_bp.route('/settings', methods=['GET', 'POST'])
 def settings():
     if request.method == 'POST':
-        if request.form.get('action') == 'email_update':
+        if request.form.get('action') == 'update_email':
             current_password = request.form.get('current_password')
             new_email = request.form.get('email')
             if current_user.check_password(current_password):
@@ -105,7 +105,7 @@ def settings():
             else:
                 flash('Current password not correct.', 'error')
                     
-        elif request.form.get('action') == 'profile_update':
+        elif request.form.get('action') == 'update_profile':
             new_username = request.form.get('username')
             if new_username and new_username != current_user.username:
                 existing = User.find_all({'username': new_username})
@@ -124,15 +124,8 @@ def settings():
             if new_hide_name != current_user.hide_name:
                 current_user.hide_name = new_hide_name
                 flash('Hide name option changed successfully.')
-                
-            selected_groups = request.form.getlist('group_select')
-            if selected_groups:
-                selected_group_ints = [int(g) for g in selected_groups]
-                if set(selected_group_ints) != set(current_user.user_group_ids):
-                    current_user.user_group_ids = selected_group_ints
-                    flash('Group changed successfully.')
         
-        elif request.form.get('action') == 'password_update':
+        elif request.form.get('action') == 'update_password':
             current_password = request.form.get('current_password')
             confirm_password = request.form.get('confirm_password')
             new_password = request.form.get('new_password')
@@ -146,22 +139,32 @@ def settings():
                 else:
                     flash('Current password not correct.', 'error')
         
-        elif request.form.get('action') == 'group_update':
+        elif request.form.get('action') == 'update_group':
             group_join_code = request.form.get('group_join_code')
             token_data = Token.get_token_data(group_join_code, 'join_group')
             if token_data:
                 group_id = token_data['group_id']
-                current_user.user_group_ids = current_user.user_group_ids + [group_id]
+                new_groups = set(current_user.user_group_ids)
+                new_groups.add(group_id)
+                current_user.user_group_ids = list(new_groups)
+                group_name = UserGroup.find_one({'id': group_id}).name
+                flash(f'Joined {group_name} successfully.')
             else:
                 flash('Invalid join code.', 'error')
+        
+        elif request.form.get('action') == 'leave_group':
+            group_id = int(request.form.get('group_id'))
+            new_groups = set(current_user.user_group_ids)
+            try:
+                new_groups.remove(group_id)
+                current_user.user_group_ids = list(new_groups)
+                group_name = UserGroup.find_one({'id': group_id}).name
+                flash(f'Left {group_name} successfully.')
+            except KeyError:
+                flash('Something very bad happened...', 'error')
             
-
         current_user.save(replace=True)
-    groups = UserGroup.find_all()
-    user_group_ids = [str(g.id) for g in current_user.fetch_user_groups()]
-    return render_template(
-        'settings.html', groups=groups, user_group_ids=user_group_ids
-    )
+    return render_template('settings.html')
 
 @user_bp.route('/verify/<plaintext_token>')
 def verify_new_email(plaintext_token):

@@ -6,171 +6,210 @@
     </div>
     <div class="row">
         <div class="col-lg-6">
-            <form method="post"
-                class="form-group mb-3 needs-validation border p-4"
-                novalidate>
-                <div class="mb-3">
-                    <input type="hidden" name="action" value="profile_update" />
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text"
-                        class="form-control"
-                        name="username"
-                        id="username"
-                        placeholder="Enter username"
-                        value="{{ current_user.username }}"
-                        required />
-                </div>
-                <div class="mb-3">
-                    <label for="full_name" class="form-label">Full name</label>
-                    <input type="text"
-                        class="form-control"
-                        name="full_name"
-                        id="full_name"
-                        placeholder="Enter full name"
-                        value="{{ current_user.full_name }}"
-                        required />
-                </div>
-                <div class="mb-3">
-                    <input type="checkbox"
-                        class="form-check-input"
-                        name="hide_name"
-                        id="hide_name"
-                        {% if current_user.hide_name -%}
-                        checked
-                        {%- endif %} />
-                    <label for="hide_name" class="form-label">Hide name in submissions</label>
-                </div>
-                <p>
-                    Note: We highly encourage you to show your name in submissions, as your solutions may help other students improve.
-                </p>
-                <div class="mb-3">
-                    <label for="group_select" class="form-label">Groups</label>
-                    <br />
-                    <select id="group_select"
-                            class="selectpicker"
-                            name="group_select"
-                            title="Choose a group"
-                            multiple>
-                        {% for group in groups %}
-                            <option value="{{ group.id }}">
-                                {{ group.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
+            <div class="border p-4 mb-3">
+                <form method="post"
+                    class="form-group needs-validation"
+                    novalidate>
+                    <div class="mb-3">
+                        <input type="hidden" name="action" value="update_profile" />
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text"
+                            class="form-control"
+                            name="username"
+                            id="username"
+                            placeholder="Enter username"
+                            value="{{ current_user.username }}"
+                            required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">Full name</label>
+                        <input type="text"
+                            class="form-control"
+                            name="full_name"
+                            id="full_name"
+                            placeholder="Enter full name"
+                            value="{{ current_user.full_name }}"
+                            required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="checkbox"
+                            class="form-check-input"
+                            name="hide_name"
+                            id="hide_name"
+                            {% if current_user.hide_name -%}
+                            checked
+                            {%- endif %} />
+                        <label for="hide_name" class="form-label">Hide name in submissions</label>
+                    </div>
+                    <p>
+                        Note: We highly encourage you to show your name in submissions, as your solutions may help other students improve.
+                    </p>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
 
-            <form method="post"
-                class="form-group mb-3 needs-validation border p-4"
-                novalidate>
-                <div class="mb-3">
-                    <input type="hidden" name="action" value="group_update" />
-                    <label for="group_join_code" class="form-label">Join group</label>
-                    <input type="text"
-                        class="form-control"
-                        name="group_join_code"
-                        id="group_join_code"
-                        placeholder="Enter join code"
-                        required />
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">Join</button>
-                </div>
-            </form>
+            <div class="border p-4">
+                <label class="form-label">
+                    Your groups
+                </label>
+                <ul class="list-group mb-3">
+                    {% for group in current_user.fetch_user_groups() %}
+                        <div class="modal fade"
+                            id="leave-confirm-modal-{{ group.id }}"
+                            tabindex="-1"
+                            aria-labelledby="leave-confirm-modal-label-{{ group.id }}"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="leave-confirm-modal-label-{{ group.id }}">Confirm deletion</h1>
+                                        <button type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">Are you sure you want to leave {{ group.name }}?</div>
+                                    <div class="modal-footer">
+                                        <form method="post"
+                                            class="form-group needs-validation"
+                                            novalidate>
+                                            <input type="hidden" name="action" value="leave_group" />
+                                            <input type="hidden" name="group_id" value="{{ group.id }}" />
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-danger align-self-center">Leave</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    {{ group.name }}
+                                </div>
+                                <div>
+                                    <a data-bs-toggle="modal"
+                                        data-bs-target="#leave-confirm-modal-{{ group.id }}"
+                                        class="text-decoration-none"
+                                        style="cursor:pointer;">
+                                        Leave
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <form method="post"
+                    class="form-group needs-validation"
+                    novalidate>
+                    <div class="mb-3">
+                        <input type="hidden" name="action" value="update_group" />
+                        <label for="group_join_code" class="form-label">Join group</label>
+                        <input type="text"
+                            class="form-control"
+                            name="group_join_code"
+                            id="group_join_code"
+                            placeholder="Enter join code"
+                            required />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Join</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="col-lg-6">
-            <form method="post"
-                  class="form-group mb-3 needs-validation border p-4"
-                  oninput="confirm_password.setCustomValidity(confirm_password.value != new_password.value ? 'Passwords don\'t match.' : '')"
-                  novalidate>
-                <input type="hidden" name="action" value="email_update" />
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text"
-                           class="form-control"
-                           name="email"
-                           id="email"
-                           value="{{ current_user.email }}" />
-                </div>
-                <div class="row g-3">
-                    <div class="col-sm-6">
-                        <input type="password"
-                               class="form-control"
-                               name="current_password"
-                               placeholder="Enter password"
-                               required />
-                    </div>
-                    <div class="col-sm-auto">
-                        <button type="submit" class="btn btn-primary">Change email</button>
-                    </div>
-                </div>
-            </form>
-    
-    
-            <form method="post"
-                  class="form-group mb-3 needs-validation border p-4"
-                  oninput="confirm_password.setCustomValidity(confirm_password.value != new_password.value ? 'Passwords don\'t match.' : '')"
-                  novalidate>
-                <input type="hidden" name="action" value="password_update" />
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="row g-3 mb-3">
-                        <div class="col-sm-6">
-                            <input type="password"
-                                   class="form-control"
-                                   name="new_password"
-                                   id="new_password"
-                                   placeholder="Enter new password"
-                                   required />
-                        </div>
-                        <div class="col-sm-6">
-                            <input type="password"
-                                   class="form-control"
-                                   name="confirm_password"
-                                   id="confirm_password"
-                                   placeholder="Confirm password"
-                                   required />
-                            <div class="invalid-feedback">Passwords don't match.</div>
-                        </div>
-                    </div>
+            <div class="border p-4 mb-3">
+                <form method="post"
+                      class="form-group needs-validation"
+                      oninput="confirm_password.setCustomValidity(confirm_password.value != new_password.value ? 'Passwords don\'t match.' : '')"
+                      novalidate>
+                    <input type="hidden" name="action" value="update_email" />
                     <div class="mb-3">
-                        <p>
-                            We will only store your hashed password. Although unlikely, the Tonbridge School Online Judge
-                            Organisation will <b>not</b> be responsible if your password is somehow leaked.
-                        </p>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               id="agree"
-                               required />
-                        <label for="agree" class="form-check-label">
-                            I understand the importance of choosing a password that I do not normally use.
-                        </label>
-                        <div class="invalid-feedback">Please agree to the above statement.</div>
-                    </div>
-                </div>
-                <div class="row g-3">
-                    <div class="col-sm-6">
-                        <input type="password"
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text"
                                class="form-control"
-                               name="current_password"
-                               id="current_password"
-                               placeholder="Enter current password"
-                               required />
+                               name="email"
+                               id="email"
+                               value="{{ current_user.email }}" />
                     </div>
-                    <div class="col-sm-auto">
-                        <button type="submit" class="btn btn-primary">Change password</button>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <input type="password"
+                                   class="form-control"
+                                   name="current_password"
+                                   placeholder="Enter password"
+                                   required />
+                        </div>
+                        <div class="col-sm-auto">
+                            <button type="submit" class="btn btn-primary">Change email</button>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            
+            <div class="border p-4 mb-3">
+                <form method="post"
+                      class="form-group needs-validation"
+                      oninput="confirm_password.setCustomValidity(confirm_password.value != new_password.value ? 'Passwords don\'t match.' : '')"
+                      novalidate>
+                    <input type="hidden" name="action" value="update_password" />
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-6">
+                                <input type="password"
+                                       class="form-control"
+                                       name="new_password"
+                                       id="new_password"
+                                       placeholder="Enter new password"
+                                       required />
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="password"
+                                       class="form-control"
+                                       name="confirm_password"
+                                       id="confirm_password"
+                                       placeholder="Confirm password"
+                                       required />
+                                <div class="invalid-feedback">Passwords don't match.</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <p>
+                                We will only store your hashed password. Although unlikely, the Tonbridge School Online Judge
+                                Organisation will <b>not</b> be responsible if your password is somehow leaked.
+                            </p>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="agree"
+                                   required />
+                            <label for="agree" class="form-check-label">
+                                I understand the importance of choosing a password that I do not normally use.
+                            </label>
+                            <div class="invalid-feedback">Please agree to the above statement.</div>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <input type="password"
+                                   class="form-control"
+                                   name="current_password"
+                                   id="current_password"
+                                   placeholder="Enter current password"
+                                   required />
+                        </div>
+                        <div class="col-sm-auto">
+                            <button type="submit" class="btn btn-primary">Change password</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock content %}
-{% block scripts %}
-    <script>$('#group_select').selectpicker('val', {{user_group_ids | tojson}})</script>
-{% endblock scripts %}
