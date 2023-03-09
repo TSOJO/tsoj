@@ -139,7 +139,7 @@ def settings():
                 else:
                     flash('Current password not correct.', 'error')
         
-        elif request.form.get('action') == 'update_group':
+        elif request.form.get('action') == 'join_group':
             group_join_code = request.form.get('group_join_code')
             token_data = Token.get_token_data(group_join_code, 'join_group')
             if token_data:
