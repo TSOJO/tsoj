@@ -145,7 +145,16 @@ def settings():
                         flash('New passwords must match.', 'error')
                 else:
                     flash('Current password not correct.', 'error')
-
+        
+        elif request.form.get('action') == 'group_update':
+            group_join_code = request.form.get('group_join_code')
+            token_data = Token.get_token_data(group_join_code, 'join_group')
+            if token_data:
+                group_id = token_data['group_id']
+                current_user.user_group_ids = current_user.user_group_ids + [group_id]
+            else:
+                flash('Invalid join code.', 'error')
+            
 
         current_user.save(replace=True)
     groups = UserGroup.find_all()
