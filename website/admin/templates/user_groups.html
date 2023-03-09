@@ -46,6 +46,7 @@
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Students</th>
+                <th scope="col">Join code</th>
             </tr>
         </thead>
         <tbody>
@@ -72,6 +73,9 @@
                             {%- endif -%}
                         {%- if not loop.last -%}, {% endif -%}
                         {% endfor %}
+                    </td>
+                    <td>
+                        {{ user_group.join_code }}
                     </td>
                 </tr>
             {% endfor %}

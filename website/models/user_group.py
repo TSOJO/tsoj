@@ -1,20 +1,37 @@
 from __future__ import annotations
 
-from typing import *
+from typing import Optional, List, Dict, Any, Mapping
 
 from website.models.db_model import DBModel
 from website.models import user as user_module
+from website.models import token as token_module
 from website.celery_tasks import add_to_db, delete_from_db
 from website.db import db
 
 
 class UserGroup(DBModel):
     def __init__(
-        self, name: str, id: int = None, user_ids: Optional[List[int]] = None
+        self,
+        name: str,
+        id: Optional[int] = None,
+        user_ids: Optional[List[int]] = None,
+        join_code: Optional[str] = None
     ) -> None:
         self.name = name
         self._id = id
         self._user_ids = [] if user_ids is None else user_ids
+        
+        if join_code is None:
+            self.join_code = token_module.Token(
+                token_data={
+                    'group_id': self.id
+                },
+                token_length=4,
+                persistent=True,
+                action='join_group',
+            ).save(wait=True).plaintext_token
+        else:
+            self.join_code = join_code
 
     @property
     def id(self):
@@ -54,7 +71,10 @@ class UserGroup(DBModel):
     @classmethod
     def cast_from_document(cls, document: Any) -> UserGroup:
         user_group_obj = UserGroup(
-            id=document['id'], name=document['name'], user_ids=document['user_ids']
+            id=document['id'],
+            name=document['name'],
+            user_ids=document['user_ids'],
+            join_code=document['join_code']
         )
         return user_group_obj
 
@@ -64,6 +84,7 @@ class UserGroup(DBModel):
             'id': self.id,
             'name': self.name,
             'user_ids': self.user_ids,
+            'join_code': self.join_code
         }
 
     @classmethod

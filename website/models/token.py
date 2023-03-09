@@ -13,13 +13,16 @@ class Token(DBModel):
         self,
         token_data: Dict,
         token_length: int = 16,
-        id: Optional[int] = None,
+        persistent: bool = False,
         action: Optional[str] = None,
+        id: Optional[int] = None,
         hashed_token: Optional[str] = None,
         expiration: Optional[datetime] = None,
         ttl: int = 3
     ):
         self.token_data = token_data
+        self.token_length = token_length
+        self.persistent = persistent
         self._id = id
         
         if action is None:
@@ -32,7 +35,7 @@ class Token(DBModel):
             self.hashed_token = hashlib.md5(self.plaintext_token.encode('utf-8')).hexdigest()
         else:
             self.hashed_token = hashed_token
-            
+        
         if expiration is None:
             self.expiration = datetime.utcnow() + timedelta(hours=ttl)
         else:
@@ -63,14 +66,18 @@ class Token(DBModel):
                 'action': action,
             }
         )
+        
         if token is None or token.action != action:
             return None
-        if not token.is_valid():
+        
+        if not token.persistent and not token.is_valid():
+            # If token is persistent, we ignore expiration check.
             token.delete()
             return None
         else:
             token_data = token.token_data
-            token.delete()
+            if not token.persistent:
+                token.delete()
             return token_data
 
     @classmethod
@@ -78,6 +85,8 @@ class Token(DBModel):
         token_obj = Token(
             id=document['id'],
             token_data=document['token_data'],
+            token_length=document['token_length'],
+            persistent=document['persistent'],
             action=document['action'],
             hashed_token=document['hashed_token'],
             expiration=datetime.strptime(
@@ -91,6 +100,8 @@ class Token(DBModel):
             '_id': self.id,
             'id': self.id,
             'token_data': self.token_data,
+            'token_length': self.token_length,
+            'persistent': self.persistent,
             'action': self.action,
             'hashed_token': self.hashed_token,
             'expiration': self.expiration.strftime('%Y-%m-%dT%H:%M:%S.%f'),

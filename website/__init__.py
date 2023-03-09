@@ -191,9 +191,9 @@ def debug_db(app):
         with app.app_context():
             problem.save(replace=True)
 
-    user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
-    with app.app_context():
-        user_group.save(replace=True)
+    # user_group = UserGroup(id=1, name='4A1', user_ids=['admin', 'user'])
+    # with app.app_context():
+    #     user_group.save(replace=True)
 
     assignment = Assignment(id=1, creator='JER', user_group_ids=[1])
     assignment.add_problems('A1', 'A2')
