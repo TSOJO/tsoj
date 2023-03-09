@@ -12,6 +12,7 @@ class Token(DBModel):
     def __init__(
         self,
         token_data: Dict,
+        token_length: int = 16,
         id: Optional[int] = None,
         action: Optional[str] = None,
         hashed_token: Optional[str] = None,
@@ -27,7 +28,7 @@ class Token(DBModel):
             self.action = action
         
         if hashed_token is None:
-            self.plaintext_token = secrets.token_urlsafe(16)
+            self.plaintext_token = secrets.token_urlsafe(token_length)
             self.hashed_token = hashlib.md5(self.plaintext_token.encode('utf-8')).hexdigest()
         else:
             self.hashed_token = hashed_token
