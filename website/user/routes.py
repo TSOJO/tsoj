@@ -148,6 +148,7 @@ def settings():
                 new_groups.add(group_id)
                 current_user.user_group_ids = list(new_groups)
                 group_name = UserGroup.find_one({'id': group_id}).name
+                current_user.save(wait=True, replace=True)
                 flash(f'Joined {group_name} successfully.')
             else:
                 flash('Invalid join code.', 'error')
@@ -159,6 +160,7 @@ def settings():
                 new_groups.remove(group_id)
                 current_user.user_group_ids = list(new_groups)
                 group_name = UserGroup.find_one({'id': group_id}).name
+                current_user.save(wait=True, replace=True)
                 flash(f'Left {group_name} successfully.')
             except KeyError:
                 flash('Something very bad happened...', 'error')
