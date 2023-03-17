@@ -157,8 +157,8 @@ def assignment_results(id: int):
     )
 
 
-@admin_bp.route('/create/assignment', methods=['GET', 'POST'])
-def create_assignment():
+@admin_bp.route('/edit/assignment/<int:id>', methods=['GET', 'POST'])
+def edit_assignment(id: int):
     if request.method == 'POST':
         # JS guarantees there is at least one user group and one problem selected.
         user_group_ids = [
@@ -175,10 +175,11 @@ def create_assignment():
 
         flash('Assignment created', 'success')
         return redirect(url_for('admin_bp.assignments'))
+    assignment = Assignment.find_one({'id': id})
     problems = Problem.find_all()
     user_groups = UserGroup.find_all()
     return render_template(
-        'create_assignment.html', problems=problems, user_groups=user_groups
+        'edit_assignment.html', problems=problems, user_groups=user_groups, assignment=assignment
     )
 
 @admin_bp.route('/delete/assignment/<int:id>')

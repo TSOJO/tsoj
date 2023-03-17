@@ -16,7 +16,7 @@ class Assignment(DBModel):
         id: Optional[int] = None,
         problem_ids: List[str] = None,
         user_group_ids: List[int] = None,
-        archived: bool = False,
+        visible: bool = False,
         set_time: datetime = None,
     ):
         # Public properties.
@@ -24,7 +24,7 @@ class Assignment(DBModel):
         self.problem_ids = [] if problem_ids is None else problem_ids
         self.user_group_ids = [] if user_group_ids is None else user_group_ids
         self.creator = creator
-        self.archived = archived
+        self.visible = visible
         self.set_time = datetime.utcnow() if set_time is None else set_time
 
     @property
@@ -55,7 +55,7 @@ class Assignment(DBModel):
             problem_ids=document['problem_ids'],
             creator=document['creator'],
             user_group_ids=document['user_group_ids'],
-            archived=document['archived'],
+            visible=document['visible'],
             set_time=datetime.strptime(
                 document['set_time'], '%Y-%m-%dT%H:%M:%S.%f'),
         )
@@ -68,7 +68,7 @@ class Assignment(DBModel):
             'problem_ids': self.problem_ids,
             'creator': self.creator,
             'user_group_ids': self.user_group_ids,
-            'archived': self.archived,
+            'visible': self.visible,
             'set_time': self.set_time.strftime('%Y-%m-%dT%H:%M:%S.%f'),
         }
 

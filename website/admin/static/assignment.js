@@ -9,6 +9,11 @@ function update_selected(table, target, key) {
 	return selected_ids
 }
 
+function update_table(table, data) {
+	data = data.split(', ')
+	table.bootstrapTable('checkBy', {field: 'id', values: data})
+}
+
 $('#form').submit(() => {
 	let problem_ids = update_selected($('#table'), $('#selected-problem-ids'), 'id').join(',')
 	let user_group_ids = update_selected($('#user-group-table'), $('#selected-user-group-names'), 'name').join(',')

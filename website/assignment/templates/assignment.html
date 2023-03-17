@@ -29,45 +29,43 @@
         </thead>
         <tbody>
             {% for problem in problems %}
-                {% if current_user.is_admin() or problem.is_public %}
-                    <tr class="d-flex"
-                        data-id="{{ problem.id }}"
-                        data-name="{{ problem.name }}">
-                        <td class="col-3" scope="col">
-                            <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                <a href="{{ url_for('problem_bp.problem', id=problem.id)}}"
-                                   class="text-decoration-none">{{ problem.id }}</a>
-                                <div class="d-flex align-items-center flex-wrap" style="gap:5px;">
-                                    {% if not problem.is_public %}
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             width="16"
-                                             height="16"
-                                             fill="currentColor"
-                                             class="bi bi-lock-fill"
-                                             viewBox="0 0 16 16">
-                                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-                                        </svg>
-                                    {% endif %}
-                                    {% if problem.id in solved_problem_ids %}
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             width="16"
-                                             height="16"
-                                             fill="#198754"
-                                             class="bi bi-check-circle-fill"
-                                             viewBox="0 0 16 16">
-                                            <path
-                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                                        </svg>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="col-9">
+                <tr class="d-flex"
+                    data-id="{{ problem.id }}"
+                    data-name="{{ problem.name }}">
+                    <td class="col-3" scope="col">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
                             <a href="{{ url_for('problem_bp.problem', id=problem.id)}}"
-                               class="text-decoration-none">{{ problem.name }}</a>
-                        </td>
-                    </tr>
-                {% endif %}
+                                class="text-decoration-none">{{ problem.id }}</a>
+                            <div class="d-flex align-items-center flex-wrap" style="gap:5px;">
+                                {% if current_user.is_contributor() and not problem.is_public %}
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            fill="currentColor"
+                                            class="bi bi-lock-fill"
+                                            viewBox="0 0 16 16">
+                                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                                    </svg>
+                                {% endif %}
+                                {% if problem.id in solved_problem_ids %}
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            fill="#198754"
+                                            class="bi bi-check-circle-fill"
+                                            viewBox="0 0 16 16">
+                                        <path
+                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                                    </svg>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col-9">
+                        <a href="{{ url_for('problem_bp.problem', id=problem.id)}}"
+                            class="text-decoration-none">{{ problem.name }}</a>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

@@ -22,36 +22,38 @@
         </thead>
         <tbody>
             {% for assignment in assignments %}
-            {% set num_solved_problems = problems[assignment.id] | selectattr('id', 'in', solved_problem_ids) | list | count %}
-            {% set num_problems = problems[assignment.id] | count %}
-            <tr data-time="{{ assignment.set_time.strftime('%d/%m/%y %H:%M') }}"
-                data-creator="{{ assignment.creator }}"
-                data-solved="{{ num_solved_problems }} / {{ num_problems }}">
-                <td>{{ assignment.set_time.strftime("%d/%m/%y %H:%M") }}</td>
-                <td>{{ assignment.creator }}</td>
-                <td>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            {{ num_solved_problems }} / {{ num_problems }}
+                {% if assignment.visible %}
+                {% set num_solved_problems = problems[assignment.id] | selectattr('id', 'in', solved_problem_ids) | list | count %}
+                {% set num_problems = problems[assignment.id] | count %}
+                <tr data-time="{{ assignment.set_time.strftime('%d/%m/%y %H:%M') }}"
+                    data-creator="{{ assignment.creator }}"
+                    data-solved="{{ num_solved_problems }} / {{ num_problems }}">
+                    <td>{{ assignment.set_time.strftime("%d/%m/%y %H:%M") }}</td>
+                    <td>{{ assignment.creator }}</td>
+                    <td>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                {{ num_solved_problems }} / {{ num_problems }}
+                            </div>
+                            {% if num_solved_problems == num_problems %}
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="#198754"
+                                    class="bi bi-check-circle-fill my-0"
+                                    viewBox="0 0 16 16">
+                                <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                            </svg>
+                            {% endif %}
                         </div>
-                        {% if num_solved_problems == num_problems %}
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                fill="#198754"
-                                class="bi bi-check-circle-fill my-0"
-                                viewBox="0 0 16 16">
-                            <path
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                        </svg>
-                        {% endif %}
-                    </div>
-                </td>
-                <td>
-                    <a href="{{ url_for('assignment_bp.assignment', id=assignment.id)}}"
-                       class="text-decoration-none">Details</a>
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('assignment_bp.assignment', id=assignment.id)}}"
+                        class="text-decoration-none">Details</a>
+                    </td>
+                </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
