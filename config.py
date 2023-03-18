@@ -1,9 +1,13 @@
 from os import environ, path
-
+import subprocess
 from dotenv import load_dotenv
 
 base_dir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(base_dir, '.env'))
+
+COMMIT_NUMBER = subprocess.check_output(
+    ['git', 'rev-parse', '--short', 'HEAD']
+).decode('utf-8').strip()
 
 SECRET_KEY = environ.get('SECRET_KEY')
 DEV = environ.get('DEV') == '1'
