@@ -11,7 +11,6 @@ function update_selected(table, target, key) {
 
 function update_table(table, data) {
 	data = data.split(', ')
-	console.log(data)
 	table.bootstrapTable('checkBy', {field: 'id', values: data})
 }
 
