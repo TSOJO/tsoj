@@ -7,7 +7,7 @@
             <p>{{ user.full_name }}</p>
             <hr />
             <div class="d-flex flex-wrap" style="gap:10px;">
-                {% if user.id in developers %}
+                {% if user.id in config['DEVELOPERS'] %}
                     <div class="card mb-3 user-group-text developer-text">
                         <b class="card-text">Developer</b>
                     </div>

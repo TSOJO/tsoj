@@ -82,9 +82,8 @@ def profile(id: str):
     problems = Problem.find_all()
     solved_problem_ids = user.get_solved_problem_ids()
     self_user_groups = user.fetch_user_groups()
-    developers = current_app.config['DEVELOPERS']
     return render_template(
-        'profile.html', user=user, problems=problems, solved_problem_ids=solved_problem_ids, self_user_groups=self_user_groups, developers=developers
+        'profile.html', user=user, problems=problems, solved_problem_ids=solved_problem_ids, self_user_groups=self_user_groups
     )
 
 
