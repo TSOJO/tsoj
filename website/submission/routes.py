@@ -15,7 +15,8 @@ def submission(id: int) -> str:
         abort(404, description="Submission not found")
     user_obj = User.find_one({'id': submission_obj.user_id})
     problem_obj = Problem.find_one({'id': submission_obj.problem_id})
-    if not current_user.is_contributor() and not problem_obj.is_public:
+    # always allow viewing own submissions
+    if not current_user.is_contributor() and not problem_obj.is_public and user_obj != current_user:
         abort(403, 'Problem is not public')
     show_code = (
         current_user.is_admin()

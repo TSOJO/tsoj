@@ -156,9 +156,16 @@ def assignment_results(id: int):
         users=user_dict,
     )
 
+@admin_bp.route('/create/assignment', methods=['POST'])
+def create_assignment():
+    assignment = Assignment(current_user.username)
+    assignment.save(wait=True)
+    flash('Assignment created', 'success')
+    return redirect(url_for('admin_bp.edit_assignment', id=assignment.id))
 
 @admin_bp.route('/edit/assignment/<int:id>', methods=['GET', 'POST'])
 def edit_assignment(id: int):
+    assignment = Assignment.find_one({'id': id})
     if request.method == 'POST':
         # JS guarantees there is at least one user group and one problem selected.
         user_group_ids = [
@@ -167,15 +174,13 @@ def edit_assignment(id: int):
         ]
         problem_ids = request.form.get('selected_problem_ids').split(',')
 
-        new_assignment = Assignment(
-            creator=current_user.username, user_group_ids=user_group_ids
-        )
-        new_assignment.add_problems(*problem_ids)
-        new_assignment.save(wait=True)
+        assignment.problem_ids = problem_ids
+        assignment.user_group_ids = user_group_ids
+        assignment.visible = 'visible-checkbox' in request.form
+        assignment.save(wait=True, replace=True)
 
         flash('Assignment created', 'success')
         return redirect(url_for('admin_bp.assignments'))
-    assignment = Assignment.find_one({'id': id})
     problems = Problem.find_all()
     user_groups = UserGroup.find_all()
     return render_template(

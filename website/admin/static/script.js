@@ -14,7 +14,7 @@ function copy_text(element, assignment_url) {
 }
 
 assignment_searcher = custom_searcher(['id', 'time', 'creator', 'problems', 'groups'])
-create_assignment_searcher = custom_searcher(['id', 'name'])  // since both problem and group tables have `id` and `name`
+edit_assignment_searcher = custom_searcher(['id', 'name'])  // since both problem and group tables have `id` and `name`
 privilege_searcher = custom_searcher(['id', 'name', 'privileges'])
 edit_group_searcher = custom_searcher(['name', 'id', 'privileges'])
 group_searcher = custom_searcher(['name', 'students'])

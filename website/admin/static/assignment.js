@@ -11,11 +11,12 @@ function update_selected(table, target, key) {
 
 function update_table(table, data) {
 	data = data.split(', ')
+	console.log(data)
 	table.bootstrapTable('checkBy', {field: 'id', values: data})
 }
 
 $('#form').submit(() => {
-	let problem_ids = update_selected($('#table'), $('#selected-problem-ids'), 'id').join(',')
+	let problem_ids = update_selected($('#problem-table'), $('#selected-problem-ids'), 'id').join(',')
 	let user_group_ids = update_selected($('#user-group-table'), $('#selected-user-group-names'), 'name').join(',')
 
 	if (problem_ids === '') {
@@ -41,16 +42,17 @@ $('#form').submit(() => {
 	return true
 })
 
-$('#table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', () => {
-	update_selected($('#table'), $('#selected-problem-ids'), 'id')
+$('#problem-table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', () => {
+	update_selected($('#problem-table'), $('#selected-problem-ids'), 'id')
 })
 
 $('#user-group-table').on('check.bs.table check-all.bs.table check-some.bs.table uncheck.bs.table uncheck-all.bs.table uncheck-some.bs.table', () => {
 	update_selected($('#user-group-table'), $('#selected-user-group-names'), 'name')
 })
 
-// ! Form submission is buggy if user uses 'back' button to go back to the form, so uncheck all.
 window.onpageshow = () => {
-    $('#table').bootstrapTable('uncheckAll')
-	$('#user-group-table').bootstrapTable('uncheckAll')
+	setTimeout(() => {
+		update_table($('#problem-table'), $('#selected-problem-ids').text())
+		update_table($('#user-group-table'), $('#selected-user-group-names').text())
+	}, 1)
 }

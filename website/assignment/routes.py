@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, redirect, url_for, flash, abort
+from flask import render_template, Blueprint, abort
 from website.models import Assignment
 from flask_login import current_user
 

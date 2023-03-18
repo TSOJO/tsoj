@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, abort,
 from flask_login import current_user
 
 from website.celery_tasks import judge
-from website.models import Problem, Submission
+from website.models import Problem, Submission, Assignment
 from isolate_wrapper import Language
 
 
@@ -16,7 +16,9 @@ def problem(id: str) -> str:
     problem = Problem.find_one({'id': id})
     if problem is None:
         abort(404, description="Problem not found")
-    if not current_user.is_contributor() and not problem.is_public:
+    user_assignments = Assignment.find_all({'user_group_ids': {'$in': current_user.user_group_ids}})
+    can_view = any(problem.id in assignment.problem_ids for assignment in user_assignments)
+    if not current_user.is_contributor() and not problem.is_public and not can_view:
         abort(403, 'Problem is not public')
     example_testcases = [testcase for testcase in problem.testcases if testcase.batch_number == 0]
     allowed_languages=problem.allowed_languages if problem.allowed_languages is not None else list(Language)

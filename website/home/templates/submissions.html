@@ -22,7 +22,7 @@
         </thead>
         <tbody>
             {% for submission in submissions %}
-                {% if current_user.is_contributor() or problems[submission.problem_id].is_public %}
+                {% if current_user.is_contributor() or problems[submission.problem_id].is_public or current_user.id == submission.user_id %}
                     <tr data-time="{{ submission.submission_time.strftime('%d/%m/%Y %H:%M:%S') }}"
                         data-username="
                             {%- if not current_user.is_admin() and current_user.id != submission.user_id and

@@ -36,9 +36,36 @@
                 Copy link
             </a>
         </div>
-        <a data-bs-toggle="modal"
-           data-bs-target="#delete-confirm-modal"
-           class="btn btn-danger align-self-center">Delete</a>
+        <div>
+            {% if assignment.visible %}
+                <svg xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-unlock-fill me-2"
+                        viewBox="0 0 16 16">
+                    <path
+                    d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z" />
+                </svg>
+            {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-lock-fill me-2"
+                        viewBox="0 0 16 16">
+                    <path
+                    d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                </svg>
+            {% endif %}
+            <div class="btn-group">
+                <a href="{{ url_for('admin_bp.edit_assignment', id=assignment.id) }}"
+                    class="btn btn-primary align-self-center">Edit</a>
+                <a data-bs-toggle="modal"
+                    data-bs-target="#delete-confirm-modal"
+                    class="btn btn-danger align-self-center">Delete</a>
+            </div>
+        </div>
     </div>
     {% for user_group in user_groups %}
         <div class="mb-3">
