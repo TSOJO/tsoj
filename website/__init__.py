@@ -40,7 +40,7 @@ def init_app() -> Flask:
 
     login_manager.init_app(app)
     login_manager.login_view = 'user_bp.login'
-    login_manager.login_message_category = "error"
+    login_manager.login_message_category = 'error'
 
     IsolateSandbox.cleanup_all()
 
