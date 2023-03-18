@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Assignments{% endblock title %}
 {% block content %}
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
         <h1>Assignments</h1>
-        <a href="{{ url_for('admin_bp.create_assignment')}}"
-           class="btn btn-success align-self-center" data-bs-toggle="modal" data-bs-target="#create-assignment-modal">Create</a>
+        <form action="{{ url_for('admin_bp.create_assignment') }}" method="post">
+            <button type="submit" class="btn btn-success">Create</button>        
+        </form>
     </div>
     <table class="table table-striped table-bordered"
            class="table table-bordered"
