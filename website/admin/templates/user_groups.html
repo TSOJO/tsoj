@@ -47,6 +47,7 @@
                 <th scope="col">Name</th>
                 <th scope="col">Students</th>
                 <th scope="col">Join code</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -57,10 +58,7 @@
                         {{- users[user_id].full_name }} {{ users[user_id].id }}
                     {% endfor -%}">
                     <th scope="row">
-                        <a href="{{ url_for('admin_bp.edit_user_group', id=user_group.id) }}"
-                           class="text-decoration-none">
-                           {{ user_group.name }}
-                        </a>
+                        {{ user_group.name }}
                     </th>
                     <td>
                         {% for user_id in user_group.user_ids %}
@@ -76,6 +74,19 @@
                     </td>
                     <td>
                         {{ user_group.join_code }}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <a href="{{ url_for('admin_bp.edit_user_group', id=user_group.id) }}"
+                            class="text-decoration-none">Edit
+                        </a>
+                        <br />
+                        <a class="text-decoration-none"
+                            onclick="copy_text(this, '{{ user_group.join_code }}'), false"
+                            data-bs-toggle="tooltip"
+                            data-bs-trigger="manual"
+                            title="Copied!"
+                            style="cursor:pointer">Copy join code
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

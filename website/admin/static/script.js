@@ -6,8 +6,10 @@ window.onpageshow = function(event) {
     })
 }
 
-function copy_text(element, assignment_url) {
-    const text = window.location.hostname + assignment_url
+function copy_text(element, text, add_hostname) {
+    if (add_hostname) {
+        text = window.location.hostname + text
+    }
     navigator.clipboard.writeText(text)
     const tooltip = bootstrap.Tooltip.getInstance(element)
     tooltip.show()

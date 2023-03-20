@@ -21,6 +21,7 @@
                 <th scope="col">Created by</th>
                 <th scope="col">Problem IDs</th>
                 <th scope="col">Set to</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -36,8 +37,7 @@
                         {%- endfor -%}">
                     <th scope="row">
                         <div class="d-flex justify-content-between align-items-center flex-wrap">
-                            <a href="{{ url_for('admin_bp.assignment_results', id=assignment.id)}}"
-                                    class="text-decoration-none">{{ assignment.id }}</a>
+                            {{ assignment.id }}
                             {% if not assignment.visible %}
                                 <svg xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -61,48 +61,30 @@
                         {%- if not loop.last %}, {% endif -%}
                         {% endfor %}
                     </td>
-                    <td class="d-flex justify-content-between">
-                        <div>
-                            {% for group_id in assignment.user_group_ids %}
-                            <a href="{{ url_for('admin_bp.edit_user_group', id=group_id) }}"
-                               class="text-decoration-none">
-                               {{- user_group_names[group_id] -}}
-                            </a>
-                            {%- if not loop.last %}, {% endif -%}
-                            {% endfor %}
-                        </div>
-                        <div>
-                            <a href="{{ url_for('admin_bp.edit_assignment', id=assignment.id)}}"
-                               class="text-decoration-none">
-                               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                              </svg>
-                            </a>
-                            <a href="{{ url_for('admin_bp.assignment_results', id=assignment.id)}}"
-                               class="ms-1 text-decoration-none">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     width="16"
-                                     height="16"
-                                     fill="currentColor"
-                                     class="bi bi-eye"
-                                     viewBox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z">
-                                    </path>
-                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"></path>
-                                </svg>
-                            </a>
-                            <a class="ms-1 text-decoration-none"
-                               onclick="copy_text(this, '{{ url_for('assignment_bp.assignment', id=assignment.id)}}')"
-                               data-bs-toggle="tooltip"
-                               data-bs-trigger="manual"
-                               title="Copied!"
-                               style="cursor:pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
-                                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
-                                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
-                                </svg>
-                            </a>
-                        </div>
+                    <td>
+                        {% for group_id in assignment.user_group_ids %}
+                        <a href="{{ url_for('admin_bp.edit_user_group', id=group_id) }}"
+                            class="text-decoration-none">
+                            {{- user_group_names[group_id] -}}
+                        </a>
+                        {%- if not loop.last %}, {% endif -%}
+                        {% endfor %}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <a href="{{ url_for('admin_bp.edit_assignment', id=assignment.id)}}"
+                            class="text-decoration-none">Edit
+                        </a>
+                        <br />
+                        <a href="{{ url_for('admin_bp.assignment_results', id=assignment.id)}}"
+                            class="text-decoration-none">Results</a>
+                        <br />
+                        <a class="text-decoration-none"
+                            onclick="copy_text(this, '{{ url_for('assignment_bp.assignment', id=assignment.id) }}', true)"
+                            data-bs-toggle="tooltip"
+                            data-bs-trigger="manual"
+                            title="Copied!"
+                            style="cursor:pointer">Copy link
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
