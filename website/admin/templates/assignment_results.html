@@ -28,7 +28,7 @@
         <div class="d-flex">
             <h1>Results: Assignment {{ assignment.id }}</h1>
             <a class="btn btn-primary align-self-center ms-3"
-               onclick="copy_text(this, '{{ url_for('assignment_bp.assignment', id=assignment.id)}}')"
+               onclick="copy_text(this, '{{ url_for('assignment_bp.assignment', id=assignment.id) }}', true)"
                data-bs-toggle="tooltip"
                data-bs-trigger="manual"
                title="Copied!"
@@ -87,9 +87,13 @@
                         {% for user_id in user_group.user_ids %}
                             <tr>
                                 <td>
+                                    {%- if users[user_id].full_name -%}
                                     <a href="{{ url_for('user_bp.profile', id=user_id)}}"
-                                       class="text-decoration-none"
-                                       scope="row">{{ users[user_id].full_name }}</a>
+                                        class="text-decoration-none">{{ users[user_id].full_name }}</a>
+                                    {%- else -%}
+                                    <a href="{{ url_for('user_bp.profile', id=user_id)}}"
+                                        class="text-decoration-none">{{ users[user_id].id }}</a> <a class="text-decoration-none" style="color: gray;"><i>(full name not set)</i></a>
+                                    {%- endif -%}
                                 </td>
                                 {% for problem in problems %}
                                     <td>
