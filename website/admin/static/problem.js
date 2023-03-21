@@ -306,13 +306,14 @@ function restrictLangOnChange() {
 $('#restrict-langs').change(restrictLangOnChange)
 
 function aqaAddressesOnChange() {
-    if ($('#AQAASM').is(':selected')) {
+    if ($('#AQAASM').is(':selected') || !($('#restrict-langs').is(':checked'))) {
         $('#aqa-addresses-wrapper').show()
     } else {
         $('#aqa-addresses-wrapper').hide()
     }
 }
 $('#allowed-languages').change(aqaAddressesOnChange)
+$('#restrict-langs').change(aqaAddressesOnChange)
 
 function generatorCheckboxOnChange() {
     if ($('#generate-answer-checkbox').is(':checked')) {
