@@ -291,3 +291,7 @@ def edit_privileges():
                 user.save(replace=True, wait=True)
         flash('Privileges saved', 'success')
     return render_template('edit_privileges.html', users=users)
+
+@admin_bp.route('/guide')
+def admin_guide():
+    return render_template('admin_guide.html')

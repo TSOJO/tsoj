@@ -50,3 +50,12 @@ def submissions():
     return render_template(
         'submissions.html', submissions=submissions, users=users, problems=problems
     )
+
+@home_bp.route('/guide')
+def guide():
+    return render_template('guide.html')
+
+@home_bp.route('/contributor_guide')
+def contributor_guide():
+    return render_template('contributor_guide.html')
+

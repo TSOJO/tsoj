@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+<h1>Guide</h1>
+{%- if current_user.is_admin() %}
+<p>
+    You are an admin.
+    Press <a href="{{url_for('admin_bp.admin_guide')}}" style="text-decoration: none;">here for the admin guide</a> and
+    <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">here for the contributor guide</a>.
+</p>
+{%- elif current_user.is_contributor %}
+<p>
+    You are a contributor.
+    Press <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">here for the contributor guide</a>.
+</p>
+{%- else %}
+<p>You are a student.</p>
+{%- endif %}
+<h5>Privileges</h5>
+<div>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Student</th>
+                <th>Contributor</th>
+                <th>Admin</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    Submit solutions to problems
+                </td>
+                <td>
+                    ✓
+                </td>
+                <td>
+                    ✓
+                </td>
+                <td>
+                    ✓
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    View non-public problems
+                </td>
+                <td>
+                    ✘
+                </td>
+                <td>
+                    ✓
+                </td>
+                <td>
+                    ✓
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Create/edit problems
+                </td>
+                <td>
+                    ✘
+                </td>
+                <td>
+                    ✓
+                </td>
+                <td>
+                    ✓
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Create assignments/view assignment results
+                </td>
+                <td>
+                    ✘
+                </td>
+                <td>
+                    ✘
+                </td>
+                <td>
+                    ✓
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    View/edit groups/privileges
+                </td>
+                <td>
+                    ✘
+                </td>
+                <td>
+                    ✘
+                </td>
+                <td>
+                    ✓
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<h5>Criteria for contributor</h5>
+Contributors are allowed to create, edit, delete problems and view non-public problems.
+At least one of the following must be satisfied for one to be a contributor:
+<ol>
+    <li>Suggested by a teacher.</li>
+    <li>Is a secretary of Programming Society.</li>
+    <li>Suggested by the majority of the secretaries of Programming Society.</li>
+</ol>
+<h5>Programming languages</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Language</th>
+            <th>Translator</th>
+            <th>Version</th>
+            <th>Compile/Execution Command</th>
+            <th>Documentation</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>C++20</td>
+            <td>g++</td>
+            <td>4.8.1</td>
+            <td>g++ code.cpp -static -std=c++2a -s -O2</td>
+            <td><a href="http://www.cppreference.com/" style="text-decoration:none">cppreference</a></td>
+        </tr>
+        <tr>
+            <td>Python 3</td>
+            <td>python3</td>
+            <td>3.6.9</td>
+            <td>python3 code.py</td>
+            <td><a href="https://docs.python.org/3/" style="text-decoration:none">python.org</a></td>
+        </tr>
+        <tr>
+            <td>AQA Assembly</td>
+            <td><a href="https://github.com/L3ungj/AQA-Assembly-Interpreter" style="text-decoration:none">aqaasm.py</a>
+            </td>
+            <td>ea97056</td>
+            <td>python3 aqaasm.py code.aqaasm -i {} -o {}</td>
+            <td><a href="https://filestore.aqa.org.uk/resources/computing/AQA-75162-75172-ALI.PDF"
+                    style="text-decoration:none">AQA Specification</a></td>
+        </tr>
+    </tbody>
+</table>
+<h5>Verdicts</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Verdict</th>
+            <th>Meaning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-check-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z">
+                        </path>
+                    </svg>
+                    &nbsp;Accepted
+                </span>
+            </th>
+            <td>Program ran successfully</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-secondary d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z">
+                        </path>
+                        <path
+                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z">
+                        </path>
+                    </svg>
+                    &nbsp;Waiting for Judge
+                </span>
+            </th>
+            <td>Program is waiting to be judged</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                        </path>
+                    </svg>
+                    &nbsp;Wrong Answer
+                </span>
+            </th>
+            <td>Program ran successfully but the output does not match with the answer.</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                        </path>
+                    </svg>
+                    &nbsp;Time Limit Exceeded
+                </span>
+            </th>
+            <td>Program exceeded the time limit during execution.</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                        </path>
+                    </svg>
+                    &nbsp;Memory Limit Exceeded
+                </span>
+            </th>
+            <td>Program exceeded the memory limit during execution.</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                        </path>
+                    </svg>
+                    &nbsp;Runtime Error
+                </span>
+            </th>
+            <td>Program returned a non-zero return code after execution.</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                        </path>
+                    </svg>
+                    &nbsp;Compile Error
+                </span>
+            </th>
+            <td>The program contains a syntax error or used features that TSOJ does not support.</td>
+        </tr>
+        <tr>
+            <th>
+                <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-x-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                        </path>
+                    </svg>
+                    &nbsp;System Error
+                </span>
+            </th>
+            <td>An error has occured in TSOJ. If this happens to you, please report this with your submission to our <a
+                    href="https://forms.office.com/e/bdLM4pYQhs" style="text-decoration: none;">feedback form</a>.</td>
+        </tr>
+    </tbody>
+</table>
+<h5>Output format</h5>
+<p>Your output should have the same number of lines as the answer. Any trailing whitespace at each line is ignored.</p>
+
+
+{% endblock content %}

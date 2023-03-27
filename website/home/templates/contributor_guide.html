@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+<h1>Contributor Guide</h1>
+<h5>Create problem</h5>
+<p>
+    You can create a problem by pressing the green "Create" button in the <a href="{{url_for('home_bp.problems')}}" style="text-decoration: none;">problems page</a>.
+</p>
+<h5>Problem ID</h5>
+<p>
+    The problem ID should be unique. It should consists of the type of the problem and a number, seperated by a hyphen.
+    For example, "Algo-1", "GCSE-8". <br>
+    Common problem types include:
+</p>
+<ul>
+    <li>AL: A Level problems</li>
+    <li>AQAASM: AQA Assembly problems</li>
+    <li>GCSE: GCSE problems</li>
+    <li>Intro: Introductory problems</li>
+    <li>Algo: Basic problems for algorithmic training</li>
+    <li>CP: Competitive programming problems</li>
+    <li>BIOxx: BIO (Round 1) problems at year 19xx or 20xx.</li>
+</ul>
+<p>The number following the problem type should be one larger than the current maximum number among the problems of the same type.</p>
+<h5>Public problems</h5>
+<p>Non-public problems can only be seen by contributors and admins. Public problems can be seen by everyone in TSOJ.</p>
+<h5>Writing a problem description</h5>
+<p>
+    The description will be rendered by Markdown and MathJax. Please see <a>the Markdown syntax</a>.
+    To type in $\LaTeX$ math mode (inline), type them between two '$' symbols.
+    For example, type <code>$689 \times 777 = 535353$</code> for $689 \times 777 = 535353$.
+    To type it in a new line, type them between two "$$".
+    For instance, type <code>$$\sum_{k=1}^{\infty} \frac{1}{k^2} = \frac{\pi^2}{6}$$</code> for $$\sum_{k=1}^{\infty} \frac{1}{k^2} = \frac{\pi^2}{6}$$
+</p>
+<h5>Input format</h5>
+<p>To improve consistency, the input for every testcase will be modified by TSOJ with the following:</p>
+<ul>
+    <li>Removing empty lines</li>
+    <li>Removing leading and trailing whitespaces in each line</li>
+    <li>Adding a trailing line break(<code>\n</code>), if it does not already exist</li>
+</ul>
+<h5>Generate answers</h5>
+<p>
+    To save time, this function can be used to automatically generate the answers of each testcase, using the given inputs and program.
+    Please beware that pressing the blue "Generate answers" button will overwrite the answers in every testcase.
+</p>
+<h5>Grader</h5>
+<p>
+    Grader can be used if a problem accepts multiple outputs. The grader program will be executed with each testcase.
+    The input for this program consists of the original input and the user output of the testcase, seperated by a line break. 
+    The grader should output "AC" or "WA" (without quotes) in one line.
+    For example, this grader program accepts any number that is a multiple of a given $k$.
+    <div id="editor">k = int(input()) # get input
+input() # get the empty line
+x = int(input()) # get user output
+# grade the output
+if x % k == 0:
+    print('AC')
+else:
+    print('WA')</div>
+</p>
+<h5>Restricting languages</h5>
+<p>
+    If the "Restrict problem to certain languages" checkbox is not checked, this problem can accept all languages as a submission.
+    Otherwise, only the selected language(s) are accepted.
+</p>
+{% endblock content %}

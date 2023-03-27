@@ -22,6 +22,7 @@
     <h1>Problem {{ problem.id }}</h1>
     <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" class="btn btn-danger align-self-center">Delete</a>
 </div>
+<p>Please see the <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">contributor guide</a>.</p>
 <div>
     <form method="post" class="needs-validation" novalidate>
         <div class="form-group mb-3">
@@ -157,7 +158,6 @@
                     <textarea name="grader-code" id="grader-code" hidden></textarea>
                     <div id="grader-editor" class="mb-3">{{problem.grader_source_code.code}}</div>
                 </div>
-                <p>The grader program should input the submission's output, and output <strong>AC</strong> for correct outputs and <strong>WA</strong> otherwise. Any other outputs from the grader will result in <strong>SE</strong> (System Error) in the testcase.</p>
                 <button type="button" class="btn btn-primary" id="test-grader-button" onclick="testGrader()">
                     Test grader
                 </button>
