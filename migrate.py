@@ -12,5 +12,9 @@ def migrate():
         problem['id'] = problem['id'].replace('NTRO', 'ntro')
         db.problems.replace_one({'_id': old}, problem)
 
+    for submission in db.submissions.find():
+        submission['problem_id'] = submission['problem_id'].replace('NTRO', 'ntro')
+        db.submissions.replace_one({'_id': old}, submission)
+
 if __name__ == '__main__':
     migrate()
