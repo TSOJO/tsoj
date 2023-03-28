@@ -10,7 +10,8 @@ def migrate():
         old = problem['_id']
         problem['_id'] = problem['id'].replace('NTRO', 'ntro')
         problem['id'] = problem['id'].replace('NTRO', 'ntro')
-        db.problems.replace_one({'_id': old}, problem)
+        db.problems.delete_one({'_id': old})
+        db.problems.insert_one(problem)
 
     for submission in db.submissions.find():
         submission['problem_id'] = submission['problem_id'].replace('NTRO', 'ntro')
