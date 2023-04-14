@@ -165,6 +165,73 @@ function enableTestcaseButtons() {
     })
 }
 
+function generateInputs() {
+    disableTestcaseButtons()
+    $('#gen-input-button').prop('disabled', true)
+    $('#gen-input-button').html(
+        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating inputs...'
+    )
+    $('#input-gen-alert-placeholder').empty()
+
+    let testcaseIndicies = []
+    for (let i = 0; i < testcases_count; ++i) {
+        if ($('#batch_number' + i).val() == $('#generate-input-batch-number').val()) {
+            testcaseIndicies.push(i)
+        }
+    }
+
+    var payload = {
+        generator_code: $('#input-generator-code').val(),
+        language: $('#input-language-select').val(),
+        inputs: testcaseIndicies.map(i => ''),
+        time_limit: $('#time-limit').val(),
+        memory_limit: $('#memory-limit').val()
+    }
+    console.log(payload)
+
+    const placeholder = document.getElementById('input-gen-alert-placeholder')
+    fetch('/api/generate-answers',
+        {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+            all_ok = true
+            for(let [i, result] of Object.entries(data)) {
+                let index = testcaseIndicies[parseInt(i)]
+                let verdict = result['verdict']
+                if(verdict === 'AC') {
+                    $('#input' + index).val(result['answer'])
+                } else {
+                    let message = result['message']
+                    if(message) {
+                        $('#detail' + index + '-modal').remove()
+                        all_ok = false
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on testcase ' + (index+1), index, true, false)
+                        const modal = getModal(message, index, false)
+                        placeholder.append(modal)
+                        placeholder.append(alert)
+                    }
+                    else {
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on testcase ' + (index+1), index, false, false)
+                        placeholder.append(alert)
+                    }
+                }
+            }
+            if (Object.keys(data).length == testcases_count) {
+                if(all_ok) {
+                    const alert = getAlert('All inputs generated successfully!', 0, false, false, 'success')
+                    placeholder.append(alert)
+                }
+            }
+            // Renable buttons.
+            enableTestcaseButtons()
+            $('#gen-input-button').prop('disabled', false)
+            $('#gen-input-button').html('Generate inputs')
+        })
+}
+
 function generateAnswers() {
     // Disable buttons.
     disableTestcaseButtons()
@@ -200,13 +267,13 @@ function generateAnswers() {
                     if(message) {
                         $('#detail' + index + '-modal').remove()
                         all_ok = false
-                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on Input ' + index, index, true, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on Input ' + (index+1), index, true, false)
                         const modal = getModal(message, index, false)
                         placeholder.append(modal)
                         placeholder.append(alert)
                     }
                     else {
-                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on Input ' + index, index, false, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on Input ' + (index+1), index, false, false)
                         placeholder.append(alert)
                     }
                 }
@@ -324,6 +391,19 @@ function generatorCheckboxOnChange() {
 }
 $('#generate-answer-checkbox').change(generatorCheckboxOnChange)
 
+function inputGeneratorCheckboxOnChange() {
+    if ($('#generate-input-checkbox').is(':checked')) {
+        $('#input-editor-group').show()
+    } else {
+        $('#input-editor-group').hide()
+    }
+}
+$('#generate-input-checkbox').change(inputGeneratorCheckboxOnChange)
+
+// $('.example-checkbox').each(element => {
+//     console.log(element)
+// });
+
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
@@ -338,6 +418,17 @@ window.onpageshow = function (event) {
     // editor.session.setUseWrapMode(true)
     editor.getSession().on('change', function () {
         $('textarea[name="generator-code"]').val(editor.getValue())
+    })
+
+    // Initialise input generator code editor.
+    ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')
+    let input_editor = ace.edit('input-editor')
+    input_editor.setTheme('ace/theme/textmate')
+    input_editor.session.setMode('ace/mode/' + getAceMode($('#input-language-select').val()))
+    input_editor.setOptions({ minLines: 10, maxLines: 20 })
+    // input_editor.session.setUseWrapMode(true)
+    input_editor.getSession().on('change', function () {
+        $('textarea[name="input-generator-code"]').val(input_editor.getValue())
     })
 
     // Initialise grader code editor.
