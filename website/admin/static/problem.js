@@ -31,9 +31,14 @@ function getTestcaseGroup(index) {
         '        <h5 id="testcase-number' + index + '">Testcase ' + (index+1) + '</h5>',
         '    </div>',
         '    <div>',
-        '        <input class="form-check-input" type="checkbox" value="" name="example' + index + '" id="example' + index + '"/>',
+        '        <input class="form-check-input" type="checkbox" value="" name="example' + index + '" id="example' + index + '" onclick="exampleTestcaseOnChange(this)"/>',
         '        <label class="form-check-label">Example testcase</label>',
         '    </div>',
+        '</div>',
+        '<div class="form-group mb-3">',
+        '    <label class="form-label">Batch number</label>',
+        '    <input class="form-control testcase-batch-number" type="number" min="1" name="batch_number' + index + '" id="batch_number' + index + '"',
+        '        value="1"/>',
         '</div>',
         '<label class="form-label" for="input' + index + '">',
             'Input',
@@ -86,6 +91,8 @@ function deleteTestcase() {
         $('#answer' + i).attr('id', 'answer' + (i-1))
         $('#example' + i).attr('name', 'example' + (i-1))
         $('#example' + i).attr('id', 'example' + (i-1))
+        $('#batch_number' + i).attr('name', 'batch_number' + (i-1))
+        $('#batch_number' + i).attr('id', 'batch_number' + (i-1))
         $('#testcase-number' + i).html('Testcase ' + i)
         $('#testcase-number' + i).attr('id', 'testcase-number' + (i-1))
     }
@@ -400,9 +407,17 @@ function inputGeneratorCheckboxOnChange() {
 }
 $('#generate-input-checkbox').change(inputGeneratorCheckboxOnChange)
 
-// $('.example-checkbox').each(element => {
-//     console.log(element)
-// });
+function exampleTestcaseOnChange(self) {
+    if($(self).is(':checked')) {
+        // set batch number to 0 and disable it
+        console.log($(self).parent().parent().parent().find('input.testcase-batch-number'))
+        $(self).parent().parent().parent().find('input.testcase-batch-number').val(0)
+        $(self).parent().parent().parent().find('input.testcase-batch-number').prop('disabled', true)
+    } else {
+        $(self).parent().parent().parent().find('input.testcase-batch-number').val(1)
+        $(self).parent().parent().parent().find('input.testcase-batch-number').prop('disabled', false)
+    }
+}
 
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
@@ -416,6 +431,7 @@ window.onpageshow = function (event) {
     editor.session.setMode('ace/mode/' + getAceMode($('#language-select').val()))
     editor.setOptions({ minLines: 10, maxLines: 20 })
     // editor.session.setUseWrapMode(true)
+    $('textarea[name="generator-code"]').val(editor.getValue())
     editor.getSession().on('change', function () {
         $('textarea[name="generator-code"]').val(editor.getValue())
     })
@@ -427,6 +443,7 @@ window.onpageshow = function (event) {
     input_editor.session.setMode('ace/mode/' + getAceMode($('#input-language-select').val()))
     input_editor.setOptions({ minLines: 10, maxLines: 20 })
     // input_editor.session.setUseWrapMode(true)
+    $('textarea[name="input-generator-code"]').val(input_editor.getValue())
     input_editor.getSession().on('change', function () {
         $('textarea[name="input-generator-code"]').val(input_editor.getValue())
     })
@@ -437,6 +454,7 @@ window.onpageshow = function (event) {
     grader_editor.session.setMode('ace/mode/' + getAceMode($('#grader-language-select').val()))
     grader_editor.setOptions({ minLines: 10, maxLines: 20 })
     // grader_editor.session.setUseWrapMode(true)
+    $('textarea[name="grader-code"]').val(grader_editor.getValue())
     grader_editor.getSession().on('change', function () {
         $('textarea[name="grader-code"]').val(grader_editor.getValue())
     })
