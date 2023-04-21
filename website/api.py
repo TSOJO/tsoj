@@ -40,7 +40,8 @@ def generate_answers():
         abort(400, description='Invalid parameters')
 
     results = []
-    for (answer, verdict, message) in IsolateSandbox().get_outputs(
+    sandbox = IsolateSandbox()
+    for (answer, verdict, message) in sandbox.get_outputs(
         SourceCode(code, language), inputs, time_limit, memory_limit
     ):
         results.append(
@@ -52,6 +53,8 @@ def generate_answers():
         )
         if verdict != Verdict.AC:
             break
+    # ! TEMP SOL - bug is cleanup isnt called after final yield
+    sandbox.cleanup()
     return jsonify(results)
 
 @api_bp.route('/test-grader', methods=['POST'])
@@ -74,10 +77,14 @@ def test_grader():
         abort(400, description='Invalid parameters')
 
     new_inputs = [to_input_format(input) + '\n' + output for (input, output) in zip(inputs, outputs)]
-    for (index, (grader_output, verdict, message)) in enumerate(IsolateSandbox().get_outputs(
+    
+    sandbox = IsolateSandbox()
+    for (index, (grader_output, verdict, message)) in enumerate(sandbox.get_outputs(
         SourceCode(grader_code, language), new_inputs, time_limit, memory_limit
     )):
         if verdict != Verdict.AC:
+            # ! TEMP SOL - bug is cleanup isnt called after final yield
+            sandbox.cleanup()
             return jsonify(
                 {
                     'index': index + 1,
@@ -87,6 +94,8 @@ def test_grader():
                 }
             )
         elif grader_output.strip() != 'AC':
+            # ! TEMP SOL - bug is cleanup isnt called after final yield
+            sandbox.cleanup()
             return jsonify(
                 {
                     'index': index + 1,
@@ -95,6 +104,8 @@ def test_grader():
                     'message': 'Grader outputted non-AC',
                 }
             )
+    # ! TEMP SOL - bug is cleanup isnt called after final yield
+    sandbox.cleanup()
     return jsonify(
         {
             'output': '',
