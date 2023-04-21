@@ -62,6 +62,7 @@ Enter input constraints''',
 @admin_bp.route('/edit/problem/<id>', methods=['GET', 'POST'])
 def edit_problem(id: str):
     if request.method == 'POST':
+        print(request.form['input-generator-code'])
         problem_info = {
             'id': id,
             'name': request.form['name'],
@@ -73,6 +74,14 @@ def edit_problem(id: str):
             'aqaasm_inputs': [address.strip() for address in request.form['input-address'].split('\n') if address.strip() != ''],
             'aqaasm_outputs': [address.strip() for address in request.form['output-address'].split('\n') if address.strip() != ''],
         }
+        if 'generate-input' in request.form:
+            generate_input_code = request.form['input-generator-code']
+            generate_input_language = Language.cast_from_document(request.form['input-generator-language'])
+            problem_info['generate_input_code'] = SourceCode(generate_input_code, generate_input_language)
+        if 'generate-answer' in request.form:
+            generate_answer_code = request.form['generator-code']
+            generate_answer_language = Language.cast_from_document(request.form['answer-generator-language'])
+            problem_info['generate_answer_code'] = SourceCode(generate_answer_code, generate_answer_language)
 
         testcases: List[Testcase] = []
         testcases_count = int(request.form['testcases-count'])
@@ -82,7 +91,7 @@ def edit_problem(id: str):
                 Testcase(
                     to_input_format(request.form[f'input{i}']),
                     request.form[f'answer{i}'],
-                    0 if example else 1,
+                    0 if example else int(request.form[f'batch_number{i}']),
                 )
             )
 
@@ -291,3 +300,7 @@ def edit_privileges():
                 user.save(replace=True, wait=True)
         flash('Privileges saved', 'success')
     return render_template('edit_privileges.html', users=users)
+
+@admin_bp.route('/guide')
+def admin_guide():
+    return render_template('admin_guide.html')

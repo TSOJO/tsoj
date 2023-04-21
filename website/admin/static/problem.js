@@ -31,9 +31,14 @@ function getTestcaseGroup(index) {
         '        <h5 id="testcase-number' + index + '">Testcase ' + (index+1) + '</h5>',
         '    </div>',
         '    <div>',
-        '        <input class="form-check-input" type="checkbox" value="" name="example' + index + '" id="example' + index + '"/>',
+        '        <input class="form-check-input" type="checkbox" value="" name="example' + index + '" id="example' + index + '" onclick="exampleTestcaseOnChange(this)"/>',
         '        <label class="form-check-label">Example testcase</label>',
         '    </div>',
+        '</div>',
+        '<div class="form-group mb-3">',
+        '    <label class="form-label">Batch number</label>',
+        '    <input class="form-control testcase-batch-number" type="number" min="1" name="batch_number' + index + '" id="batch_number' + index + '"',
+        '        value="1"/>',
         '</div>',
         '<label class="form-label" for="input' + index + '">',
             'Input',
@@ -86,6 +91,8 @@ function deleteTestcase() {
         $('#answer' + i).attr('id', 'answer' + (i-1))
         $('#example' + i).attr('name', 'example' + (i-1))
         $('#example' + i).attr('id', 'example' + (i-1))
+        $('#batch_number' + i).attr('name', 'batch_number' + (i-1))
+        $('#batch_number' + i).attr('id', 'batch_number' + (i-1))
         $('#testcase-number' + i).html('Testcase ' + i)
         $('#testcase-number' + i).attr('id', 'testcase-number' + (i-1))
     }
@@ -165,6 +172,73 @@ function enableTestcaseButtons() {
     })
 }
 
+function generateInputs() {
+    disableTestcaseButtons()
+    $('#gen-input-button').prop('disabled', true)
+    $('#gen-input-button').html(
+        '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating inputs...'
+    )
+    $('#input-gen-alert-placeholder').empty()
+
+    let testcaseIndicies = []
+    for (let i = 0; i < testcases_count; ++i) {
+        if ($('#batch_number' + i).val() == $('#generate-input-batch-number').val()) {
+            testcaseIndicies.push(i)
+        }
+    }
+
+    var payload = {
+        generator_code: $('#input-generator-code').val(),
+        language: $('#input-language-select').val(),
+        inputs: testcaseIndicies.map(i => ''),
+        time_limit: $('#time-limit').val(),
+        memory_limit: $('#memory-limit').val()
+    }
+    console.log(payload)
+
+    const placeholder = document.getElementById('input-gen-alert-placeholder')
+    fetch('/api/generate-answers',
+        {
+            method: 'POST',
+            body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+            all_ok = true
+            for(let [i, result] of Object.entries(data)) {
+                let index = testcaseIndicies[parseInt(i)]
+                let verdict = result['verdict']
+                if(verdict === 'AC') {
+                    $('#input' + index).val(result['answer'])
+                } else {
+                    let message = result['message']
+                    if(message) {
+                        $('#detail' + index + '-modal').remove()
+                        all_ok = false
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on testcase ' + (index+1), index, true, false)
+                        const modal = getModal(message, index, false)
+                        placeholder.append(modal)
+                        placeholder.append(alert)
+                    }
+                    else {
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on testcase ' + (index+1), index, false, false)
+                        placeholder.append(alert)
+                    }
+                }
+            }
+            if (Object.keys(data).length == testcases_count) {
+                if(all_ok) {
+                    const alert = getAlert('All inputs generated successfully!', 0, false, false, 'success')
+                    placeholder.append(alert)
+                }
+            }
+            // Renable buttons.
+            enableTestcaseButtons()
+            $('#gen-input-button').prop('disabled', false)
+            $('#gen-input-button').html('Generate inputs')
+        })
+}
+
 function generateAnswers() {
     // Disable buttons.
     disableTestcaseButtons()
@@ -200,13 +274,13 @@ function generateAnswers() {
                     if(message) {
                         $('#detail' + index + '-modal').remove()
                         all_ok = false
-                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on Input ' + index, index, true, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on Input ' + (index+1), index, true, false)
                         const modal = getModal(message, index, false)
                         placeholder.append(modal)
                         placeholder.append(alert)
                     }
                     else {
-                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on Input ' + index, index, false, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on Input ' + (index+1), index, false, false)
                         placeholder.append(alert)
                     }
                 }
@@ -324,6 +398,27 @@ function generatorCheckboxOnChange() {
 }
 $('#generate-answer-checkbox').change(generatorCheckboxOnChange)
 
+function inputGeneratorCheckboxOnChange() {
+    if ($('#generate-input-checkbox').is(':checked')) {
+        $('#input-editor-group').show()
+    } else {
+        $('#input-editor-group').hide()
+    }
+}
+$('#generate-input-checkbox').change(inputGeneratorCheckboxOnChange)
+
+function exampleTestcaseOnChange(self) {
+    if($(self).is(':checked')) {
+        // set batch number to 0 and disable it
+        console.log($(self).parent().parent().parent().find('input.testcase-batch-number'))
+        $(self).parent().parent().parent().find('input.testcase-batch-number').val(0)
+        $(self).parent().parent().parent().find('input.testcase-batch-number').prop('disabled', true)
+    } else {
+        $(self).parent().parent().parent().find('input.testcase-batch-number').val(1)
+        $(self).parent().parent().parent().find('input.testcase-batch-number').prop('disabled', false)
+    }
+}
+
 window.onpageshow = function (event) {
     if (testcases_count === 0) {
         add_field()
@@ -336,8 +431,21 @@ window.onpageshow = function (event) {
     editor.session.setMode('ace/mode/' + getAceMode($('#language-select').val()))
     editor.setOptions({ minLines: 10, maxLines: 20 })
     // editor.session.setUseWrapMode(true)
+    $('textarea[name="generator-code"]').val(editor.getValue())
     editor.getSession().on('change', function () {
         $('textarea[name="generator-code"]').val(editor.getValue())
+    })
+
+    // Initialise input generator code editor.
+    ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')
+    let input_editor = ace.edit('input-editor')
+    input_editor.setTheme('ace/theme/textmate')
+    input_editor.session.setMode('ace/mode/' + getAceMode($('#input-language-select').val()))
+    input_editor.setOptions({ minLines: 10, maxLines: 20 })
+    // input_editor.session.setUseWrapMode(true)
+    $('textarea[name="input-generator-code"]').val(input_editor.getValue())
+    input_editor.getSession().on('change', function () {
+        $('textarea[name="input-generator-code"]').val(input_editor.getValue())
     })
 
     // Initialise grader code editor.
@@ -346,6 +454,7 @@ window.onpageshow = function (event) {
     grader_editor.session.setMode('ace/mode/' + getAceMode($('#grader-language-select').val()))
     grader_editor.setOptions({ minLines: 10, maxLines: 20 })
     // grader_editor.session.setUseWrapMode(true)
+    $('textarea[name="grader-code"]').val(grader_editor.getValue())
     grader_editor.getSession().on('change', function () {
         $('textarea[name="grader-code"]').val(grader_editor.getValue())
     })

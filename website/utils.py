@@ -7,7 +7,7 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
-def to_input_format(text):
+def to_input_format(text: str):
     new_text = ''
     for line in text.splitlines():
         if line.strip() == '':

@@ -24,6 +24,8 @@ class Problem(DBModel):
         is_public: bool = False,
         aqaasm_inputs: Optional[List[str]] = None,
         aqaasm_outputs: Optional[List[str]] = None,
+        generate_input_code: Optional[SourceCode] = None,
+        generate_answer_code: Optional[SourceCode] = None,
     ):
         # Public properties.
         self.id = id
@@ -39,6 +41,8 @@ class Problem(DBModel):
         self.is_public = is_public
         self.aqaasm_inputs = [] if aqaasm_inputs is None else aqaasm_inputs
         self.aqaasm_outputs = [] if aqaasm_outputs is None else aqaasm_outputs
+        self.generate_input_code = generate_input_code
+        self.generate_answer_code = generate_answer_code
 
     def increment_num_solves(self):
         # ! Possibly not needed
@@ -73,6 +77,8 @@ class Problem(DBModel):
             is_public=document['is_public'],
             aqaasm_inputs=document['aqaasm_inputs'],
             aqaasm_outputs=document['aqaasm_outputs'],
+            generate_input_code=SourceCode.cast_from_document(document['generate_input_code']) if document['generate_input_code'] is not None else None,
+            generate_answer_code=SourceCode.cast_from_document(document['generate_answer_code']) if document['generate_answer_code'] is not None else None,
         )
 
     def cast_to_document(self) -> Dict[str, object]:
@@ -91,6 +97,8 @@ class Problem(DBModel):
             'is_public': self.is_public,
             'aqaasm_inputs': self.aqaasm_inputs,
             'aqaasm_outputs': self.aqaasm_outputs,
+            'generate_input_code': self.generate_input_code.cast_to_document() if self.generate_input_code is not None else None,
+            'generate_answer_code': self.generate_answer_code.cast_to_document() if self.generate_answer_code is not None else None,
         }
 
     @classmethod

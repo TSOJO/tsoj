@@ -85,6 +85,9 @@
                                 </div>
                                 <form action="{{ url_for('admin_bp.create_problem') }}" method="post" class="needs-id-validation" novalidate>
                                     <div class="modal-body">
+                                        <p>
+                                            The problem ID must follow the conventions written in the <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">contributor guide</a>.
+                                        </p>
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="problem_id" id="problem_id" placeholder="Enter problem ID" required />
                                             <div class="invalid-feedback" id="id-invalid-feedback">This field is required.</div>
@@ -108,6 +111,7 @@
                                 <a class="nav-link" href="{{ url_for('user_bp.admin_debug')}}">Login admin(debug)</a>
                             </li>
                         {% endif %}
+                        <a class="nav-link" href="{{url_for('home_bp.guide')}}">Guide</a>
                         {% if current_user.is_admin() %}
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>

@@ -5,12 +5,11 @@ from json import loads, dumps
 db = MongoClient(MONGO_URI).tsoj
 
 def migrate():
-    submissions = db.submissions.find()
-    for submission in submissions:
-        submission['final_verdict'] = submission['final_verdict']['verdict']
-        for result in submission['results']:
-            result['verdict'] = result['verdict']['verdict']
-        db.submissions.replace_one({'_id': submission['_id']}, submission)
+    problems = db.problems.find()
+    for problem in problems:
+        problem['generate_input_code'] = None
+        problem['generate_answer_code'] = None
+        db.problems.replace_one({'_id': problem['_id']}, problem)
 
 if __name__ == '__main__':
     migrate()

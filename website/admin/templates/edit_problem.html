@@ -22,6 +22,7 @@
     <h1>Problem {{ problem.id }}</h1>
     <a data-bs-toggle="modal" data-bs-target="#delete-confirm-modal" class="btn btn-danger align-self-center">Delete</a>
 </div>
+<p>Please see the <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">contributor guide</a>.</p>
 <div>
     <form method="post" class="needs-validation" novalidate>
         <div class="form-group mb-3">
@@ -95,10 +96,15 @@
                                     <h5 id="testcase-number{{loop.index0}}">Testcase {{loop.index}}</h5>
                                 </div>
                                 <div>
-                                    <input class="form-check-input" type="checkbox" value="" name="example{{loop.index0}}" id="example{{loop.index0}}" {%- if
-                                        testcase.batch_number==0 -%} checked {%- endif %}/>
+                                    <input class="form-check-input example-checkbox" type="checkbox" value="" name="example{{loop.index0}}" id="example{{loop.index0}}" {%- if
+                                        testcase.batch_number==0 -%} checked {%- endif %} onclick="exampleTestcaseOnChange(this)"/>
                                     <label class="form-check-label" for="example{{loop.index0}}">Example testcase</label>
                                 </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="batch_number{{loop.index0}}">Batch number</label>
+                                <input class="form-control testcase-batch-number" type="number" min="1" name="batch_number{{loop.index0}}" id="batch_number{{loop.index0}}"
+                                    value="{{testcase.batch_number}}" {%- if testcase.batch_number==0 -%} disabled {%- endif %}/>
                             </div>
                             <label class="form-label" for="input{{loop.index0}}">
                                 Input
@@ -116,21 +122,44 @@
                 </div>
             </div>
             <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="generate-input-checkbox" name="generate-input" {%- if problem.generate_input_code %}checked{%- endif %}/>
+                <label class="form-check-label" for="generate-input-checkbox">Generate inputs</label>
+            </div>
+            <div class="mt-3" id="input-editor-group" {%- if not problem.generate_input_code %}style="display: none;"{%- endif %}>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="generate-input-batch-number">Generate for batch number</label>
+                    <input class="form-control" type="number" min="0" value="1" id="generate-input-batch-number"/>
+                </div>
+                <div class="mb-3">
+                    <select class="selectpicker" id="input-language-select" name="input-generator-language" data-width="auto">
+                        {% for language in all_languages %}
+                        <option value="{{ language.name }}" {%- if problem.generate_input_code and language.name == problem.generate_input_code.language %}selected{%- endif %}>{{ language.ui_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <textarea id="input-generator-code" name="input-generator-code" hidden></textarea>
+                <div id="input-editor" class="mb-3">{%- if problem.generate_input_code %}{{problem.generate_input_code.code}}{%- endif %}</div>
+                <button type="button" class="btn btn-primary" id="gen-input-button" onclick="generateInputs()">
+                    Generate inputs
+                </button>
+                <div id="input-gen-alert-placeholder"></div>
+            </div>
+            <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="generate-answer-checkbox"
-                    name="generator-checkbox" />
+                    name="generate-answer" {%- if problem.generate_answer_code %}checked{%- endif %}/>
                 <label class="form-check-label" for="generate-answer-checkbox">Generate
                     answers</label>
             </div>
-            <div class="mt-3" id="editor-group" style="display: none;">
+            <div class="mt-3" id="editor-group" {%- if not problem.generate_answer_code %}style="display: none;"{%- endif %}>
                 <div class="mb-3">
-                    <select class="selectpicker" id="language-select" name="language" data-width="auto">
+                    <select class="selectpicker" id="language-select" name="answer-generator-language" data-width="auto">
                         {% for language in all_languages %}
-                        <option value="{{ language.name }}">{{ language.ui_name }}</option>
+                        <option value="{{ language.name }}" {%- if problem.generate_answer_code and language.name == problem.generate_answer_code.language %}selected{%- endif %}>{{ language.ui_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <textarea name="generator-code" id="generator-code" hidden></textarea>
-                <div id="editor" class="mb-3"></div>
+                <div id="editor" class="mb-3">{%- if problem.generate_answer_code %}{{problem.generate_answer_code.code}}{%- endif %}</div>
                 <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generateAnswers()">
                     Generate answers
                 </button>
@@ -157,7 +186,6 @@
                     <textarea name="grader-code" id="grader-code" hidden></textarea>
                     <div id="grader-editor" class="mb-3">{{problem.grader_source_code.code}}</div>
                 </div>
-                <p>The grader program should input the submission's output, and output <strong>AC</strong> for correct outputs and <strong>WA</strong> otherwise. Any other outputs from the grader will result in <strong>SE</strong> (System Error) in the testcase.</p>
                 <button type="button" class="btn btn-primary" id="test-grader-button" onclick="testGrader()">
                     Test grader
                 </button>
