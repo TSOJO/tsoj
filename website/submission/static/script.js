@@ -72,7 +72,7 @@ function update_results(results) {
             verdict_node.append([
                 '<a data-bs-toggle="modal" data-bs-target="#detail' + (i+1) + '-modal" href="#"',
                 '   class="text-decoration-none d-flex align-items-center">',
-                '   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6a00" class="bi bi-exclamation-circle" viewBox="0 0 16 16">',
+                '   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6a00" class="bi bi-exclamation-circle" viewBox="0 0 16 16" data-bs-toggle="tooltip" data-bs-title="Details">',
                 '      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>',
                 '      <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>',
                 '   </svg>',
@@ -102,10 +102,21 @@ function update_results(results) {
             ].join(''))
         }
     }
+    // Since tooltips may be added during this process, initialise them again.
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    $('[data-bs-toggle="tooltip"]').on('mouseleave', function () {
+        $(this).tooltip('hide')
+    })
 }
 
 // Use `onpageshow` instead of `$(document).ready()` so this runs even when user gets here by back button.
 window.onpageshow = () => {
+    // Initialise tooltips.
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    $('[data-bs-toggle="tooltip"]').on('mouseleave', function () {
+        $(this).tooltip('hide')
+    })
+
     // Initialise code editor.
     let editor = ace.edit('editor')
     ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.13.1/src-noconflict/')
