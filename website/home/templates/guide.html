@@ -5,13 +5,13 @@
 {%- if current_user.is_admin() %}
 <p>
     You are an admin.
-    Press <a href="{{url_for('admin_bp.admin_guide')}}" style="text-decoration: none;">here for the admin guide</a> and
+    Click <a href="{{url_for('admin_bp.admin_guide')}}" style="text-decoration: none;">here for the admin guide</a> and
     <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">here for the contributor guide</a>.
 </p>
 {%- elif current_user.is_contributor() %}
 <p>
     You are a contributor.
-    Press <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">here for the contributor guide</a>.
+    Click <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">here for the contributor guide</a>.
 </p>
 {%- else %}
 <p>You are a student.</p>

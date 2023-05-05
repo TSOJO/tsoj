@@ -42,7 +42,7 @@
 <h5>Generate answers</h5>
 <p>
     To save time, this function can be used to automatically generate the answers of each testcase, using the given inputs and program.
-    Please beware that pressing the blue "Generate answers" button will overwrite the answers in every testcase.
+    Please be aware that pressing the blue "Generate answers" button will overwrite the answers in every testcase.
 </p>
 <h5>Grader</h5>
 <p>
@@ -50,14 +50,21 @@
     The input for this program consists of the original input and the user output of the testcase, seperated by a line break. 
     The grader should output "AC" or "WA" (without quotes) in one line.
     For example, this grader program accepts any number that is a multiple of a given $k$.
-    <div id="editor">k = int(input()) # get input
-input() # get the empty line
-x = int(input()) # get user output
+    <div class="mb-3" id="editor">k = int(input())  # get input
+input()  # get the empty line
+try:
+    x = int(input())  # get user output
+except ValueError:
+    print('WA')  # the user output is not a number
+
 # grade the output
 if x % k == 0:
     print('AC')
 else:
     print('WA')</div>
+    <b>Important note:</b> any error in the grader at all will be reported to the user as 'System error'.
+    For example, if the lines 3-6 of the code above were simply <code>x = int(input())</code>, the grader would raise a <code>ValueError</code> if the user output were not a number.
+    A <code>try</code> and <code>except</code> statement has to be used in this case to make sure the user's output is a number.
 </p>
 <h5>Restricting languages</h5>
 <p>
