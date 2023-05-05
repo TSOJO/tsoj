@@ -26,8 +26,6 @@ def judge(user_code: str, language_dict, submission_dict, problem_id, grader_sou
         )
     ):
         submission.update_result(i, result)
-    # ! TEMP SOL - bug is cleanup isnt called after final yield
-    sandbox.cleanup()
     return 'done'
 
 

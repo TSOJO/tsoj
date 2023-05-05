@@ -53,8 +53,6 @@ def generate_answers():
         )
         if verdict != Verdict.AC:
             break
-    # ! TEMP SOL - bug is cleanup isnt called after final yield
-    sandbox.cleanup()
     return jsonify(results)
 
 @api_bp.route('/test-grader', methods=['POST'])
@@ -83,8 +81,6 @@ def test_grader():
         SourceCode(grader_code, language), new_inputs, time_limit, memory_limit
     )):
         if verdict != Verdict.AC:
-            # ! TEMP SOL - bug is cleanup isnt called after final yield
-            sandbox.cleanup()
             return jsonify(
                 {
                     'index': index + 1,
@@ -94,8 +90,6 @@ def test_grader():
                 }
             )
         elif grader_output.strip() != 'AC':
-            # ! TEMP SOL - bug is cleanup isnt called after final yield
-            sandbox.cleanup()
             return jsonify(
                 {
                     'index': index + 1,
@@ -104,8 +98,6 @@ def test_grader():
                     'message': 'Grader outputted non-AC',
                 }
             )
-    # ! TEMP SOL - bug is cleanup isnt called after final yield
-    sandbox.cleanup()
     return jsonify(
         {
             'output': '',
