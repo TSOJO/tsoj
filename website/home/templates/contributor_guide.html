@@ -54,17 +54,15 @@
 input()  # get the empty line
 try:
     x = int(input())  # get user output
+    # grade the output
+    if x % k == 0:
+        print('AC')
+    else:
+        print('WA')
 except ValueError:
-    print('WA')  # the user output is not a number
-
-# grade the output
-if x % k == 0:
-    print('AC')
-else:
-    print('WA')</div>
+    print('WA')  # the user output is not a number</div>
     <b>Important note:</b> any error in the grader at all will be reported to the user as 'System error'.
-    For example, if the lines 3-6 of the code above were simply <code>x = int(input())</code>, the grader would raise a <code>ValueError</code> if the user output were not a number.
-    A <code>try</code> and <code>except</code> statement has to be used in this case to make sure the user's output is a number.
+    For example, if there were no <code>try</code>/<code>except</code> clause in the code above, the grader would raise a <code>ValueError</code> if the user output were not a number.
 </p>
 <h5>Restricting languages</h5>
 <p>
