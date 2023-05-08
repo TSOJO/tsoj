@@ -3,6 +3,15 @@ $('#language-select').change(() => {
     editor.session.setMode("ace/mode/" + getAceMode($('#language-select').val()))
 })
 
+$('#custom-test-checkbox').change(() => {
+    if ($('#custom-test-checkbox').is(':checked')) {
+        $('#custom-test-group').show()
+    } else {
+        $('#custom-test-group').hide()
+    }
+})
+$('#custom-test-group').hide()
+
 // Use `onpageshow` instead of `$(document).ready()` so this runs even when user gets here by back button.
 window.onpageshow = function(event) {
     // Initialise code editor.

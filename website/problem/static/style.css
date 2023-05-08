@@ -13,9 +13,14 @@ td, th {
     margin-right: 5px;
 }
 
-.in-out-text {
+.input-output-text {
     padding: 7px;
     white-space: pre-line;
     cursor: pointer;
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+}
+
+#custom-input, #custom-output {
+    resize: none;
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
