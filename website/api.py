@@ -21,10 +21,23 @@ def check_problem_exists(id):
     return '', 200
 
 
-@api_bp.route('/generate-answers', methods=['POST'])
-def generate_answers():
+@api_bp.route('/get-outputs', methods=['POST'])
+def get_outputs():
+    # {
+    #     code: str
+    #     language: str
+    #     inputs: List[str]
+    #     time_limit: str, in seconds
+    #     memory_limit: str, in MB
+    # }
+    # returns
+    # List[{
+    #     'output': output,
+    #     'verdict': verdict.cast_to_document(),
+    #     'message': message,
+    # }]
     req_json = json.loads(request.data)
-    code = req_json.get('generator_code')
+    code = req_json.get('code')
     language = Language.cast_from_document(req_json.get('language'))
     inputs = req_json.get('inputs')
     time_limit = req_json.get('time_limit')
@@ -41,17 +54,19 @@ def generate_answers():
 
     results = []
     sandbox = IsolateSandbox()
-    for (answer, verdict, message) in sandbox.get_outputs(
+    for (output, result) in sandbox.get_outputs(
         SourceCode(code, language), inputs, time_limit, memory_limit
     ):
         results.append(
             {
-                'answer': answer,
-                'verdict': verdict.cast_to_document(),
-                'message': message,
+                'output': output,
+                'verdict': result.verdict.cast_to_document(),
+                'time': result.time,
+                'memory': result.memory,
+                'message': result.message,
             }
         )
-        if verdict != Verdict.AC:
+        if result.verdict != Verdict.AC:
             break
     return jsonify(results)
 

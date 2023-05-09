@@ -24,6 +24,28 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade"
+        id="details-modal"
+        tabindex="-1"
+        aria-labelledby="details-modal-label"
+        aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="details-modal-label">Details</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body consolas" style="white-space: pre-wrap;" id="details-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="d-flex justify-content-between mb-1">
     <h1>{{ problem.id }}: {{ problem.name }}</h1>
     {% if current_user.is_contributor() %}
@@ -131,30 +153,36 @@
                     </select>
                 </div>
                 <div>
+                    <div id="time-limit" hidden>{{ problem.time_limit / 1000 }}</div>
                     <small class="my-0"><b>Time limit: </b>{{ problem.time_limit / 1000 }}s</small>
                 </div>
                 <div>
+                    <div id="memory-limit" hidden>{{ problem.memory_limit / 1024 }}</div>
                     <small class="my-0"><b>Memory limit: </b>{{ problem.memory_limit / 1024 }}MB</small>
                 </div>
             </div>
             <div class="mb-3">
                 <input type="hidden" name="problem_id" value="{{ problem.id }}" />
                 <div class="mb-3">
-                    <textarea name="user_code"></textarea>
+                    <textarea id="user-code" name="user_code" hidden></textarea>
                     <div id="editor"></div>
                 </div>
                 <div class="border p-3 mb-3">
                     <input class="form-check-input" type="checkbox" id="custom-test-checkbox" value=""/>
                     <label class="form-check-label" for="custom-test-checkbox">Custom test</label>
                     <div id="custom-test-group">
+                        <hr>
                         <div class="d-flex justify-content-between mb-3">
-                            <div class="mb-3">Input</div>
-                            <button type="button" class="btn btn-primary" >Test</button>
+                            <div class="mb-3 align-self-center">Input</div>
+                            <button type="button" class="btn btn-primary" id="custom-test-button">Test</button>
                         </div>
                         <textarea id="custom-input" class="form-control" rows="3"></textarea>
                         <hr>
                         <div id="custom-test-alerts-placeholder"></div>
-                        <p>Output</p>
+                        <div class="d-flex justify-content-between mb-3 align-items-center">
+                            <div class="mb-3">Output</div>
+                            <div class="mb-3" id="custom-test-verdict"></div>
+                        </div>
                         <textarea id="custom-output" class="form-control" rows="3" readonly></textarea>
                     </div>
                 </div>

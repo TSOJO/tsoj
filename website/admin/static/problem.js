@@ -187,17 +187,16 @@ function generateInputs() {
         }
     }
 
-    var payload = {
-        generator_code: $('#input-generator-code').val(),
+    let payload = {
+        code: $('#input-generator-code').val(),
         language: $('#input-language-select').val(),
         inputs: testcaseIndicies.map(i => ''),
         time_limit: $('#time-limit').val(),
         memory_limit: $('#memory-limit').val()
     }
-    console.log(payload)
 
     const placeholder = document.getElementById('input-gen-alert-placeholder')
-    fetch('/api/generate-answers',
+    fetch('/api/get-outputs',
         {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -209,7 +208,7 @@ function generateInputs() {
                 let index = testcaseIndicies[parseInt(i)]
                 let verdict = result['verdict']
                 if(verdict === 'AC') {
-                    $('#input' + index).val(result['answer'])
+                    $('#input' + index).val(result['output'])
                 } else {
                     let message = result['message']
                     if(message) {
@@ -247,8 +246,8 @@ function generateAnswers() {
         '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Generating answers...'
     )
     $('#gen-alert-placeholder').empty()
-    var payload = {
-        generator_code: $('#generator-code').val(),
+    let payload = {
+        code: $('#generator-code').val(),
         language: $('#language-select').val(),
         inputs: [...Array(testcases_count).keys()].map(i => $('#input' + i).val()),
         time_limit: $('#time-limit').val(),
@@ -256,7 +255,7 @@ function generateAnswers() {
     }
 
     const placeholder = document.getElementById('gen-alert-placeholder')
-    fetch('/api/generate-answers',
+    fetch('/api/get-outputs',
         {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -268,7 +267,7 @@ function generateAnswers() {
                 let index = parseInt(i)
                 let verdict = result['verdict']
                 if(verdict === 'AC') {
-                    $('#answer' + index).val(result['answer'])
+                    $('#answer' + index).val(result['output'])
                 } else {
                     let message = result['message']
                     if(message) {
@@ -306,7 +305,7 @@ function testGrader() {
         '<span class="spinner-border spinner-border-sm code-submit" role="status" aria-hidden="true"></span> Testing grader...'
     )
     $('#grader-alert-placeholder').empty()
-    var payload = {
+    let payload = {
         grader_code: $('#grader-code').val(),
         language: $('#grader-language-select').val(),
         inputs: [...Array(testcases_count).keys()].map(i => $('#input' + i).val()),
