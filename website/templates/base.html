@@ -204,7 +204,7 @@
                 src="{{url_for('.static', filename='script.js')}}"></script>
         {%- if current_user.is_contributor() %}
         <script type="text/javascript"
-                src="{{url_for('admin_bp.static', filename='script.js')}}"></script>
+                src="{{url_for('admin_bp.static', filename='createProblem.js')}}"></script>
         {%- endif %}
         {% block scripts %}{% endblock scripts %}
     </body>

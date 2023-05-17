@@ -20,6 +20,7 @@ def unauthorised():
         'admin_bp.edit_problem',
         'admin_bp.delete_problem',
         'admin_bp.rejudge_submission',
+        'admin_bp.static',
     ]
     if current_user.is_admin():
         return
