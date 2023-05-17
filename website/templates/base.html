@@ -202,7 +202,7 @@
         <script type="text/javascript" src="/static/script.js"></script>
         <script type="text/javascript"
                 src="{{url_for('.static', filename='script.js')}}"></script>
-        {%- if current_user.is_admin() %}
+        {%- if current_user.is_contributor() %}
         <script type="text/javascript"
                 src="{{url_for('admin_bp.static', filename='script.js')}}"></script>
         {%- endif %}
