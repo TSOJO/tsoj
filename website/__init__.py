@@ -134,7 +134,7 @@ def debug_db(app):
 
     problems_list = [
         {
-            'id': 'A1',
+            'id': 'A-1',
             'name': 'Sum',
             'description': 'Given two numbers, print their sum. C++ only.',
             'time_limit': 1000,
@@ -156,7 +156,7 @@ def debug_db(app):
             'aqaasm_outputs': None,
         },
         {
-            'id': 'A2',
+            'id': 'A-2',
             'name': 'Difference',
             'description': 'Given two numbers, print their difference.',
             'time_limit': 1000,
@@ -170,7 +170,7 @@ def debug_db(app):
             'aqaasm_outputs': None,
         },
         {
-            'id': 'A3',
+            'id': 'A-3',
             'name': 'Div K',
             'description': 'Given a number $K$, print any multiple of $K$.',
             'time_limit': 1000,
@@ -196,7 +196,7 @@ def debug_db(app):
     #     user_group.save(replace=True)
 
     assignment = Assignment(id=1, creator='JER', user_group_ids=[1])
-    assignment.add_problems('A1', 'A2')
+    assignment.add_problems('A-1', 'A-2')
     with app.app_context():
         assignment.save(replace=True)
 

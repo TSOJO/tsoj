@@ -80,15 +80,21 @@
                                             data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                 </div>
-                                <form action="{{ url_for('admin_bp.create_problem') }}" method="post" class="needs-id-validation" novalidate>
-                                    <div class="modal-body">
-                                        <p>
-                                            The problem ID must follow the conventions written in the <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">contributor guide</a>.
-                                        </p>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="problem_id" id="problem_id" placeholder="Enter problem ID" required />
-                                            <div class="invalid-feedback" id="id-invalid-feedback">This field is required.</div>
+                                <form action="{{ url_for('admin_bp.create_problem') }}" method="post" class="needs-validation" novalidate>
+                                    <div class="modal-body container">
+                                        <div class="form-group mb-3">
+                                            <label for="problem-head-select" class="form-label">Problem head</label>
+                                            <br>
+                                            <select class="selectpicker" id="problem-head-select" required title="Select problem head"></select>
+                                            <div class="invalid-feedback">This field is required.</div>
                                         </div>
+                                        <div class="form-group mb-3" id="problem-head-group">
+                                            <label for="problem-head-other">Please specify the problem head</label>
+                                            <input type="text" id="problem-head-other" class="form-control" required>
+                                            <div class="invalid-feedback">This field is required.</div>
+                                        </div>
+                                        <input type="text" id="problem-id-hidden" name="problem-id" hidden required>
+                                        <p>New problem ID: <a id="problem-id"></a></p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -113,7 +119,7 @@
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Admin</a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#create-problem-modal" style="cursor:pointer;">Create problem</a>
+                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#create-problem-modal" style="cursor:pointer;" onclick="createProblem()">Create problem</a>
                                     <form action="{{ url_for('admin_bp.create_assignment') }}" method="post" id="create-assignment-form">
                                         <a href="javascript:$('#create-assignment-form').submit()" class="dropdown-item">Create assignment</a>
                                     </form>
@@ -196,6 +202,10 @@
         <script type="text/javascript" src="/static/script.js"></script>
         <script type="text/javascript"
                 src="{{url_for('.static', filename='script.js')}}"></script>
+        {%- if current_user.is_admin() %}
+        <script type="text/javascript"
+                src="{{url_for('admin_bp.static', filename='script.js')}}"></script>
+        {%- endif %}
         {% block scripts %}{% endblock scripts %}
     </body>
 </html>

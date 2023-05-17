@@ -35,7 +35,7 @@ def unauthorised():
 @admin_bp.route('/create/problem', methods=['POST'])
 def create_problem():
     problem = Problem(
-        id=request.form['problem_id'],
+        id=request.form['problem-id'],
         name='',
         description='''
 Enter description

@@ -14,11 +14,20 @@ def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
 
-@api_bp.route('/db/problem/<id>', methods=['HEAD'])
-def check_problem_exists(id):
-    if Problem.find_one({'id': id}) is None:
-        return '', 204
-    return '', 200
+@api_bp.route('/get-problem-max-ids', methods=['GET'])
+def get_problem_max_ids():
+    problem_max_ids = {}
+    for problem in Problem.find_all():
+        try:
+            head, number = problem.id.split('-')
+            number = int(number)
+        except ValueError:
+            abort(400, description="Problems database contained an invalid problem ID.")
+        if head not in problem_max_ids:
+            problem_max_ids[head] = number
+        else:
+            problem_max_ids[head] = max(problem_max_ids[head], number)
+    return problem_max_ids        
 
 
 @api_bp.route('/get-outputs', methods=['POST'])

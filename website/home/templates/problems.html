@@ -6,7 +6,8 @@
         {% if current_user.is_contributor() %}
             <a class="btn btn-success align-self-center"
                data-bs-toggle="modal"
-               data-bs-target="#create-problem-modal">Create</a>
+               data-bs-target="#create-problem-modal"
+               onclick="createProblem()">Create</a>
         {% endif %}
     </div>
     <table class="table table-striped table-bordered table-responsive-xl align-middle"
