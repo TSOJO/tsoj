@@ -19,7 +19,9 @@ server {
 	# If does not match, go above.
 	listen      80;  # IPv4
 	listen      [::]:80;  # IPv6
-	server_name ${NGINX_HOSTNAMES};
+
+	# Set `NGINX_HOSTNAME` to non-www domain. Set a CNAME on Cloudflare to redirect www to non-www.
+	server_name ${NGINX_HOSTNAME};
 
 	return 302 https://$server_name$request_uri;
 }
@@ -32,7 +34,7 @@ server {
 	ssl_client_certificate 	/etc/ssl/cloudflare.crt;
     ssl_verify_client 		on;
 
-	server_name ${NGINX_HOSTNAMES};
+	server_name ${NGINX_HOSTNAME};
 
 	root /var/www/;
 
