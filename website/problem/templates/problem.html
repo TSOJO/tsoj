@@ -139,6 +139,64 @@
                 {% endfor %}
             </div>
         {% endif %}
+        <div class="border p-3">
+            <h4>Attempts</h4>
+            <table class="table" style="font-size:13px;">
+                <thead>
+                    <tr class="d-flex">
+                        <th scope="col" class="col-4">Time submitted (UTC)</th>
+                        <th scope="col" class="col-6">Final verdict</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider" id="attempts-table-body">
+                    {% for submission in current_user.fetch_submissions(filter={'problem_id': problem.id}) %}
+                    <tr class="d-flex">
+                        <th scope="row" class="col-4">{{ submission.submission_time.strftime('%d/%m/%Y %H:%M') }}</th>
+                        <td class="col-6 d-flex justify-content-between align-items-center">
+                            {% if submission.final_verdict.is_ac() %}
+                            <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-check-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                    <path
+                                        d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z">
+                                    </path>
+                                </svg>
+                                &nbsp;{{ submission.final_verdict.value }}
+                            </span>
+                            {% elif submission.final_verdict.is_wj() %}
+                            <span class="badge rounded-pill text-bg-secondary d-inline-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"></path>
+                                    <path
+                                        d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z">
+                                    </path>
+                                </svg>
+                                &nbsp;{{ submission.final_verdict.value }}
+                            </span>
+                            {% else %}
+                            <span class="badge rounded-pill text-bg-danger d-inline-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-x-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                    <path
+                                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                                    </path>
+                                </svg>
+                                &nbsp;{{ submission.final_verdict.value }}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="col-2">
+                            <a href="{{url_for('submission_bp.submission', id=submission.id)}}" class="text-decoration-none">Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="col-lg-6">
         <form method="post"

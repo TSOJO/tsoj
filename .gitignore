@@ -145,3 +145,4 @@ metadata/*
 
 # scripts
 *.sh
+*.bat
