@@ -74,9 +74,9 @@ class User(UserMixin, DBModel):
     def is_contributor(self):
         return self.privilege >= 1
 
-    def fetch_submissions(self, filter={}) -> List[submission_module.Submission]:
+    def fetch_submissions(self, filter={}, **kwargs) -> List[submission_module.Submission]:
         return submission_module.Submission.find_all(
-            {'user_id': f'{self.id}', **filter}, sort=True
+            {'user_id': f'{self.id}', **filter}, sort=True, **kwargs
         )
 
     def fetch_assignments(self, sort=False) -> List[assignment_module.Assignment]:

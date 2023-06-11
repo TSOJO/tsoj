@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, abort, request
 import json
 import time
+from flask_login import current_user
 
 from website.models import Problem, Submission, User, Assignment, DBModel
 from isolate_wrapper import IsolateSandbox, Verdict, SourceCode, Language
 from website.utils import to_input_format
+from website.celery_tasks import judge
 
 api_bp = Blueprint('api_bp', __name__)
 
@@ -172,3 +174,20 @@ def capture_submission_change():
 
     # Return it anyway...
     return submission_as_json()
+
+@api_bp.route('/problem-submit/<id>', methods=['POST'])
+def problem_submit(id: str):
+    print(request.data)
+    print(request.form)
+    user_id = current_user.id
+    user_code = request.form.get('user_code')
+    language = Language.cast_from_document(request.form.get('language'))
+    new_submission = Submission(user_id=user_id, problem_id=id, code=user_code, language=language)
+    problem = Problem.find_one({'id': id})
+    new_submission.create_empty_results(len(problem.testcases))
+    submission_id = new_submission.save(wait=True).id
+    grader_source_code_dict = problem.grader_source_code.cast_to_document() if problem.grader_source_code is not None else None
+    judge.delay(
+        user_code, language.cast_to_document(), new_submission.cast_to_document(), id, grader_source_code_dict
+    )
+    return jsonify({'submission_id': submission_id})

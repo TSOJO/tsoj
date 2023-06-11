@@ -20,7 +20,7 @@
 </div>
 <div class="d-flex justify-content-between mb-1">
     <h1>
-        Submission #<a id="submission-id">{{ submission.id }}</a>
+        Submission #<span id="submission-id">{{ submission.id }}</span>
     </h1>
     {% if current_user.is_contributor() %}
     <div class="btn-group">
@@ -124,6 +124,13 @@
 <div>
     <h4>Tests</h4>
     <table class="table table-striped table-bordered">
+        <caption>Press on 
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6a00" class="bi bi-exclamation-circle" viewBox="0 0 16 16" data-bs-toggle="tooltip">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+            </svg>
+            to see error message.
+        </caption>
         <thead>
             <tr>
                 <th scope="col">Test ID</th>
@@ -203,7 +210,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div style="white-space:pre-wrap;" class="consolas">
-                                        {{-result.message-}}
+                                        {{- result.message -}}
                                     </div>
                                 </div>
                                 <div class="modal-footer">

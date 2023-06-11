@@ -108,3 +108,16 @@ function getLongVerdict(verdict) {
             return 'Unknown Error'
     }
 }
+
+function padZero(number) {
+    return number < 10 ? '0' + number : number
+}
+
+function UTCNow() {
+    let date = new Date();
+    let hours = padZero(date.getUTCHours());
+    let minutes = padZero(date.getUTCMinutes());
+    let month = padZero(date.getUTCMonth() + 1)
+    let day = padZero(date.getUTCDate())
+    return `${day}/${month}/${date.getUTCFullYear()} ${hours}:${minutes}`
+}
