@@ -109,11 +109,11 @@ class Problem(DBModel):
         return cls.cast_from_document(result)
 
     @classmethod
-    def find_all(cls, filter={}, sort=True) -> List[Problem]:
-        results = db.problems.find(filter=filter)
-        problems = [cls.cast_from_document(result) for result in results]
+    def find_all(cls, filter={}, sort=True, **kwargs) -> List[Problem]:
         if sort:
-            problems.sort(key=lambda p: p.id)
+            kwargs['sort'] = [('id', 1)]
+        results = db.problems.find(filter=filter, **kwargs)
+        problems = [cls.cast_from_document(result) for result in results]
         return problems
 
     def save(self, replace=False, wait=False) -> Problem:
@@ -132,5 +132,6 @@ class Problem(DBModel):
     
     @classmethod
     def init(cls):
+        db.submissions.create_index([("id", 1)])
         for problem in cls.find_all():
             problem.update_num_solves()

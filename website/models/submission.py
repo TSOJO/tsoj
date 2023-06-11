@@ -122,10 +122,10 @@ class Submission:
 
     @classmethod
     def find_all(cls, filter: Mapping[str, Any] = None, sort=False, **kwargs) -> List[Submission]:
+        if sort:
+            kwargs['sort'] = [('id', -1)]
         results = db.submissions.find(filter=filter, **kwargs)
         submissions = [cls.cast_from_document(result) for result in results]
-        if sort:
-            submissions.sort(key=lambda s: s.id, reverse=True)
         return submissions
 
     def save(self, replace=False, wait=False) -> Submission:

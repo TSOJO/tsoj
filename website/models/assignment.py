@@ -81,12 +81,12 @@ class Assignment(DBModel):
 
     @classmethod
     def find_all(
-        cls, filter: Optional[Mapping[str, Any]] = None, sort=False
+        cls, filter: Optional[Mapping[str, Any]] = None, sort=False, **kwargs
     ) -> List[Assignment]:
-        results = db.assignments.find(filter=filter)
-        assignments = [cls.cast_from_document(result) for result in results]
         if sort:
-            assignments.sort(key=lambda s: s.id, reverse=True)
+            kwargs['sort'] = [('id', -1)]
+        results = db.assignments.find(filter=filter, **kwargs)
+        assignments = [cls.cast_from_document(result) for result in results]
         return assignments
 
     def save(self, replace=False, wait=False) -> Assignment:

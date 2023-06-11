@@ -142,6 +142,7 @@
         <div class="border p-3">
             <h4>Attempts</h4>
             <table class="table" style="font-size:13px;">
+                <caption>Only showing the 10 latest submissions.</caption>
                 <thead>
                     <tr class="d-flex">
                         <th scope="col" class="col-4">Time submitted (UTC)</th>
@@ -149,7 +150,6 @@
                     </tr>
                 </thead>
                 <tbody class="table-group-divider" id="attempts-table-body">
-                    <caption>Only showing the 10 latest submissions.</caption>
                     {% for submission in current_user.fetch_submissions(filter={'problem_id': problem.id}, limit=10) %}
                     <tr class="d-flex" submission-id="{{ submission.id }}">
                         <th scope="row" class="col-4">{{ submission.submission_time.strftime('%d/%m/%Y %H:%M') }}</th>

@@ -47,7 +47,7 @@ def init_app() -> Flask:
     from website.models import Assignment, Problem, Submission, User, UserGroup, Token
 
     with app.app_context():
-        Problem.init
+        Problem.init()
         Submission.init()
         Assignment.init()
         UserGroup.init()

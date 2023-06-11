@@ -96,12 +96,12 @@ class UserGroup(DBModel):
 
     @classmethod
     def find_all(
-        cls, filter: Optional[Mapping[str, Any]] = None, sort=False
+        cls, filter: Optional[Mapping[str, Any]] = None, sort=False, **kwargs
     ) -> List[UserGroup]:
-        results = db.user_groups.find(filter=filter)
-        user_groups = [cls.cast_from_document(result) for result in results]
         if sort:
-            user_groups.sort(key=lambda s: s.id, reverse=True)
+            kwargs['sort'] = [('id', -1)]
+        results = db.user_groups.find(filter=filter, **kwargs)
+        user_groups = [cls.cast_from_document(result) for result in results]
         return user_groups
 
     def save(self, replace=False, wait=False) -> UserGroup:
