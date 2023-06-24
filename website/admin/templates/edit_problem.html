@@ -24,7 +24,7 @@
 </div>
 <p>Please see the <a href="{{url_for('home_bp.contributor_guide')}}" style="text-decoration: none;">contributor guide</a>.</p>
 <div>
-    <form method="post" class="needs-validation" novalidate>
+    <form method="post" class="needs-validation" novalidate enctype="multipart/form-data">
         <div class="form-group mb-3">
             <label for="id" class="form-label">ID</label>
             <input type="text" class="form-control" name="id" id="id" placeholder="Enter problem ID"
@@ -67,103 +67,113 @@
         </div>
         <label class="form-label">Testcases</label>
         <div class="border p-4 mb-3">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <button type="button" class="btn btn-success mb-3" onclick="createTestcase()">Add testcase</button>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-danger mb-3"
-                        onclick="deleteTestcase()">Remove
-                    </button>
-                </div>
+            <select class="selectpicker" id="testcase-type-select" name="testcase-type" data-width="auto">
+                <option value="manual" data-subtext="Enter testcases manually" {%- if not problem.testcase_from_file -%} selected {%- endif -%}>Manual</option>
+                <option value="file" data-subtext="Upload a zip file of testcases" {%- if problem.testcase_from_file -%} selected {%- endif -%}>File</option>
+            </select>
+            <div id="testcase-file-div" class="mt-3">
+                <button type="button" class="btn btn-primary mb-3" onclick="location.href='{{url_for("uploads_bp.download", problem_id=problem.id)}}'">Download current file</button>
+                <input class="form-control" type="file" name="testcase-file" accept=".zip"/>
             </div>
-            <div class="container mb-3">
-                <div class="row gy-3">
-                    <div class="col-md-3">
-                        <div class="list-group" id="testcases-buttons-container" style="overflow-y:auto; max-height:400px;">
+            <div id="testcase-manual-div" class="mt-3">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-success mb-3" onclick="createTestcase()">Add testcase</button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-danger mb-3"
+                            onclick="deleteTestcase()">Remove
+                        </button>
+                    </div>
+                </div>
+                <div class="container mb-3">
+                    <div class="row gy-3">
+                        <div class="col-md-3">
+                            <div class="list-group" id="testcases-buttons-container" style="overflow-y:auto; max-height:400px;">
+                                {%- for testcase in problem.testcases %}
+                                <button id="testcase-button{{loop.index0}}" type="button" class="list-group-item-action" onclick="selectTestcase({{loop.index0}})">
+                                    Testcase {{loop.index}}
+                                </button>
+                                {%- endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-9 px-0" id="testcase-groups-container">
                             {%- for testcase in problem.testcases %}
-                            <button id="testcase-button{{loop.index0}}" type="button" class="list-group-item-action" onclick="selectTestcase({{loop.index0}})">
-                                Testcase {{loop.index}}
-                            </button>
+                            <div id="testcase-group{{loop.index0}}" style="display: none;">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 id="testcase-number{{loop.index0}}">Testcase {{loop.index}}</h5>
+                                    </div>
+                                    <div>
+                                        <input class="form-check-input example-checkbox" type="checkbox" value="" name="example{{loop.index0}}" id="example{{loop.index0}}" {%- if
+                                            testcase.batch_number==0 -%} checked {%- endif %} onclick="exampleTestcaseOnChange(this)"/>
+                                        <label class="form-check-label" for="example{{loop.index0}}">Example testcase</label>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="batch_number{{loop.index0}}">Batch number</label>
+                                    <input class="form-control testcase-batch-number" type="number" min="1" name="batch_number{{loop.index0}}" id="batch_number{{loop.index0}}"
+                                        value="{{testcase.batch_number}}" {%- if testcase.batch_number==0 -%} disabled {%- endif %}/>
+                                </div>
+                                <label class="form-label" for="input{{loop.index0}}">
+                                    Input
+                                </label>
+                                <textarea class="form-control testcase-input mb-2" rows="3" id="input{{loop.index0}}"
+                                    name="input{{loop.index0}}">{{testcase.input}}</textarea>
+                                <label class="form-label" for="answer{{loop.index0}}">
+                                    Answer
+                                </label>
+                                <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index0}}"
+                                    name="answer{{loop.index0}}">{{testcase.answer}}</textarea>
+                            </div>
                             {%- endfor %}
                         </div>
                     </div>
-                    <div class="col-md-9 px-0" id="testcase-groups-container">
-                        {%- for testcase in problem.testcases %}
-                        <div id="testcase-group{{loop.index0}}" style="display: none;">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h5 id="testcase-number{{loop.index0}}">Testcase {{loop.index}}</h5>
-                                </div>
-                                <div>
-                                    <input class="form-check-input example-checkbox" type="checkbox" value="" name="example{{loop.index0}}" id="example{{loop.index0}}" {%- if
-                                        testcase.batch_number==0 -%} checked {%- endif %} onclick="exampleTestcaseOnChange(this)"/>
-                                    <label class="form-check-label" for="example{{loop.index0}}">Example testcase</label>
-                                </div>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label" for="batch_number{{loop.index0}}">Batch number</label>
-                                <input class="form-control testcase-batch-number" type="number" min="1" name="batch_number{{loop.index0}}" id="batch_number{{loop.index0}}"
-                                    value="{{testcase.batch_number}}" {%- if testcase.batch_number==0 -%} disabled {%- endif %}/>
-                            </div>
-                            <label class="form-label" for="input{{loop.index0}}">
-                                Input
-                            </label>
-                            <textarea class="form-control testcase-input mb-2" rows="3" id="input{{loop.index0}}"
-                                name="input{{loop.index0}}">{{testcase.input}}</textarea>
-                            <label class="form-label" for="answer{{loop.index0}}">
-                                Answer
-                            </label>
-                            <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index0}}"
-                                name="answer{{loop.index0}}">{{testcase.answer}}</textarea>
-                        </div>
-                        {%- endfor %}
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="generate-input-checkbox" name="generate-input" {%- if problem.generate_input_code %}checked{%- endif %}/>
+                    <label class="form-check-label" for="generate-input-checkbox">Generate inputs</label>
+                </div>
+                <div class="mt-3" id="input-editor-group" {%- if not problem.generate_input_code %}style="display: none;"{%- endif %}>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="generate-input-batch-number">Generate for batch number</label>
+                        <input class="form-control" type="number" min="0" value="1" id="generate-input-batch-number"/>
                     </div>
+                    <div class="mb-3">
+                        <select class="selectpicker" id="input-language-select" name="input-generator-language" data-width="auto">
+                            {% for language in all_languages %}
+                            <option value="{{ language.name }}" {%- if problem.generate_input_code and language.name == problem.generate_input_code.language %}selected{%- endif %}>{{ language.ui_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <textarea id="input-generator-code" name="input-generator-code" hidden></textarea>
+                    <div id="input-editor" class="mb-3">{%- if problem.generate_input_code %}{{problem.generate_input_code.code}}{%- endif %}</div>
+                    <button type="button" class="btn btn-primary" id="gen-input-button" onclick="generateInputs()">
+                        Generate inputs
+                    </button>
+                    <div id="input-gen-alert-placeholder"></div>
                 </div>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="generate-input-checkbox" name="generate-input" {%- if problem.generate_input_code %}checked{%- endif %}/>
-                <label class="form-check-label" for="generate-input-checkbox">Generate inputs</label>
-            </div>
-            <div class="mt-3" id="input-editor-group" {%- if not problem.generate_input_code %}style="display: none;"{%- endif %}>
-                <div class="form-group mb-3">
-                    <label class="form-label" for="generate-input-batch-number">Generate for batch number</label>
-                    <input class="form-control" type="number" min="0" value="1" id="generate-input-batch-number"/>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="generate-answer-checkbox"
+                        name="generate-answer" {%- if problem.generate_answer_code %}checked{%- endif %}/>
+                    <label class="form-check-label" for="generate-answer-checkbox">Generate
+                        answers</label>
                 </div>
-                <div class="mb-3">
-                    <select class="selectpicker" id="input-language-select" name="input-generator-language" data-width="auto">
-                        {% for language in all_languages %}
-                        <option value="{{ language.name }}" {%- if problem.generate_input_code and language.name == problem.generate_input_code.language %}selected{%- endif %}>{{ language.ui_name }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="mt-3" id="editor-group" {%- if not problem.generate_answer_code %}style="display: none;"{%- endif %}>
+                    <div class="mb-3">
+                        <select class="selectpicker" id="language-select" name="answer-generator-language" data-width="auto">
+                            {% for language in all_languages %}
+                            <option value="{{ language.name }}" {%- if problem.generate_answer_code and language.name == problem.generate_answer_code.language %}selected{%- endif %}>{{ language.ui_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <textarea name="generator-code" id="generator-code" hidden></textarea>
+                    <div id="editor" class="mb-3">{%- if problem.generate_answer_code %}{{problem.generate_answer_code.code}}{%- endif %}</div>
+                    <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generateAnswers()">
+                        Generate answers
+                    </button>
+                    <div id="gen-alert-placeholder"></div>
                 </div>
-                <textarea id="input-generator-code" name="input-generator-code" hidden></textarea>
-                <div id="input-editor" class="mb-3">{%- if problem.generate_input_code %}{{problem.generate_input_code.code}}{%- endif %}</div>
-                <button type="button" class="btn btn-primary" id="gen-input-button" onclick="generateInputs()">
-                    Generate inputs
-                </button>
-                <div id="input-gen-alert-placeholder"></div>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="generate-answer-checkbox"
-                    name="generate-answer" {%- if problem.generate_answer_code %}checked{%- endif %}/>
-                <label class="form-check-label" for="generate-answer-checkbox">Generate
-                    answers</label>
-            </div>
-            <div class="mt-3" id="editor-group" {%- if not problem.generate_answer_code %}style="display: none;"{%- endif %}>
-                <div class="mb-3">
-                    <select class="selectpicker" id="language-select" name="answer-generator-language" data-width="auto">
-                        {% for language in all_languages %}
-                        <option value="{{ language.name }}" {%- if problem.generate_answer_code and language.name == problem.generate_answer_code.language %}selected{%- endif %}>{{ language.ui_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <textarea name="generator-code" id="generator-code" hidden></textarea>
-                <div id="editor" class="mb-3">{%- if problem.generate_answer_code %}{{problem.generate_answer_code.code}}{%- endif %}</div>
-                <button type="button" class="btn btn-primary" id="gen-answer-button" onclick="generateAnswers()">
-                    Generate answers
-                </button>
-                <div id="gen-alert-placeholder"></div>
             </div>
         </div>
         <input id="testcases-count" name="testcases-count" type="text" value="{{ problem.testcases| length }}" hidden/>

@@ -31,6 +31,7 @@ function enableTestElements() {
 $('#custom-test-button').click(() => {
     disableTestElements()
     let payload = {
+        problem_id: $('#problem-id').html(),
         code: $('#user-code').val(),
         language: $('#language-select').val(),
         inputs: [$('#custom-input').val()],
@@ -140,7 +141,6 @@ function addAttempt(submissionID) {
     function makeRequest() {
         $('#attempts-table-body').children().each((index, element) => {
             if($(element).find('.verdict-long').text().includes('Waiting for Judge')) {
-            console.log(`${index} is waiting`)
             let tests_completed = 0
             if($(element).find('.tests-completed').length > 0) {
                 if($(element).find('.tests-completed').text() === '?') {

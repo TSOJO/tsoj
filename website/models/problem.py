@@ -17,6 +17,7 @@ class Problem(DBModel):
         time_limit: int,  # ms
         memory_limit: int,  # KB
         testcases: List[Testcase],
+        testcase_from_file: bool = False,
         hints: Optional[List[str]] = None,
         allowed_languages: Optional[List[Language]] = None,
         grader_source_code: Optional[SourceCode] = None,
@@ -34,6 +35,7 @@ class Problem(DBModel):
         self.time_limit = time_limit
         self.memory_limit = memory_limit
         self.testcases = testcases
+        self.testcase_from_file = testcase_from_file
         self.hints = [] if hints is None else hints
         self.allowed_languages = allowed_languages
         self.grader_source_code = grader_source_code
@@ -70,6 +72,7 @@ class Problem(DBModel):
             time_limit=document['time_limit'],
             memory_limit=document['memory_limit'],
             testcases=[Testcase.cast_from_document(testcase) for testcase in document['testcases']],
+            testcase_from_file=document['testcase_from_file'],
             hints=document['hints'],
             allowed_languages=[Language.cast_from_document(language) for language in document['allowed_languages']] if document['allowed_languages'] is not None else None,
             grader_source_code=SourceCode.cast_from_document(document['grader_source_code']) if document['grader_source_code'] is not None else None,
@@ -90,6 +93,7 @@ class Problem(DBModel):
             'time_limit': self.time_limit,
             'memory_limit': self.memory_limit,
             'testcases': [testcase.cast_to_document() for testcase in self.testcases],
+            'testcase_from_file': self.testcase_from_file,
             'hints': self.hints,
             'allowed_languages': [language.cast_to_document() for language in self.allowed_languages] if self.allowed_languages is not None else None,
             'grader_source_code': self.grader_source_code.cast_to_document() if self.grader_source_code is not None else None,

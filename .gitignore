@@ -140,6 +140,9 @@ dmypy.json
 # metadata paths
 metadata/*
 
+# uploads paths
+uploads/*
+
 # redis
 *.rdb
 

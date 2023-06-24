@@ -62,15 +62,15 @@ def init_app() -> Flask:
     from .home.routes import home_bp
     from .problem.routes import problem_bp
     from .submission.routes import submission_bp
+    from .uploads import uploads_bp
     from .user.routes import user_bp
-
-    # Register blueprints.
     app.register_blueprint(problem_bp, url_prefix='/problem')
     app.register_blueprint(submission_bp, url_prefix='/submission')
     app.register_blueprint(assignment_bp, url_prefix='/assignment')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(home_bp, url_prefix='/')
     app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(uploads_bp, url_prefix='/uploads')
     app.register_blueprint(user_bp, url_prefix='/user')
 
     # Register error handler.
@@ -166,8 +166,8 @@ def debug_db(app):
                 Testcase('10\n20\n', '-10\n', 0),
             ],
             'is_public': True,
-            'aqaasm_inputs': None,
-            'aqaasm_outputs': None,
+            'aqaasm_inputs': ['101', '102'],
+            'aqaasm_outputs': ['103'],
         },
         {
             'id': 'A-3',

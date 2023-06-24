@@ -1,6 +1,11 @@
-from flask import render_template, Blueprint, request, redirect, url_for, flash, abort
+from flask import render_template, Blueprint, request, redirect, url_for, flash, abort, current_app as app
 from typing import List
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
+import os
+import zipfile
+import shutil
+import logging
 
 from website.models import Problem, Assignment, Submission, User, UserGroup
 from isolate_wrapper import Testcase, Language, SourceCode
@@ -63,7 +68,6 @@ Enter input constraints''',
 @admin_bp.route('/edit/problem/<id>', methods=['GET', 'POST'])
 def edit_problem(id: str):
     if request.method == 'POST':
-        print(request.form['input-generator-code'])
         problem_info = {
             'id': id,
             'name': request.form['name'],
@@ -84,17 +88,62 @@ def edit_problem(id: str):
             generate_answer_language = Language.cast_from_document(request.form['answer-generator-language'])
             problem_info['generate_answer_code'] = SourceCode(generate_answer_code, generate_answer_language)
 
-        testcases: List[Testcase] = []
-        testcases_count = int(request.form['testcases-count'])
-        for i in range(testcases_count):
-            example = f'example{i}' in request.form
-            testcases.append(
-                Testcase(
-                    to_input_format(request.form[f'input{i}']),
-                    request.form[f'answer{i}'],
-                    0 if example else int(request.form[f'batch_number{i}']),
+        testcase_type = request.form['testcase-type']
+        if testcase_type == 'manual':
+            testcases: List[Testcase] = []
+            testcases_count = int(request.form['testcases-count'])
+            for i in range(testcases_count):
+                example = f'example{i}' in request.form
+                testcases.append(
+                    Testcase(
+                        to_input_format(request.form[f'input{i}']),
+                        request.form[f'answer{i}'],
+                        0 if example else int(request.form[f'batch_number{i}']),
+                    )
                 )
-            )
+            problem_info['testcases'] = testcases
+        else:
+            problem_info['testcase_from_file'] = True
+            testcase_file = request.files['testcase-file']
+            testcase_file_path = os.path.join(app.config['UPLOADS_PATH'], f'{id}.zip')
+            testcase_file.save(testcase_file_path)
+            dir = os.path.join(app.config['UPLOADS_PATH'], id)
+
+            try:
+                # any errors happen after this point (should be) related to the testcase file format
+                with zipfile.ZipFile(testcase_file_path, 'r') as zip_ref:
+                    zip_ref.extractall(dir)
+                if sum([1 for file in os.listdir(dir) if os.path.isfile(os.path.join(dir, file))]) == 0:
+                    # copy files in the inside directory
+                    inside_dir = os.path.join(dir, os.listdir(dir)[0])
+                    for file in os.listdir(inside_dir):
+                        os.rename(os.path.join(inside_dir, file), os.path.join(dir, file))
+                    os.rmdir(inside_dir)
+                inputs = {}
+                outputs = {}
+                testcase_numbers = set()
+                for file in os.listdir(dir):
+                    batch_number, testcase_number, file_type = file.split('.')
+                    batch_number = int(batch_number)
+                    testcase_number = int(testcase_number)
+                    testcase_numbers.add((batch_number, testcase_number))
+                    if file_type == 'in':
+                        inputs[(batch_number, testcase_number)] = open(os.path.join(dir, file), 'r').read()
+                    elif file_type == 'out':
+                        outputs[(batch_number, testcase_number)] = open(os.path.join(dir, file), 'r').read()
+                
+                testcases = []
+                testcase_numbers = sorted(list(testcase_numbers))
+                for tn in testcase_numbers:
+                    testcases.append(Testcase(inputs[tn], outputs[tn], tn[0]))
+
+            except Exception as e:
+                logging.error(e)
+                flash('Invalid testcase file', 'error')
+                testcases = []
+            
+            problem_info['testcases'] = testcases
+            shutil.rmtree(dir, ignore_errors=False, onerror=None)
 
         judge_method = request.form.get('judge-method')
         if judge_method == 'grader':
@@ -106,8 +155,9 @@ def edit_problem(id: str):
             allowed_languages = [Language.cast_from_document(lang) for lang in request.form.getlist('allowed-languages')]
         else:
             allowed_languages = None
-
-        problem = Problem(**problem_info, testcases=testcases, allowed_languages=allowed_languages)
+        problem_info['allowed_languages'] = allowed_languages
+            
+        problem = Problem(**problem_info)
         problem.save(replace=True, wait=True)
 
         if 'rejudge' in request.form:

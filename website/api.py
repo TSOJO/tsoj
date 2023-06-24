@@ -35,6 +35,7 @@ def get_problem_max_ids():
 @api_bp.route('/get-outputs', methods=['POST'])
 def get_outputs():
     # {
+    #     problem_id: str
     #     code: str
     #     language: str
     #     inputs: List[str]
@@ -48,6 +49,8 @@ def get_outputs():
     #     'message': message,
     # }]
     req_json = json.loads(request.data)
+
+    problem_id = req_json.get('problem_id')
     code = req_json.get('code')
     language = Language.cast_from_document(req_json.get('language'))
     inputs = req_json.get('inputs')
@@ -63,10 +66,16 @@ def get_outputs():
     except ValueError:
         abort(400, description='Invalid parameters')
 
+    source_code = SourceCode(code, language)
+    if problem_id is not None:
+        problem = Problem.find_one({'id': problem_id})
+        source_code.aqaasm_inputs = problem.aqaasm_inputs
+        source_code.aqaasm_outputs = problem.aqaasm_outputs
+
     results = []
     sandbox = IsolateSandbox()
     for (output, result) in sandbox.get_outputs(
-        SourceCode(code, language), inputs, time_limit, memory_limit
+        source_code, inputs, time_limit, memory_limit
     ):
         results.append(
             {
@@ -177,8 +186,6 @@ def capture_submission_change():
 
 @api_bp.route('/problem-submit/<id>', methods=['POST'])
 def problem_submit(id: str):
-    print(request.data)
-    print(request.form)
     user_id = current_user.id
     user_code = request.form.get('user_code')
     language = Language.cast_from_document(request.form.get('language'))

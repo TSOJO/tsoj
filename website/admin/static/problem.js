@@ -409,7 +409,6 @@ $('#generate-input-checkbox').change(inputGeneratorCheckboxOnChange)
 function exampleTestcaseOnChange(self) {
     if($(self).is(':checked')) {
         // set batch number to 0 and disable it
-        console.log($(self).parent().parent().parent().find('input.testcase-batch-number'))
         $(self).parent().parent().parent().find('input.testcase-batch-number').val(0)
         $(self).parent().parent().parent().find('input.testcase-batch-number').prop('disabled', true)
     } else {
@@ -471,3 +470,15 @@ $(document).ready(() => {
 $('#description').on('input', function (e) {
     $('#description-md')[0].mdContent = $('#description').val()
 })
+
+function testcaseTypeOnChange() {
+    if ($('#testcase-type-select').val() === 'manual') {
+        $('#testcase-manual-div').show()
+        $('#testcase-file-div').hide()
+    } else {
+        $('#testcase-manual-div').hide()
+        $('#testcase-file-div').show()
+    }
+}
+testcaseTypeOnChange()
+$('#testcase-type-select').change(testcaseTypeOnChange)
