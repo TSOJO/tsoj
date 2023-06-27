@@ -7,8 +7,7 @@ db = MongoClient(MONGO_URI).tsoj
 def migrate():
     problems = db.problems.find()
     for problem in problems:
-        problem['generate_input_code'] = None
-        problem['generate_answer_code'] = None
+        problem['testcase_from_file'] = False
         db.problems.replace_one({'_id': problem['_id']}, problem)
 
 if __name__ == '__main__':
