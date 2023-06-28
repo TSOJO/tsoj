@@ -76,6 +76,7 @@
                 <input class="form-control" type="file" name="testcase-file" accept=".zip"/>
             </div>
             <div id="testcase-manual-div" class="mt-3">
+                <p>All inputs and outputs should be under 4000 characters. If you want to create larger testcases, please use the upload testcase file function.</p>
                 <div class="d-flex justify-content-between">
                     <div>
                         <button type="button" class="btn btn-success mb-3" onclick="createTestcase()">Add testcase</button>
@@ -116,13 +117,13 @@
                                 <label class="form-label" for="input{{loop.index0}}">
                                     Input
                                 </label>
-                                <textarea class="form-control testcase-input mb-2" rows="3" id="input{{loop.index0}}"
-                                    name="input{{loop.index0}}">{{testcase.input}}</textarea>
+                                <textarea class="form-control testcase-input mb-2" rows="3" id="input{{loop.index0}}" maxlength="4005"
+                                    name="input{{loop.index0}}">{{testcase.input | truncate(4000) }}</textarea>
                                 <label class="form-label" for="answer{{loop.index0}}">
                                     Answer
                                 </label>
-                                <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index0}}"
-                                    name="answer{{loop.index0}}">{{testcase.answer}}</textarea>
+                                <textarea class="form-control testcase-answer" rows="3" id="answer{{loop.index0}}" maxlength="4005"
+                                    name="answer{{loop.index0}}">{{testcase.answer | truncate(4000) }}</textarea>
                             </div>
                             {%- endfor %}
                         </div>

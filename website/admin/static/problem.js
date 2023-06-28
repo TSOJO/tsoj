@@ -208,7 +208,13 @@ function generateInputs() {
                 let index = testcaseIndicies[parseInt(i)]
                 let verdict = result['verdict']
                 if(verdict === 'AC') {
-                    $('#input' + index).val(result['output'])
+                    if(result['output'].length > 4000) {
+                        all_ok = false
+                        const alert = getAlert('Input exceeded 4000 characters on testcase ' + (index+1), index, false, false)
+                        placeholder.append(alert)
+                    } else {
+                        $('#input' + index).val(result['output'])
+                    }
                 } else {
                     let message = result['message']
                     if(message) {
@@ -267,19 +273,25 @@ function generateAnswers() {
                 let index = parseInt(i)
                 let verdict = result['verdict']
                 if(verdict === 'AC') {
-                    $('#answer' + index).val(result['output'])
+                    if(result['output'].length > 4000) {
+                        all_ok = false
+                        const alert = getAlert('Output exceeded 4000 characters on testcase ' + (index+1), index, false, false)
+                        placeholder.append(alert)
+                    } else {
+                        $('#answer' + index).val(result['output'])
+                    }
                 } else {
                     let message = result['message']
                     if(message) {
                         $('#detail' + index + '-modal').remove()
                         all_ok = false
-                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on Input ' + (index+1), index, true, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict)  + ' on testcase ' + (index+1), index, true, false)
                         const modal = getModal(message, index, false)
                         placeholder.append(modal)
                         placeholder.append(alert)
                     }
                     else {
-                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on Input ' + (index+1), index, false, false)
+                        const alert = getAlert('Oops... ' + getLongVerdict(verdict) + ' on testcase ' + (index+1), index, false, false)
                         placeholder.append(alert)
                     }
                 }
