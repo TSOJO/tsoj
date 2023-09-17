@@ -129,6 +129,8 @@ def edit_problem(id: str):
                     outputs = {}
                     testcase_numbers = set()
                     for file in os.listdir(dir):
+                        if not file.endswith('.in') and not file.endswith('.out'):
+                            continue
                         batch_number, testcase_number, file_type = file.split('.')
                         batch_number = int(batch_number)
                         testcase_number = int(testcase_number)
