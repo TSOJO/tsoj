@@ -109,8 +109,10 @@ def edit_problem(id: str):
             problem_info['testcases'] = Problem.find_one({'id': id}).testcases
 
             if testcase_file.filename == '': # no file selected
-                if f'{id}.zip' not in os.listdir(app.config['UPLOADS_PATH']):
+                if f'{id}.txt' not in os.listdir(app.config['UPLOADS_PATH']):
                     flash('No testcase file selected', 'error')
+                else:
+                    problem_info['testcase_from_file'] = True
             else:
                 testcase_file_path = os.path.join(app.config['UPLOADS_PATH'], f'{id}.zip')
                 testcase_file.save(testcase_file_path)
