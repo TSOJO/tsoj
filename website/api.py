@@ -191,7 +191,6 @@ def problem_submit(id: str):
     language = Language.cast_from_document(request.form.get('language'))
     new_submission = Submission(user_id=user_id, problem_id=id, code=user_code, language=language)
     problem = Problem.find_one({'id': id})
-    new_submission.create_empty_results(len(problem.testcases))
     submission_id = new_submission.save(wait=True).id
     grader_source_code_dict = problem.grader_source_code.cast_to_document() if problem.grader_source_code is not None else None
     judge.delay(

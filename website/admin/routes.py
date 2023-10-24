@@ -6,6 +6,7 @@ import os
 import zipfile
 import shutil
 import logging
+import json
 
 from website.models import Problem, Assignment, Submission, User, UserGroup
 from isolate_wrapper import Testcase, Language, SourceCode
@@ -103,13 +104,13 @@ def edit_problem(id: str):
                 )
             problem_info['testcases'] = testcases
         elif testcase_type == 'file':
-            problem_info['testcase_from_file'] = True
             testcases = []
             testcase_file = request.files['testcase-file']
+            problem_info['testcases'] = Problem.find_one({'id': id}).testcases
+
             if testcase_file.filename == '': # no file selected
                 if f'{id}.zip' not in os.listdir(app.config['UPLOADS_PATH']):
                     flash('No testcase file selected', 'error')
-                problem_info['testcases'] = Problem.find_one({'id': id}).testcases
             else:
                 testcase_file_path = os.path.join(app.config['UPLOADS_PATH'], f'{id}.zip')
                 testcase_file.save(testcase_file_path)
@@ -139,16 +140,16 @@ def edit_problem(id: str):
                             inputs[(batch_number, testcase_number)] = open(os.path.join(dir, file), 'r').read()
                         elif file_type == 'out':
                             outputs[(batch_number, testcase_number)] = open(os.path.join(dir, file), 'r').read()
-                    
+                    # parsing succeeded
                     for tn in sorted(list(testcase_numbers)):
                         testcases.append(Testcase(inputs[tn], outputs[tn], tn[0]))
-
+                    with open(os.path.join(app.config['UPLOADS_PATH'], f'{id}.txt'), 'w') as f:
+                        f.write(json.dumps([testcase.cast_to_document() for testcase in testcases]))
+                    problem_info['testcase_from_file'] = True
                 except Exception as e:
                     logging.error(e)
                     flash('Invalid testcase file', 'error')
-                
-                problem_info['testcases'] = testcases
-                shutil.rmtree(dir, ignore_errors=False, onerror=None)
+                shutil.rmtree(dir)
 
         judge_method = request.form.get('judge-method')
         if judge_method == 'grader':
@@ -284,7 +285,7 @@ def rejudge_submission(id: int):
     if problem is None:
         flash(f'Unable to rejudge submission {id}: problem not found.', 'error')
         return redirect(url_for('submission_bp.submission', id=id))
-    submission.create_empty_results(len(problem.testcases))
+    submission.create_empty_results(len(problem.get_testcases()))
     submission.save(replace=True, wait=True)
     grader_source_code_dict = problem.grader_source_code.cast_to_document() if problem.grader_source_code is not None else None
     judge.delay(submission.code, submission.language.cast_to_document(), submission.cast_to_document(), submission.problem_id, grader_source_code_dict)

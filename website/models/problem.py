@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from flask import current_app as app
 from typing import Any, Dict, List, Optional
+import os
+import json
 
 from isolate_wrapper import Testcase, Language, SourceCode, Verdict
 from website.db import db
@@ -60,6 +63,13 @@ class Problem(DBModel):
             }
         ))
         self.save(replace=True)
+
+    def get_testcases(self) -> List[Testcase]:
+        if self.testcase_from_file:
+            with open(os.path.join(app.config['UPLOADS_PATH'], self.id + '.txt'), 'r') as f:
+                return [Testcase.cast_from_document(tc) for tc in json.load(f)]
+        return self.testcases
+        
 
     """Database Wrapper Methods"""
 

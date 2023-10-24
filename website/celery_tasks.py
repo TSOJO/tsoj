@@ -17,12 +17,13 @@ def judge(user_code: str, language_dict, submission_dict, problem_id, grader_sou
     submission = models.Submission.cast_from_document(submission_dict)
     problem = models.Problem.find_one({'id': problem_id})
     sandbox = IsolateSandbox()
-    submission.create_empty_results(len(problem.testcases))
+    testcases = problem.get_testcases()
+    submission.create_empty_results(len(testcases))
     source_code = SourceCode(user_code, Language.cast_from_document(language_dict), aqaasm_inputs=problem.aqaasm_inputs, aqaasm_outputs=problem.aqaasm_outputs)
     grader_source_code = SourceCode.cast_from_document(grader_source_code_dict) if grader_source_code_dict is not None else None
     for i, result in enumerate(
         sandbox.judge(
-            source_code, problem.testcases, problem.time_limit, problem.memory_limit, grader_source_code
+            source_code, testcases, problem.time_limit, problem.memory_limit, grader_source_code
         )
     ):
         submission.update_result(i, result)
