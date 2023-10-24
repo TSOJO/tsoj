@@ -28,6 +28,8 @@ services:
       - celery
       - redis
       - mongo
+    volumes:
+      - uploads:/uploads
   
   celery:
     build: .
@@ -37,6 +39,8 @@ services:
     depends_on:
       - redis
       - mongo
+    volumes:
+      - uploads:/uploads
 
   redis:
     image: redis:7.0
@@ -61,3 +65,4 @@ services:
 volumes:
   cache:
   db:
+  uploads:
