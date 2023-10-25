@@ -23,9 +23,20 @@ def submission(id: int) -> str:
         or current_user.id == submission_obj.user_id
         or submission_obj.problem_id in current_user.get_solved_problem_ids()
     )
+    test_ids = []
+    last_batch_number = -1
+    cnt = -1
+    for tc in problem_obj.get_testcases():
+        cnt += 1
+        if tc.batch_number != last_batch_number:
+            last_batch_number = tc.batch_number
+            cnt = 1
+        test_ids.append((tc.batch_number, cnt))
+    print(test_ids)
     return render_template(
         'submission.html',
         submission=submission_obj,
         submission_user=user_obj,
         show_code=show_code,
+        test_ids=test_ids,
     )

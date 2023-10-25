@@ -133,24 +133,18 @@
         </caption>
         <thead>
             <tr>
-                <th scope="col">Test ID</th>
-                <th scope="col">
-                    Verdict
-                </th>
-                <th scope="col">
-                    Time
-                </th>
-                <th scope="col">
-                    Memory
-                </th>
+                <th scope="col" style="width: 10%">Batch #</th>
+                <th scope="col" style="width: 10%">Test #</th>
+                <th scope="col">Verdict</th>
+                <th scope="col">Time</th>
+                <th scope="col">Memory</th>
             </tr>
         </thead>
         <tbody id="results-table-body">
             {% for result in submission.results %}
             <tr>
-                <th scope="row">
-                    {{ loop.index }}
-                </th>
+                <th scope="row">{{test_ids[loop.index0][0]}}</th>
+                <th scope="row">{{test_ids[loop.index0][1]}}</th>
                 <td id="verdict{{ loop.index }}" class="d-flex align-items-center" style="gap:10px;">
                     {% if result.verdict.is_ac() %}
                     <span class="badge rounded-pill text-bg-success d-inline-flex align-items-center">
