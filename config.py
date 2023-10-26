@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 base_dir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(base_dir, '.env'))
 
-MAX_CONTENT_LENGTH = 1024 * 1024 * 1024
+MAX_CONTENT_LENGTH = 100 * 1024 * 1024
 
 UPLOADS_PATH = path.join(base_dir, 'uploads')
 
