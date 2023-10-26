@@ -34,6 +34,8 @@ server {
 	ssl_client_certificate 	/etc/ssl/cloudflare.crt;
     ssl_verify_client 		on;
 
+	client_max_body_size 100M;
+
 	server_name ${NGINX_HOSTNAME};
 
 	root /var/www/;
