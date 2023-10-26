@@ -64,6 +64,11 @@ class Problem(DBModel):
         ))
         self.save(replace=True)
 
+    def get_sample_testcases(self) -> List[Testcase]:
+        if self.testcase_from_file: # if from file is chosen, self.testcases stores the sample testcases
+            return self.testcases
+        return [tc for tc in self.testcases if tc.batch_number == 0]
+
     def get_testcases(self) -> List[Testcase]:
         if self.testcase_from_file:
             with open(os.path.join(app.config['UPLOADS_PATH'], self.id + '.txt'), 'r') as f:

@@ -147,6 +147,7 @@ def edit_problem(id: str):
                         testcases.append(Testcase(inputs[tn], outputs[tn], tn[0]))
                     with open(os.path.join(app.config['UPLOADS_PATH'], f'{id}.txt'), 'w') as f:
                         f.write(json.dumps([testcase.cast_to_document() for testcase in testcases]))
+                    problem_info['testcases'] = [tc for tc in testcases if tc.batch_number == 0]
                     problem_info['testcase_from_file'] = True
                 except Exception as e:
                     logging.error(e)

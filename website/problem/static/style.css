@@ -19,7 +19,7 @@ td, th {
 
 .input-output-text {
     padding: 7px;
-    white-space: nowrap;
+    white-space: pre;
     cursor: pointer;
     overflow-x: auto;
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
